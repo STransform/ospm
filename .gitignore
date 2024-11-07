@@ -49,3 +49,9 @@ package.json
 /man/
 /share/
 /src/
+
+# Configuration file by Kuma
+/conf/
+
+# Virtual Environment by Kuma
+/.venv/
