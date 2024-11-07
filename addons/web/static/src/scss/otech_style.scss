@@ -1,0 +1,48 @@
+/*For left side bar menu*/
+.o_navbar_apps_menu .dropdown-menu {
+    background-color: black !important; /* Set background color to black */
+}
+
+.o_app_switcher_nav, .o_app {
+    background-color: black !important; /* Ensure child elements have a black background as well */
+    color: white !important; /* Adjust text color for contrast */
+    padding: 10px 15px;
+}
+/* Add hover effect for the menu items */
+.o_navbar_apps_menu .dropdown-menu .o_app:hover,
+.o_app_switcher_nav:hover {
+    background-color: red !important; /* Change background color to red on hover */
+    color: white !important; /* Ensure text color remains white for readability */
+}
+
+/* For right side  dropdown menu */
+.o_user_menu .dropdown-menu {
+    background-color: black; /* Set dropdown background color to black */
+}
+
+/* Background color for dropdown items and on hover */
+.o_user_menu .dropdown-item:hover {
+    background-color: red; /* Set hover background color to red */
+    color: white; /* Set text color to white for better visibility */
+}
+
+/* dropdown is readable */
+.o_user_menu .dropdown-item {
+    color: white; /* Set text color to white */
+}
+
+/* Adjust styles for the user avatar and name for better alignment */
+.o_user_menu .o_user_avatar {
+    margin-right: 5px; /* Adjust margin for better spacing */
+}
+
+/* Adjust padding for the dropdown items */
+.o_user_menu .dropdown-item {
+    padding: 10px 15px; /* Adjust padding as needed */
+}
+/* Adjust the position of the dropdown menu from the left and right */
+.o_user_menu .dropdown-menu {
+    margin-right: 0 !important; /* Remove margin from the right to eliminate the gap */
+    right: 0 !important; /* Align the dropdown to the right */
+    left: auto !important; /* Reset left alignment */
+}

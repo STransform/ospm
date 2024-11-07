@@ -1,0 +1,7 @@
+<odoo>
+    <data>
+        <menuitem id="menu_hr_training" name="Training" parent="hr.menu_hr_root"/>
+        <menuitem id="training_dashboard" name="Dashboard" parent="menu_hr_training" action="training_dashboard_action"/>
+        <menuitem id="Manage_training" name="Manage Training" parent="menu_hr_training" action="hr_training_action"/>
+    </data>
+</odoo>
