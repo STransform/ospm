@@ -49,7 +49,23 @@ class HrMedicalCoverage(models.Model):
         self.status = 'finance_rejected'
         
     
-    
+    # Amount Validation  
+    @api.constrains('totalRequestedAmount')
+    def _check_total_requested_amount(self):
+        for record in self:
+            if record.totalRequestedAmount < 0:
+                raise ValidationError("Invalid Input: The Total Requested Amount should be a positive number.")
+
+    @api.onchange('totalRequestedAmount')
+    def _onchange_total_requested_amount(self):
+        if self.totalRequestedAmount < 0:
+            return {
+                'warning': {
+                    'title': 'Invalid Input',
+                    'message': 'Amount should be a positive number.',
+                }
+            }
+        
         
     # Hr description read only
 
