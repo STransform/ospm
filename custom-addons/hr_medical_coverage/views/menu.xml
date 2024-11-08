@@ -1,0 +1,31 @@
+<odoo>
+    <!-- Action for Medical Coverage Requests -->
+    <record id="action_medical_coverage" model="ir.actions.act_window">
+        <field name="name">Medical Coverage Requests</field>
+        <field name="res_model">hr.medical.coverage</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Main Menu for Medical Coverage -->
+    <menuitem id="menu_medical_coverage_root"
+        name="Manage Medical Coverage"
+        parent="hr.menu_hr_root"
+        sequence="20" />
+
+
+    <!-- Dashboard menu -->
+    <menuitem id="menu_medical_coverage_dashboard"
+        name="Dashboard"
+        parent="menu_medical_coverage_root"
+        action="hr_medical_coverage_dashboard_action"
+        sequence="1"
+        groups="hr_medical_coverage.group_hr_director,hr_medical_coverage.group_finance_officer" />
+
+
+    <!-- Requests Submenu under Medical Coverage -->
+    <menuitem id="menu_medical_coverage"
+        name="Requests"
+        parent="menu_medical_coverage_root"
+        action="action_medical_coverage"
+        sequence="2" />
+</odoo>

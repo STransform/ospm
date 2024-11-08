@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+    <t t-name="hr_medical_coverage.Dashboard" owl='1'>
+
+        <div class="vh-100 overflow-auto bg-muted">
+            <div class="row m-3">
+                <div class="col-lg-7">
+                    <div class="row">
+                        <div class="col m-0 p-0">
+                            <div class="shadow-sm border m-2 p-4 bg-white">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h1 class="text-primary fw-bold">Training System Dashboard</h1>
+                                    <div>
+                                        <select class="form-select" t-model="state.period"
+                                            t-on-change="onChangePeriod">
+                                            <option value="0">select Period</option>
+                                            <option value="7">Last 7 Days</option>
+                                            <option value="30">Last 30 Days</option>
+                                            <option value="90">Last 90 Days</option>
+                                            <option value="365">Last 365 Days</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <Card name="'Accepted'" category="'Approved By CEO'" value="state.submitted.value"
+                            color="'text-success'" />
+                        <Card name="'Refused'" category="'Refused By CEO'"
+                            value="state.hr_approved.value" />
+                        <Card name="'Taken'" category="'Taken Successfully'"
+                            value="state.hr_rejected.value" />
+
+                        <div class="row">
+                            <div class="col-lg-6 m-0 p-0">
+                                <div class="shadow-sm border m-2 p-4 bg-white">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <h3 class="text-primary fw-bold">the second</h3>
+                                        <div class="px-3 py-1 bg-primary cursor-pointer">
+                                            <span class="fa fa-arrow-right text-white" />
+                                        </div>
+                                    </div>
+                                    <ChartRenderer type="'bar'" title="'Trainings'"
+                                        config="state.coverages" />
+                                </div>
+                            </div>
+                            <div class="col-lg-6 m-0 p-0">
+                                <div class="shadow-sm border m-2 p-4 bg-white">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <h3 class="text-primary fw-bold">the second</h3>
+                                        <div class="px-3 py-1 bg-primary cursor-pointer">
+                                            <span class="fa fa-arrow-right text-white" />
+                                        </div>
+                                    </div>
+                                    <ChartRenderer type="'line'" title="'Trainings'"
+                                        config="state.coverages" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="row">
+                        <div class="col m-0 p-0">
+                            <div class="shadow-sm border m-2 p-4 bg-white">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h3 class="text-primary fw-bold">Training System</h3>
+                                    <div class="px-3 py-1 bg-primary cursor-pointer">
+                                        <span class="fa fa-arrow-right text-white" />
+                                    </div>
+                                </div>
+                                <ChartRenderer type="'pie'" title="'Trainings'"
+                                    config="state.coverages" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col m-0 p-0">
+                            <div class="shadow-sm border m-2 p-4 bg-white">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h3 class="text-primary fw-bold">the second</h3>
+                                    <div class="px-3 py-1 bg-primary cursor-pointer">
+                                        <span class="fa fa-arrow-right text-white" />
+                                    </div>
+                                </div>
+                                <ChartRenderer type="'bar'" title="'Trainings'"
+                                    config="state.coverages" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- <div class="container">
+            <div class="row ">
+                <div class="col-xl-6 col-lg-6">
+                    <div class="card l-bg-cherry">
+                        <div class="card-statistic-3 p-4">
+                            <div class="mb-4">
+                                <h5 class="card-title mb-0">Approved Trainings</h5>
+                            </div>
+                            <div class="row align-items-center mb-2 d-flex">
+                                <div class="col-8">
+                                    <h2 id='approved' class="d-flex align-items-center mb-0">
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-6 col-lg-6">
+                    <div class="card l-bg-blue-dark">
+                        <div class="card-statistic-3 p-4">
+                            <div class="mb-4">
+                                <h5 class="card-title mb-0">Refused Trainings</h5>
+                            </div>
+                            <div class="row align-items-center mb-2 d-flex">
+                                <div class="col-8">
+                                    <h2 id='refused' class="d-flex align-items-center mb-0">
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-6 col-lg-6">
+                    <div class="card l-bg-green-dark">
+                        <div class="card-statistic-3 p-4">
+                            <div class="mb-4">
+                                <h5 class="card-title mb-0">Taken Trainings</h5>
+                            </div>
+                            <div class="row align-items-center mb-2 d-flex">
+                                <div class="col-8">
+                                    <h2 id='taken' class="d-flex align-items-center mb-0">
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 m-0, p-0">
+                    <div class="shadow-sm border m-2 p-4 bg-white">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h3 class="text-primary fw-bold">Trainings in Pie Chart</h3>
+                            <div class="px-3 py-1 bg-primary cursor-pointer">
+                                <span class="fa fa-arrow-right text-white"/>
+                            </div>
+                        </div>
+                        <ChartRenderer type="'line'" />
+                    </div>
+
+                    <div class="col-lg-6 m-0, p-0">
+                        <div class="shadow-sm border m-2 p-4 bg-white">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h3 class="text-primary fw-bold">Trainings in Pie Chart</h3>
+                                <div class="px-3 py-1 bg-primary cursor-pointer">
+                                    <span class="fa fa-arrow-right text-white"/>
+                                </div>
+                            </div>
+                            <ChartRenderer type="'pie'" />
+                        </div>
+
+                        <div class="col-lg-6 m-0, p-0">
+                            <div class="shadow-sm border m-2 p-4 bg-white">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h3 class="text-primary fw-bold">Trainings in Pie Chart</h3>
+                                    <div class="px-3 py-1 bg-primary cursor-pointer">
+                                        <span class="fa fa-arrow-right text-white"/>
+                                    </div>
+                                </div>
+                                <ChartRenderer type="'bar'" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div> -->
+
+
+    </t>
+</templates>

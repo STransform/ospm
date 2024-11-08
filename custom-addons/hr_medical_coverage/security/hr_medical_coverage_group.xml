@@ -1,0 +1,35 @@
+<odoo>
+    <record id="hr_medical_coverage.group_department_manager" model="res.groups">
+        <field name="name">Department Manager</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+    <record id="hr_medical_coverage.group_employee" model="res.groups">
+        <field name="name">Employee</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+    <record id="hr_medical_coverage.group_ceo" model="res.groups">
+        <field name="name">CEO</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+    
+    <record id="hr_medical_coverage.group_hr_director" model="res.groups">
+        <field name="name">HR Director</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+    <record id="hr_medical_coverage.group_finance_officer" model="res.groups">
+        <field name="name">Finance Officer</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+    
+    <!-- Rule: Employees can only see their own requests -->
+    <record id="medical_coverage_employee_rule" model="ir.rule">
+        <field name="name">Medical Coverage Employee Rule</field>
+        <field name="model_id" ref="model_hr_medical_coverage"/>
+        <field name="groups" eval="[(4, ref('hr_medical_coverage.group_employee'))]"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+</odoo>
