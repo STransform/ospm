@@ -8,6 +8,7 @@ class HrMedicalCoverage(models.Model):
     _description = 'Medical Coverage Request'
     _inherit = ['mail.thread']
     _rec_name = 'create_uid'
+    _order = 'create_date desc'
 
     description = fields.Text(string="Description", required=True)
     hr_description = fields.Text(string="Hr Director Description")
@@ -53,7 +54,7 @@ class HrMedicalCoverage(models.Model):
     @api.constrains('totalRequestedAmount')
     def _check_total_requested_amount(self):
         for record in self:
-            if record.totalRequestedAmount < 0:
+            if record.totalRequestedAmount < 1:
                 raise ValidationError("Invalid Input: The Total Requested Amount should be a positive number.")
 
     @api.onchange('totalRequestedAmount')

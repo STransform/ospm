@@ -10,7 +10,8 @@
                         <div class="col m-0 p-0">
                             <div class="shadow-sm border m-2 p-4 bg-white">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <h1 class="text-primary fw-bold">Training System Dashboard</h1>
+                                    <h1 class="text-primary fw-bold">Medical Coverage Request
+                                        Dashboard</h1>
                                     <div>
                                         <select class="form-select" t-model="state.period"
                                             t-on-change="onChangePeriod">
@@ -27,35 +28,44 @@
                     </div>
 
                     <div class="row">
-                        <Card name="'Accepted'" category="'Approved By CEO'" value="state.submitted.value"
+                        <Card name="'Submitted'" category="'Submitted Requests'"
+                            value="state.submitted.value"
+                            color="'text-info'" />
+                        <Card name="'HR Approved'" category="'Approved by HR'"
+                            value="state.hr_approved.value"
                             color="'text-success'" />
-                        <Card name="'Refused'" category="'Refused By CEO'"
-                            value="state.hr_approved.value" />
-                        <Card name="'Taken'" category="'Taken Successfully'"
-                            value="state.hr_rejected.value" />
+                        <Card name="'HR Rejected'" category="'Rejected by HR'"
+                            value="state.hr_rejected.value"
+                            color="'text-danger'" />
+                        <Card name="'Finance Approved'" category="'Approved by Finance'"
+                            value="state.finance_approved.value"
+                            color="'text-primary'" />
+                        <Card name="'Finance Rejected'" category="'Rejected by Finance'"
+                            value="state.finance_rejected.value"
+                            color="'text-warning'" />
 
                         <div class="row">
                             <div class="col-lg-6 m-0 p-0">
                                 <div class="shadow-sm border m-2 p-4 bg-white">
                                     <div class="d-flex align-items-center justify-content-between">
-                                        <h3 class="text-primary fw-bold">the second</h3>
+                                        <h3 class="text-primary fw-bold">Medical Coverage Status</h3>
                                         <div class="px-3 py-1 bg-primary cursor-pointer">
                                             <span class="fa fa-arrow-right text-white" />
                                         </div>
                                     </div>
-                                    <ChartRenderer type="'bar'" title="'Trainings'"
+                                    <ChartRenderer type="'bar'" title="'Medical Coverage Requestes'"
                                         config="state.coverages" />
                                 </div>
                             </div>
                             <div class="col-lg-6 m-0 p-0">
                                 <div class="shadow-sm border m-2 p-4 bg-white">
                                     <div class="d-flex align-items-center justify-content-between">
-                                        <h3 class="text-primary fw-bold">the second</h3>
+                                        <h3 class="text-primary fw-bold">Medical Coverage Status</h3>
                                         <div class="px-3 py-1 bg-primary cursor-pointer">
                                             <span class="fa fa-arrow-right text-white" />
                                         </div>
                                     </div>
-                                    <ChartRenderer type="'line'" title="'Trainings'"
+                                    <ChartRenderer type="'line'" title="'Medical Coverage Requestes'"
                                         config="state.coverages" />
                                 </div>
                             </div>
@@ -67,26 +77,12 @@
                         <div class="col m-0 p-0">
                             <div class="shadow-sm border m-2 p-4 bg-white">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <h3 class="text-primary fw-bold">Training System</h3>
+                                    <h3 class="text-primary fw-bold">Medical Coverage Status</h3>
                                     <div class="px-3 py-1 bg-primary cursor-pointer">
                                         <span class="fa fa-arrow-right text-white" />
                                     </div>
                                 </div>
-                                <ChartRenderer type="'pie'" title="'Trainings'"
-                                    config="state.coverages" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col m-0 p-0">
-                            <div class="shadow-sm border m-2 p-4 bg-white">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <h3 class="text-primary fw-bold">the second</h3>
-                                    <div class="px-3 py-1 bg-primary cursor-pointer">
-                                        <span class="fa fa-arrow-right text-white" />
-                                    </div>
-                                </div>
-                                <ChartRenderer type="'bar'" title="'Trainings'"
+                                <ChartRenderer type="'pie'" title="'Medical Coverage Requestes'"
                                     config="state.coverages" />
                             </div>
                         </div>
