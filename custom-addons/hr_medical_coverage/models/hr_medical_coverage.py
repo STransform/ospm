@@ -1,7 +1,7 @@
 # hr_medical_coverage.py
 
 from odoo import models, fields, api
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, AccessError
 
 class HrMedicalCoverage(models.Model):
     _name = 'hr.medical.coverage'
@@ -65,10 +65,17 @@ class HrMedicalCoverage(models.Model):
                     'message': 'Amount should be a positive number.',
                 }
             }
-        
+    
+    def write(self, vals):
+        # Check if hr_description is being modified
+        if 'hr_description' in vals:
+            # Check if the current user is in the HR Director group
+            if not self.env.user.has_group('hr_medical_coverage.group_hr_director'):
+                raise AccessError("You are not allowed to edit the HR Description field.")
+        return super(HrMedicalCoverage, self).write(vals)
         
     # Hr description read only
-
+        
         
     # # notification
     # def actionSubmit(self):
