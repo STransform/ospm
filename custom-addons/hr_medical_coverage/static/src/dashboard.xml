@@ -28,21 +28,24 @@
                     </div>
 
                     <div class="row">
+                        <Card name="'On Draft'" category="'Draft Requests'"
+                            value="state.draft.value"
+                            textColor="'text-info'" />
                         <Card name="'Submitted'" category="'Submitted Requests'"
                             value="state.submitted.value"
-                            color="'text-info'" />
+                            textColor="'text-info'" />
                         <Card name="'HR Approved'" category="'Approved by HR'"
                             value="state.hr_approved.value"
-                            color="'text-success'" />
+                            textColor="'text-success'" />
                         <Card name="'HR Rejected'" category="'Rejected by HR'"
                             value="state.hr_rejected.value"
-                            color="'text-danger'" />
+                            textColor="'text-danger'" />
                         <Card name="'Finance Approved'" category="'Approved by Finance'"
                             value="state.finance_approved.value"
-                            color="'text-primary'" />
+                            textColor="'text-success'" />
                         <Card name="'Finance Rejected'" category="'Rejected by Finance'"
                             value="state.finance_rejected.value"
-                            color="'text-warning'" />
+                            textColor="'text-warning'" />
 
                         <div class="row">
                             <div class="col-lg-6 m-0 p-0">

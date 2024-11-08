@@ -13,13 +13,14 @@ class MedicalCoverageDashboard extends Component {
         // Fetch medical coverage requests and categorize them by status
         const coverages = await this.orm.searchRead(
             'hr.medical.coverage', 
-            [['status', 'in', ['submitted', 'hr_approved', 'hr_rejected', 'finance_approved', 'finance_rejected']], ['create_date', '>', this.state.date]], 
+            [['status', 'in', ['draft', 'submitted', 'hr_approved', 'hr_rejected', 'finance_approved', 'finance_rejected']], ['create_date', '>', this.state.date]], 
             ['status']
         );
 
 
         
         const counts = {
+            draft: 0,
             submitted: 0,
             hr_approved: 0,
             hr_rejected: 0,
@@ -33,11 +34,12 @@ class MedicalCoverageDashboard extends Component {
 
         this.state.coverages = {
             data: {
-                labels: ['Submitted', 'HR Approved', 'HR Rejected', 'Finance Approved', 'Finance Rejected'],
+                labels: ['Draft', 'Submitted', 'HR Approved', 'HR Rejected', 'Finance Approved', 'Finance Rejected'],
                 datasets: [{
                     label: 'Coverage Status',
-                    data: [counts.submitted, counts.hr_approved, counts.hr_rejected, counts.finance_approved, counts.finance_rejected],
+                    data: [counts.draft, counts.submitted, counts.hr_approved, counts.hr_rejected, counts.finance_approved, counts.finance_rejected],
                     backgroundColor: [
+                        'rgb(153, 102, 255)',
                         'rgb(54, 162, 235)',
                         'rgb(75, 192, 192)',
                         'rgb(255, 99, 132)',
@@ -52,6 +54,7 @@ class MedicalCoverageDashboard extends Component {
 
     setup() {
         this.state = useState({
+            draft: {value: 0},
             submitted: { value: 0 },
             hr_approved: { value: 0 },
             hr_rejected: { value: 0 },
@@ -81,12 +84,14 @@ class MedicalCoverageDashboard extends Component {
 
     async getRequestCounts() {
         // Count requests in each status within the selected period
+        const draft = await this.orm.searchCount('hr.medical.coverage', [['status', '=', 'draft'], ['create_date', '>', this.state.date]]);
         const submitted = await this.orm.searchCount('hr.medical.coverage', [['status', '=', 'submitted'], ['create_date', '>', this.state.date]]);
         const hr_approved = await this.orm.searchCount('hr.medical.coverage', [['status', '=', 'hr_approved'], ['create_date', '>', this.state.date]]);
         const hr_rejected = await this.orm.searchCount('hr.medical.coverage', [['status', '=', 'hr_rejected'], ['create_date', '>', this.state.date]]);
         const finance_approved = await this.orm.searchCount('hr.medical.coverage', [['status', '=', 'finance_approved'], ['create_date', '>', this.state.date]]);
         const finance_rejected = await this.orm.searchCount('hr.medical.coverage', [['status', '=', 'finance_rejected'], ['create_date', '>', this.state.date]]);
 
+        this.state.draft.value = draft;
         this.state.submitted.value = submitted;
         this.state.hr_approved.value = hr_approved;
         this.state.hr_rejected.value = hr_rejected;
