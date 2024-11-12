@@ -1,50 +1,49 @@
-# See LICENSE file for full copyright and licensing details.
-
 from odoo import api, fields, models
+from odoo.exceptions import ValidationError
 
+class HrPayGrade(models.Model):
+    _name = "hr.pay.grade"
+    _description = "Pay Grade"
 
-class RankRank(models.Model):
-    _name = "rank.rank"
-    _description = "Rank"
-
-    name = fields.Char()
-    description = fields.Text()
-    salary_range = fields.Text()
+    job_position_id = fields.Many2one("hr.job", string="Job Position", required=True, help="Job position associated with this grade.")
+    grade_name = fields.Char(string="Grade", required=True, help="Grade level, e.g., A, B, C.")
+    salary = fields.Float(string="Salary", required=True, help="Fixed salary for this grade level.")
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [("name_uniq", "unique(name)", "Rank should be unique")]
+    _sql_constraints = [
+        ("job_position_grade_unique", "unique(job_position_id, grade_name)", "Each job position and grade combination must be unique."),
+    ]
 
-    @api.model
-    def name_search(self, name="", args=None, operator="ilike", limit=80):
-        """Search the rank based on grade."""
-        if self.env.context.get("grade"):
-            grade_rank_recs = (
-                self.env["grade.grade"]
-                .sudo()
-                .search([("id", "=", self.env.context.get("grade"))])
-                .mapped("rank_ids")
-            )
-            args += [("id", "in", grade_rank_recs.ids or [])]
-        return super(RankRank, self).name_search(
-            name=name, args=args, operator=operator, limit=limit
-        )
+    @api.constrains('salary')
+    def _check_salary_positive(self):
+        for record in self:
+            if record.salary < 0:
+                raise ValidationError("Salary must be a positive number.")
 
+    @api.onchange('salary')
+    def _validate_salary_onchange(self):
+        if self.salary < 0:
+            return {
+                'warning': {
+                    'title': "Invalid Input",
+                    'message': "Salary must be a positive number."
+                }
+            }
 
-class GradeGrade(models.Model):
-    _name = "grade.grade"
-    _description = "Grade"
+class HrJob(models.Model):
+    _inherit = "hr.job"
 
-    name = fields.Char()
-    description = fields.Text()
-    rank_ids = fields.Many2many(
-        "rank.rank", "rel_grade_rank", "grade_id", "rank_id", "Ranks"
-    )
-    active = fields.Boolean(default=True)
-
+    pay_grade_ids = fields.One2many("hr.pay.grade", "job_position_id", string="Grades", help="Defines salary for each grade within this job position.")
+    
 
 class HrEmployee(models.Model):
-
     _inherit = "hr.employee"
 
-    grade_id = fields.Many2one("grade.grade", "Grade")
-    rank_id = fields.Many2one("rank.rank", "Rank")
+    job_id = fields.Many2one("hr.job", string="Job Position")
+    pay_grade_id = fields.Many2one("hr.pay.grade", string="Pay Grade", domain="[('job_position_id', '=', job_id)]")
+    current_salary = fields.Float(string="Current Salary", compute="_compute_current_salary", store=True)
+
+    @api.depends('pay_grade_id')
+    def _compute_current_salary(self):
+        for record in self:
+            record.current_salary = record.pay_grade_id.salary if record.pay_grade_id else 0.0

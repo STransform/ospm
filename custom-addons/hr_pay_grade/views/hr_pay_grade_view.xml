@@ -1,185 +1,101 @@
 <odoo>
 
-    <!-- GRADE FORM VIEW -->
-    <record id="view_employee_grade_form" model="ir.ui.view">
-        <field name="name">grade.grade.form</field>
-        <field name="model">grade.grade</field>
+    <!-- PAY GRADE FORM VIEW -->
+    <record id="view_pay_grade_form" model="ir.ui.view">
+        <field name="name">hr.pay.grade.form</field>
+        <field name="model">hr.pay.grade</field>
         <field name="arch" type="xml">
-            <form string="Employees Grade">
+            <form string="Pay Grade">
                 <sheet>
                     <group>
-                        <field name="name" required="1" />
+                        <field name="job_position_id" required="1" />
+                        <field name="grade_name" required="1" />
+                        <field name="salary" required="1" />
                     </group>
-                    <notebook>
-                        <page string="Ranks">
-                            <field name="rank_ids">
-                                <tree>
-                                    <field name="name" />
-                                    <field name="salary_range" />
-                                    <field name="description" />
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
-                    <field name="description" placeholder="Description" />
+                    <field name="active" />
                 </sheet>
             </form>
         </field>
     </record>
 
-    <!-- GRADE TREE VIEW -->
-    <record id="view_employee_grade_tree" model="ir.ui.view">
-        <field name="name">grade.grade.tree</field>
-        <field name="model">grade.grade</field>
+    <!-- PAY GRADE TREE VIEW -->
+    <record id="view_pay_grade_tree" model="ir.ui.view">
+        <field name="name">hr.pay.grade.tree</field>
+        <field name="model">hr.pay.grade</field>
         <field name="arch" type="xml">
-            <tree>
-                <field name="name" />
-                <field name="description" />
+            <tree string="Pay Grades">
+                <field name="job_position_id" />
+                <field name="grade_name" />
+                <field name="salary" />
+                <field name="active" />
             </tree>
         </field>
     </record>
 
-    <!-- GRADE ACTION -->
-    <record id="action_employee_grade" model="ir.actions.act_window">
-        <field name="name">Grades</field>
-        <field name="res_model">grade.grade</field>
+    <!-- PAY GRADE ACTION -->
+    <record id="action_pay_grade" model="ir.actions.act_window">
+        <field name="name">Pay Grades</field>
+        <field name="res_model">hr.pay.grade</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Employee Rank/Grade Menu -->
-    <menuitem
-        id="menu_employee_grade_rank"
-        parent="hr.menu_human_resources_configuration"
-        sequence="30"
-        name="Employee Grades and Rank"
-    />
-
-    <!-- GRADE MENU -->
-    <menuitem
-        id="menu_grade"
-        sequence="2"
-        parent="hr_grade_rank.menu_employee_grade_rank"
-        action="action_employee_grade"
-    />
-
-    <!-- RANK FORM VIEW -->
-    <record id="view_employee_rank_form" model="ir.ui.view">
-        <field name="name">rank.rank.form</field>
-        <field name="model">rank.rank</field>
-        <field name="arch" type="xml">
-            <form string="Employees Rank">
-                <sheet>
-                    <group>
-                        <field name="name" required="1" />
-                    </group>
-                    <group>
-                        <field name="salary_range" />
-                    </group>
-                    <field name="description" placeholder="Description" />
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <!-- RANK TREE VIEW -->
-    <record id="view_employee_rank_tree" model="ir.ui.view">
-        <field name="name">rank.rank.tree</field>
-        <field name="model">rank.rank</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name" />
-                <field name="salary_range" />
-                <field name="description" />
-            </tree>
-        </field>
-    </record>
-
-    <!-- RANK ACTION -->
-    <record id="action_employee_rank" model="ir.actions.act_window">
-        <field name="name">Ranks</field>
-        <field name="res_model">rank.rank</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-
-    <!-- RANK MENU -->
-    <menuitem
-        id="menu_rank"
-        parent="hr_grade_rank.menu_employee_grade_rank"
-        action="action_employee_rank"
-        sequence="4"
-    />
+    <!-- Pay Grade Menu under HR Configuration -->
+    <menuitem id="menu_pay_grade" parent="hr.menu_human_resources_configuration" name="Pay Grades" action="action_pay_grade" sequence="30"/>
 
     <!-- EMPLOYEES INHERITED FORM VIEW -->
-    <record id="view_employee_form_grade_rank" model="ir.ui.view">
-        <field name="name">hr.employee.form.grade.rank</field>
+    <record id="view_employee_form_pay_grade" model="ir.ui.view">
+        <field name="name">hr.employee.form.pay.grade</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form" />
         <field name="arch" type="xml">
             <field name="job_id" position="after">
-                <field name="grade_id" />
-                <field
-                    name="rank_id"
-                    context="{'grade': grade_id}"
-                    options="{'no_open': True, 'no_create': True}"
-                />
+                <field name="pay_grade_id" />
+                <field name="current_salary" readonly="1" />
             </field>
         </field>
     </record>
 
     <!-- EMPLOYEES INHERITED TREE VIEW -->
-    <record id="view_employee_tree_grade_rank" model="ir.ui.view">
-        <field name="name">hr.employee.tree.grade.rank</field>
+    <record id="view_employee_tree_pay_grade" model="ir.ui.view">
+        <field name="name">hr.employee.tree.pay.grade</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_tree" />
         <field name="arch" type="xml">
             <field name="job_id" position="after">
-                <field name="grade_id" />
-                <field name="rank_id" />
+                <field name="pay_grade_id" />
+                <field name="current_salary" />
             </field>
         </field>
     </record>
 
     <!-- EMPLOYEES INHERITED SEARCH VIEW -->
-    <record id="view_employee_filter_grade_rank" model="ir.ui.view">
-        <field name="name">Employees Grade Rank</field>
+    <record id="view_employee_filter_pay_grade" model="ir.ui.view">
+        <field name="name">Employees Pay Grade</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_filter" />
         <field name="arch" type="xml">
             <filter name="group_job" position="after">
-                <filter
-                    string="Grade"
-                    icon="terp-gtk-select-all"
-                    domain="[]"
-                    name='grade'
-                    context="{'group_by':'grade_id'}"
-                />
-                <filter
-                    string="Rank"
-                    icon="terp-gtk-select-all"
-                    domain="[]"
-                    name='rank'
-                    context="{'group_by':'rank_id'}"
-                />
+                <filter string="Pay Grade" icon="terp-gtk-select-all" domain="[]" name="pay_grade" context="{'group_by':'pay_grade_id'}"/>
             </filter>
         </field>
     </record>
 
     <!-- EMPLOYEES INHERITED KANBAN VIEW -->
-    <record id="hr_kanban_view_emp_grade_rank" model="ir.ui.view">
-        <field name="name">hr.employee.kanban.grade.rank</field>
+    <record id="hr_kanban_view_employee_pay_grade" model="ir.ui.view">
+        <field name="name">hr.employee.kanban.pay.grade</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.hr_kanban_view_employees" />
         <field name="arch" type="xml">
             <xpath expr="//templates" position="before">
-                <field name="grade_id" />
-                <field name="rank_id" />
+                <field name="pay_grade_id" />
+                <field name="current_salary" />
             </xpath>
             <xpath expr="//field[@name='work_phone']" position="after">
-                <li t-if="record.grade_id.raw_value">
-                    <field name="grade_id" />
+                <li t-if="record.pay_grade_id.raw_value">
+                    <field name="pay_grade_id" />
                 </li>
-                <li t-if="record.rank_id.raw_value">
-                    <field name="rank_id" />
+                <li t-if="record.current_salary.raw_value">
+                    <field name="current_salary" />
                 </li>
             </xpath>
         </field>
