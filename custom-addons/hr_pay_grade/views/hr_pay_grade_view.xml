@@ -12,7 +12,6 @@
                         <field name="grade_name" required="1" />
                         <field name="salary" required="1" />
                     </group>
-                    <field name="active" />
                 </sheet>
             </form>
         </field>
@@ -27,7 +26,6 @@
                 <field name="job_position_id" />
                 <field name="grade_name" />
                 <field name="salary" />
-                <field name="active" />
             </tree>
         </field>
     </record>
@@ -40,65 +38,18 @@
     </record>
 
     <!-- Pay Grade Menu under HR Configuration -->
-    <menuitem id="menu_pay_grade" parent="hr.menu_human_resources_configuration" name="Pay Grades" action="action_pay_grade" sequence="30"/>
+    <menuitem id="menu_pay_grade" parent="hr.menu_human_resources_configuration" name="Pay Grades"
+        action="action_pay_grade" sequence="30" />
 
-    <!-- EMPLOYEES INHERITED FORM VIEW -->
-    <record id="view_employee_form_pay_grade" model="ir.ui.view">
-        <field name="name">hr.employee.form.pay.grade</field>
-        <field name="model">hr.employee</field>
-        <field name="inherit_id" ref="hr.view_employee_form" />
+    <!-- CONTRACT FORM VIEW WITH PAY GRADE IN SALARY INFORMATION SECTION -->
+    <record id="view_contract_form_pay_grade" model="ir.ui.view">
+        <field name="name">hr.contract.form.pay.grade</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form" />
         <field name="arch" type="xml">
-            <field name="job_id" position="after">
+            <field name="contract_type_id" position="before">
                 <field name="pay_grade_id" />
-                <field name="current_salary" readonly="1" />
             </field>
         </field>
     </record>
-
-    <!-- EMPLOYEES INHERITED TREE VIEW -->
-    <record id="view_employee_tree_pay_grade" model="ir.ui.view">
-        <field name="name">hr.employee.tree.pay.grade</field>
-        <field name="model">hr.employee</field>
-        <field name="inherit_id" ref="hr.view_employee_tree" />
-        <field name="arch" type="xml">
-            <field name="job_id" position="after">
-                <field name="pay_grade_id" />
-                <field name="current_salary" />
-            </field>
-        </field>
-    </record>
-
-    <!-- EMPLOYEES INHERITED SEARCH VIEW -->
-    <record id="view_employee_filter_pay_grade" model="ir.ui.view">
-        <field name="name">Employees Pay Grade</field>
-        <field name="model">hr.employee</field>
-        <field name="inherit_id" ref="hr.view_employee_filter" />
-        <field name="arch" type="xml">
-            <filter name="group_job" position="after">
-                <filter string="Pay Grade" icon="terp-gtk-select-all" domain="[]" name="pay_grade" context="{'group_by':'pay_grade_id'}"/>
-            </filter>
-        </field>
-    </record>
-
-    <!-- EMPLOYEES INHERITED KANBAN VIEW -->
-    <record id="hr_kanban_view_employee_pay_grade" model="ir.ui.view">
-        <field name="name">hr.employee.kanban.pay.grade</field>
-        <field name="model">hr.employee</field>
-        <field name="inherit_id" ref="hr.hr_kanban_view_employees" />
-        <field name="arch" type="xml">
-            <xpath expr="//templates" position="before">
-                <field name="pay_grade_id" />
-                <field name="current_salary" />
-            </xpath>
-            <xpath expr="//field[@name='work_phone']" position="after">
-                <li t-if="record.pay_grade_id.raw_value">
-                    <field name="pay_grade_id" />
-                </li>
-                <li t-if="record.current_salary.raw_value">
-                    <field name="current_salary" />
-                </li>
-            </xpath>
-        </field>
-    </record>
-
 </odoo>
