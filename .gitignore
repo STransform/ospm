@@ -55,3 +55,7 @@ package.json
 
 # Virtual Environment by Kuma
 /.venv/
+
+
+# Kumas Temp file
+/custom-addons/hr_grade_rank
