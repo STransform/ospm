@@ -1,0 +1,32 @@
+<odoo>
+    <record id="planning.group_department_manager" model="res.groups">
+        <field name="name">Department Manager</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+
+    <record id="planning.group_director" model="res.groups">
+        <field name="name">Director</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+
+    <record id="planning.group_dceo" model="res.groups">
+        <field name="name">Deputy CEO</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+
+    <record id="planning.group_planning_directorate" model="res.groups">
+        <field name="name">Planning Director</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+
+    <record id="planning.group_ceo" model="res.groups">
+        <field name="name">CEO</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+
+    <record id="planning.group_hr_director" model="res.groups">
+        <field name="name">HR Director</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+
+</odoo>

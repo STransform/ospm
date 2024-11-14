@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- tree view -->
+    <record id="hr_annual_plan_view_tree" model="ir.ui.view">
+        <field name="name">hr.annual.plan.view.tree</field>
+        <field name="model">hr.annual.plan</field>
+        <field name="arch" type="xml">
+            <tree string="HR Annual Plan">
+                <field name="department_id"/>
+                <field name="submitted_to"/>
+                <field name="year" />
+                <field name="external_recruitment" />
+                <field name="promotion" />
+                <field name="total_need" />
+                <field name="status" />
+                <field name="description" />
+                <field name="comment" />
+			</tree>
+        </field>
+    </record>
+
+<!-- form view -->
+    <record id="view_hr_annual_plan_form" model="ir.ui.view">
+        
+        <field name="name">hr.annual.plan.form</field>
+        <field name="model">hr.annual.plan</field>
+        <field name="arch" type="xml">
+            <form string="HR Annual Plan">
+                <sheet>
+                    <header>
+                        <button name="submit" type="object" string="Submit" attrs="{'invisible': [('status', '!=', 'draft')]}"/>
+                        <button name="approve" type="object" string="Approve" attrs="{'invisible': [('status', '!=', 'submitted')]}"/>
+                        <button name="reject" type="object" string="Reject" attrs="{'invisible': [('status', '!=', 'submitted')]}"/>
+                        <button name="submit" type="object" string="ReSubmit" attrs="{'invisible': [('status', '!=', 'rejected')]}"/>
+                        <field name="status" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected"/>
+                    </header>
+                    <div class= "p-2">
+                    </div>
+
+                    <group>
+                        <field name="is_approver" invisible="1"/>
+                        <field name="department_id" readonly="1" />
+                        <field name="submitted_to" attrs="{'readonly': ['|',('status', '!=', 'draft'),('is_approver', '=', True)]}"/>
+                        <field name="year" attrs="{'readonly': ['|',('status', '!=', 'draft'),('is_approver', '=', True)]}"/>
+                        <field name="external_recruitment" attrs="{'readonly': ['|',('status', 'in', ['submitted','approved']),('is_approver', '=', True)]}"/>
+                        <field name="promotion" attrs="{'readonly': ['|',('status', 'in', ['submitted','approved']),('is_approver', '=', True)]}"/>
+                        <field name="status" readonly="1"/>
+                        <field name="approved_by" readonly="1"/>
+                        <field name="comment" attrs="{'readonly': ['|',('is_approver', '=', False),('status', '=', 'rejected')]}"/>
+                    </group>
+                    <group>
+                        <field name="description"   attrs="{'readonly': ['|',('status', 'in', ['submitted','approved']),('is_approver', '=', True)]}"/>
+                        <field name="attachment_ids" widget="many2many_binary" attrs="{'readonly': ['|',('status', 'in', ['submitted','approved']),('is_approver', '=', True)]}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+<!-- action item -->
+
+    <record id="hr_annual_plan_action" model="ir.actions.act_window">
+    <field name="name">HR Annual Plan</field>
+    <field name="res_model">hr.annual.plan</field>
+    <field name="view_mode">tree,form</field>
+    <field name="view_id" ref="planning.hr_annual_plan_view_tree"/>
+    <!-- <field name="domain">['|', ('create_uid', '=', uid), ('approved_by', '=', uid)]</field> -->
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+            Click New to create a new estate property.
+        </p>
+    </field>
+</record>
+</odoo>

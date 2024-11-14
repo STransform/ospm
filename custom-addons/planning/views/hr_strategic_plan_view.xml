@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- tree view -->
+    <record id="hr_strategic_plan_view_tree" model="ir.ui.view">
+        <field name="name">hr.strategic.plan.view.tree</field>
+        <field name="model">hr.strategic.plan</field>
+        <field name="arch" type="xml">
+            <tree string="HR Strategic Plan">
+                <field name="department_id"/>
+                <field name="submitted_to"/>
+                <field name="strategic_external_recruitment" />
+                <field name="strategic_promotion" />
+                <field name="strategic_total_need" />
+                <field name="status" />
+                <field name="description" />
+                <field name="comment" />
+			</tree>
+        </field>
+    </record>
+
+<!-- form view -->
+    <record id="view_hr_strategic_plan_form" model="ir.ui.view">
+        
+        <field name="name">hr.strategic.plan.form</field>
+        <field name="model">hr.strategic.plan</field>
+        <field name="arch" type="xml">
+            <form string="HR Strategic Plan">
+                <sheet>
+                    <header>
+                        <button name="submit" type="object" string="Submit" attrs="{'invisible': [('status', '!=', 'draft')]}"/>
+                        <button name="approve" type="object" string="Approve" attrs="{'invisible': ['|',('status', '!=', 'submitted'),('is_approver', '=', False)]}"/>
+                        <button name="reject" type="object" string="Reject" attrs="{'invisible': ['|',('status', '!=', 'submitted'),('is_approver', '=', False)]}"/>
+                        <button name="submit" type="object" string="ReSubmit" attrs="{'invisible': [('status', '!=', 'rejected')]}"/>
+                        <field name="status" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected"/>
+                    </header>
+                    <div class= "p-2">
+                    </div>
+
+                    <sheet class= "p-2">
+                        <group>
+                            <field name="is_approver" />
+                            <field name="department_id" readonly="1" />
+                            <field name="submitted_to" attrs="{'readonly': ['|',('status', '!=', 'draft'),('is_approver', '=', True)]}"/>
+                            <field name="start_year" attrs="{'readonly': ['|',('status', '!=', 'draft'),('is_approver', '=', True)]}"/>
+                            <field name="end_year" attrs="{'readonly': ['|',('status', '!=', 'draft'),('is_approver', '=', True)]}"/>
+                            <field name="status" readonly="1"/>
+                            <field name="approved_by" readonly="1"/>
+                            <field name="comment" attrs="{'readonly': ['|',('is_approver', '=', False),('status', '=', 'rejected')]}"/>
+                        </group>
+                    </sheet>
+                    <sheet class= "p-2">
+                        <group>
+                            <group>
+                                <field name="strategic_external_recruitment" />
+                                <field name="strategic_promotion"/>
+                                <field name="strategic_total_need" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+
+                    <sheet class= "p-2">
+                        <group>
+                            <field name="description"   attrs="{'readonly': ['|',('status', 'in', ['submitted','approved']),('is_approver', '=', True)]}"/>
+                            <field name="attachment_ids" widget="many2many_binary" attrs="{'readonly': ['|',('status', 'in', ['submitted','approved']),('is_approver', '=', True)]}"/>
+                        </group>
+                    </sheet>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+<!-- action item -->
+
+<record id="hr_strategic_plan_action" model="ir.actions.act_window">
+    <field name="name">HR Strategic Plan</field>
+    <field name="res_model">hr.strategic.plan</field>
+    <field name="view_mode">tree,form</field>
+    <field name="view_id" ref="planning.hr_strategic_plan_view_tree"/>
+    <!-- <field name="domain">['|',('is_creator', '=', True), ('is_approver', '=', True)]</field> -->
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+            Click New to create a new Strategic plan.
+        </p>
+    </field>
+</record>
+
+</odoo>
