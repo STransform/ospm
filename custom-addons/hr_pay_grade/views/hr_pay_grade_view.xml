@@ -9,9 +9,20 @@
                 <sheet>
                     <group>
                         <field name="job_position_id" required="1" />
-                        <field name="grade_name" required="1" />
-                        <field name="salary" required="1" />
+                        <field name="pay_grade" required="1" />
+                        <field name="base_salary" required="1" />
+                        <field name="ceiling_salary" required="1" />
                     </group>
+                    <notebook>
+                        <page string="Increment Steps">
+                            <field name="increment_steps">
+                                <tree editable="bottom">
+                                    <field name="increment" />
+                                    <field name="salary" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
@@ -24,8 +35,9 @@
         <field name="arch" type="xml">
             <tree string="Pay Grades">
                 <field name="job_position_id" />
-                <field name="grade_name" />
-                <field name="salary" />
+                <field name="pay_grade" />
+                <field name="base_salary" />
+                <field name="ceiling_salary" />
             </tree>
         </field>
     </record>
@@ -41,15 +53,22 @@
     <menuitem id="menu_pay_grade" parent="hr.menu_human_resources_configuration" name="Pay Grades"
         action="action_pay_grade" sequence="30" />
 
-    <!-- CONTRACT FORM VIEW WITH PAY GRADE IN SALARY INFORMATION SECTION -->
+    <!-- CONTRACT FORM VIEW WITH PAY GRADE AND INCREMENT LEVEL IN SALARY INFORMATION SECTION -->
     <record id="view_contract_form_pay_grade" model="ir.ui.view">
         <field name="name">hr.contract.form.pay.grade</field>
         <field name="model">hr.contract</field>
         <field name="inherit_id" ref="hr_contract.hr_contract_view_form" />
         <field name="arch" type="xml">
-            <field name="contract_type_id" position="before">
-                <field name="pay_grade_id" />
-            </field>
+            <xpath expr="//field[@name='wage']" position="before">
+                <group>
+                    <field name="pay_grade_id" options="{'no_open': True, 'no_create': True}" />
+                    <field name="increment_level_id" options="{'no_open': True, 'no_create': True}" />
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='wage']" position="attributes">
+                <attribute name="readonly">True</attribute>
+            </xpath>
         </field>
     </record>
+
 </odoo>
