@@ -33,6 +33,9 @@ class HrPayGrade(models.Model):
         ("grade_unique", "unique(name)", "Each grade must be unique."),
     ]
 
+    def name_get(self):
+        return [(record.id, f"Grade - {record.name}") for record in self]
+
     @api.constrains("base_salary", "ceiling_salary")
     def _check_salary_range(self):
         for record in self:
@@ -72,6 +75,9 @@ class HrPayGradeIncrement(models.Model):
             "Each increment level within a pay grade must be unique.",
         ),
     ]
+    
+    def name_get(self):
+        return [(record.id, f"Increment - {record.increment}") for record in self]
 
     @api.constrains("salary")
     def _check_salary_within_bounds(self):
