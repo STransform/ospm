@@ -1,30 +1,40 @@
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
+
 class HrPayGrade(models.Model):
     _name = "hr.pay.grade"
     _description = "Pay Grade"
 
-    job_position_id = fields.Many2one("hr.job", string="Job Position", required=True, help="Associated job position.")
-    pay_grade = fields.Integer(string="Pay Grade", required=True, help="Vertical grade level, e.g., 1, 2, 3.")
-    base_salary = fields.Float(string="Base Salary", required=True, help="Base salary for this pay grade.")
-    ceiling_salary = fields.Float(string="Ceiling Salary", required=True, help="Maximum salary for this pay grade.")
+    name = fields.Selection(
+        selection=[(str(i), f"Grade {i}") for i in range(1, 17)],
+        string="Grade Level",
+        required=True,
+        help="Select the pay grade level (1-16)."
+    )
+    base_salary = fields.Float(string="Base Salary", required=True)
+    ceiling_salary = fields.Float(string="Ceiling Salary", required=True)
     increment_steps = fields.One2many("hr.pay.grade.increment", "pay_grade_id", string="Increment Steps")
+    job_ids = fields.Many2many("hr.job", string="Job Positions", help="Job positions associated with this grade level.")
+    assigned_job_ids = fields.Many2many("hr.job", compute="_compute_assigned_job_ids", store=False, string="Assigned Job Positions")
 
     _sql_constraints = [
-        ("job_position_grade_unique", "unique(job_position_id, pay_grade)", "Each job position and grade combination must be unique."),
+        ('grade_unique', 'unique(name)', 'Each grade must be unique.'),
     ]
 
-    @api.constrains('base_salary', 'ceiling_salary')
+    @api.constrains("base_salary", "ceiling_salary")
     def _check_salary_range(self):
         for record in self:
             if record.base_salary <= 0 or record.ceiling_salary <= 0:
-                raise ValidationError("Base Salary and Ceiling Salary must be positive numbers.")
+                raise ValidationError("Base and ceiling salaries must be positive numbers.")
             if record.base_salary > record.ceiling_salary:
-                raise ValidationError("Base Salary cannot be higher than Ceiling Salary.")
+                raise ValidationError("Base salary cannot exceed ceiling salary.")
 
-    def name_get(self):
-        return [(record.id, f"{record.job_position_id.name} - Grade {record.pay_grade}") for record in self]
+    @api.depends('job_ids')
+    def _compute_assigned_job_ids(self):
+        assigned_jobs = self.env['hr.pay.grade'].search([]).mapped('job_ids')
+        for record in self:
+            record.assigned_job_ids = assigned_jobs - record.job_ids
 
 
 class HrPayGradeIncrement(models.Model):
@@ -32,44 +42,21 @@ class HrPayGradeIncrement(models.Model):
     _description = "Pay Grade Increment"
 
     pay_grade_id = fields.Many2one("hr.pay.grade", string="Pay Grade", required=True, ondelete="cascade")
-    increment = fields.Integer(string="Increment Level", readonly=True)
-    salary = fields.Float(string="Salary", required=True, help="Salary for this increment level.")
+    increment = fields.Selection(
+        selection=[(str(i), f"Step {i}") for i in range(1, 10)],
+        string="Increment Level",
+        required=True,
+        help="Select the increment level (1-9) for the pay grade."
+    )
+    salary = fields.Float(string="Salary", required=True)
 
     _sql_constraints = [
-        ("increment_level_unique", "unique(pay_grade_id, increment)", "Each increment level within a pay grade must be unique.")
+        ('increment_unique', 'unique(pay_grade_id, increment)', 'Each increment level within a pay grade must be unique.'),
     ]
-    
-    def name_get(self):
-        return [(record.id, f"Increment {record.increment}") for record in self]
 
-    @api.model
-    def create(self, vals):
-        if vals.get("pay_grade_id"):
-            max_increment = self.search([
-                ('pay_grade_id', '=', vals["pay_grade_id"])
-            ], order="increment desc", limit=1)
-
-            if max_increment and max_increment.increment >= 9:
-                raise ValidationError("The increment level cannot exceed 9.")
-
-            vals["increment"] = (max_increment.increment + 1) if max_increment else 1
-
-        return super(HrPayGradeIncrement, self).create(vals)
-
-    @api.onchange('increment')
-    def _onchange_increment(self):
-        """Auto-set increment to the next level within limit when changing pay grade."""
-        if self.pay_grade_id:
-            max_increment = self.search([
-                ('pay_grade_id', '=', self.pay_grade_id.id)
-            ], order="increment desc", limit=1)
-            self.increment = (max_increment.increment + 1) if max_increment and max_increment.increment < 9 else 1
-
-    @api.constrains('salary')
+    @api.constrains("salary")
     def _check_salary_within_bounds(self):
         for record in self:
-            if record.salary <= 0:
-                raise ValidationError("Salary must be a positive number.")
             if not (record.pay_grade_id.base_salary <= record.salary <= record.pay_grade_id.ceiling_salary):
                 raise ValidationError("Salary must be within the base and ceiling salary range of the pay grade.")
 
@@ -77,42 +64,52 @@ class HrPayGradeIncrement(models.Model):
 class HrContract(models.Model):
     _inherit = "hr.contract"
 
-    pay_grade_id = fields.Many2one("hr.pay.grade", string="Pay Grade", domain="[('job_position_id', '=', job_id)]", help="Pay grade for the contract.")
+    pay_grade_id = fields.Many2one("hr.pay.grade", string="Pay Grade", help="Pay grade for the contract.")
+    increment_level_id = fields.Many2one(
+        "hr.pay.grade.increment",
+        string="Increment Level",
+        domain="[('pay_grade_id', '=', pay_grade_id)]",
+        help="Increment level within the pay grade."
+    )
     wage = fields.Float(string="Wage", compute="_compute_wage", store=True, readonly=True, help="Salary based on pay grade and increment level.")
-    increment_level_id = fields.Many2one("hr.pay.grade.increment", string="Increment Level", domain="[('pay_grade_id', '=', pay_grade_id)]", help="Increment level within the pay grade.")
     performance_score = fields.Float(string="Performance Score", help="Performance score to determine step progression.")
 
-    
-    
-    @api.depends('pay_grade_id', 'increment_level_id')
+    @api.depends("pay_grade_id", "increment_level_id")
     def _compute_wage(self):
         for record in self:
-            record.wage = record.increment_level_id.salary if record.increment_level_id else record.pay_grade_id.base_salary if record.pay_grade_id else 0.0
+            if record.increment_level_id:
+                record.wage = record.increment_level_id.salary
+            elif record.pay_grade_id:
+                record.wage = record.pay_grade_id.base_salary
+            else:
+                record.wage = 0.0
 
     def update_increment_based_on_performance(self):
         for record in self:
-            if record.performance_score:
-                increment_change = 0
-                if 75 <= record.performance_score < 85:
-                    increment_change = 1
-                elif 85 <= record.performance_score < 95:
-                    increment_change = 2
-                elif record.performance_score >= 95:
-                    increment_change = 3
+            if not record.performance_score or not record.pay_grade_id:
+                continue
 
-                # Calculate new increment level
-                current_increment = record.increment_level_id.increment if record.increment_level_id else 1
-                new_increment = current_increment + increment_change
+            increment_change = 0
+            if 75 <= record.performance_score < 85:
+                increment_change = 1
+            elif 85 <= record.performance_score < 95:
+                increment_change = 2
+            elif record.performance_score >= 95:
+                increment_change = 3
 
-                # Find the next increment level within the same pay grade
-                next_increment = record.env['hr.pay.grade.increment'].search([
-                    ('pay_grade_id', '=', record.pay_grade_id.id),
-                    ('increment', '=', new_increment)
-                ], limit=1)
+            current_increment = int(record.increment_level_id.increment) if record.increment_level_id else 0
+            new_increment = current_increment + increment_change
 
-                # Update increment level if a matching increment level was found
-                if next_increment:
-                    record.increment_level_id = next_increment
-                else:
-                    # If no increment level matches, retain the current increment level
-                    record.increment_level_id = record.increment_level_id
+            if new_increment > 9:
+                new_increment = 9
+
+            next_increment = self.env["hr.pay.grade.increment"].search([
+                ('pay_grade_id', '=', record.pay_grade_id.id),
+                ('increment', '=', str(new_increment))
+            ], limit=1)
+
+            if next_increment:
+                record.increment_level_id = next_increment
+                record.wage = min(next_increment.salary, record.pay_grade_id.ceiling_salary)
+            else:
+                record.wage = record.pay_grade_id.ceiling_salary

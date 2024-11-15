@@ -1,6 +1,5 @@
 <odoo>
-
-    <!-- PAY GRADE FORM VIEW -->
+    <!-- Pay Grade Form View -->
     <record id="view_pay_grade_form" model="ir.ui.view">
         <field name="name">hr.pay.grade.form</field>
         <field name="model">hr.pay.grade</field>
@@ -8,16 +7,18 @@
             <form string="Pay Grade">
                 <sheet>
                     <group>
-                        <field name="job_position_id" required="1" string="Job Position" />
-                        <field name="pay_grade" required="1" string="Grade Level" />
+                        <field name="name" required="1" string="Grade" />
                         <field name="base_salary" required="1" string="Base Salary" />
                         <field name="ceiling_salary" required="1" string="Ceiling Salary" />
+                        <!-- Add assigned_job_ids as invisible to use in domain -->
+                        <field name="assigned_job_ids" invisible="1"/>
+                        <field name="job_ids" domain="[('id', 'not in', assigned_job_ids)]" required="1" string="Job Positions"/>
                     </group>
                     <notebook>
                         <page string="Increment Steps">
                             <field name="increment_steps">
                                 <tree editable="bottom">
-                                    <field name="increment" string="Step Level" />
+                                    <field name="increment" string="Increment Level" />
                                     <field name="salary" string="Incremented Salary" />
                                 </tree>
                             </field>
@@ -28,42 +29,44 @@
         </field>
     </record>
 
-    <!-- PAY GRADE TREE VIEW -->
+    <!-- Pay Grade Tree View -->
     <record id="view_pay_grade_tree" model="ir.ui.view">
         <field name="name">hr.pay.grade.tree</field>
         <field name="model">hr.pay.grade</field>
         <field name="arch" type="xml">
             <tree string="Pay Grades">
-                <field name="job_position_id" string="Job Position" />
-                <field name="pay_grade" string="Grade Level" />
+                <field name="name" string="Grade" />
                 <field name="base_salary" string="Base Salary" />
                 <field name="ceiling_salary" string="Ceiling Salary" />
+                <field name="job_ids" widget="many2many_tags" string="Job Positions" />
             </tree>
         </field>
     </record>
 
-    <!-- PAY GRADE ACTION -->
+    <!-- Pay Grade Action -->
     <record id="action_pay_grade" model="ir.actions.act_window">
         <field name="name">Pay Grades</field>
         <field name="res_model">hr.pay.grade</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Pay Grade Menu under HR Configuration -->
+    <!-- Menu item for Pay Grades under HR Configuration -->
     <menuitem id="menu_pay_grade" parent="hr.menu_human_resources_configuration" name="Pay Grades"
-        action="action_pay_grade" sequence="30" />
+        action="action_pay_grade" sequence="10" />
 
-    <!-- CONTRACT FORM VIEW WITH PAY GRADE AND INCREMENT LEVEL IN SALARY INFORMATION SECTION -->
-    <record id="view_contract_form_pay_grade" model="ir.ui.view">
+    <!-- Contract Form View with Pay Grade Selection -->
+    <record id="view_hr_contract_form_pay_grade" model="ir.ui.view">
         <field name="name">hr.contract.form.pay.grade</field>
         <field name="model">hr.contract</field>
         <field name="inherit_id" ref="hr_contract.hr_contract_view_form" />
         <field name="arch" type="xml">
             <field name="contract_type_id" position="before">
-                <field name="pay_grade_id" string="Pay Grade"
-                    options="{'no_open': True, 'no_create': True}" />
-                <field name="increment_level_id" string="Increment Level"
-                    options="{'no_open': True, 'no_create': True}" />
+                <group>
+                    <field name="pay_grade_id" string="Pay Grade"
+                        options="{'no_open': True, 'no_create': True}" />
+                    <field name="increment_level_id" string="Increment Level"
+                        options="{'no_open': True, 'no_create': True}" />
+                </group>
             </field>
         </field>
     </record>
