@@ -11,8 +11,9 @@
                         <field name="base_salary" required="1" string="Base Salary" />
                         <field name="ceiling_salary" required="1" string="Ceiling Salary" />
                         <!-- Add assigned_job_ids as invisible to use in domain -->
-                        <field name="assigned_job_ids" invisible="1"/>
-                        <field name="job_ids" domain="[('id', 'not in', assigned_job_ids)]" required="1" string="Job Positions"/>
+                        <field name="assigned_job_ids" invisible="1" />
+                        <field name="job_ids" domain="[('id', 'not in', assigned_job_ids)]"
+                            required="1" string="Job Positions" />
                     </group>
                     <notebook>
                         <page string="Increment Steps">
@@ -61,12 +62,10 @@
         <field name="inherit_id" ref="hr_contract.hr_contract_view_form" />
         <field name="arch" type="xml">
             <field name="contract_type_id" position="before">
-                <group>
-                    <field name="pay_grade_id" string="Pay Grade"
-                        options="{'no_open': True, 'no_create': True}" />
-                    <field name="increment_level_id" string="Increment Level"
-                        options="{'no_open': True, 'no_create': True}" />
-                </group>
+                <field name="pay_grade_id" string="Pay Grade"
+                    options="{'no_open': True, 'no_create': True}" />
+                <field name="increment_level_id" string="Increment Level"
+                    options="{'no_open': True, 'no_create': True}" />
             </field>
         </field>
     </record>
