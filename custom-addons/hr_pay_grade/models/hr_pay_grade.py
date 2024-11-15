@@ -1,7 +1,6 @@
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
-
 class HrPayGrade(models.Model):
     _name = "hr.pay.grade"
     _description = "Pay Grade"
@@ -33,22 +32,38 @@ class HrPayGradeIncrement(models.Model):
     _description = "Pay Grade Increment"
 
     pay_grade_id = fields.Many2one("hr.pay.grade", string="Pay Grade", required=True, ondelete="cascade")
-    increment = fields.Integer(string="Increment Level", required=True, default=lambda self: self._default_increment_level(), help="Horizontal step within the grade, e.g., 1-9.")
+    increment = fields.Integer(string="Increment Level", readonly=True)
     salary = fields.Float(string="Salary", required=True, help="Salary for this increment level.")
 
     _sql_constraints = [
         ("increment_level_unique", "unique(pay_grade_id, increment)", "Each increment level within a pay grade must be unique.")
     ]
+    
+    def name_get(self):
+        return [(record.id, f"Increment {record.increment}") for record in self]
 
     @api.model
-    def _default_increment_level(self):
-        """Auto-increment the increment level by finding the maximum existing level in the pay grade and adding 1."""
-        if self._context.get('default_pay_grade_id'):
+    def create(self, vals):
+        if vals.get("pay_grade_id"):
             max_increment = self.search([
-                ('pay_grade_id', '=', self._context['default_pay_grade_id'])
+                ('pay_grade_id', '=', vals["pay_grade_id"])
             ], order="increment desc", limit=1)
-            return max_increment.increment + 1 if max_increment else 1
-        return 1
+
+            if max_increment and max_increment.increment >= 9:
+                raise ValidationError("The increment level cannot exceed 9.")
+
+            vals["increment"] = (max_increment.increment + 1) if max_increment else 1
+
+        return super(HrPayGradeIncrement, self).create(vals)
+
+    @api.onchange('increment')
+    def _onchange_increment(self):
+        """Auto-set increment to the next level within limit when changing pay grade."""
+        if self.pay_grade_id:
+            max_increment = self.search([
+                ('pay_grade_id', '=', self.pay_grade_id.id)
+            ], order="increment desc", limit=1)
+            self.increment = (max_increment.increment + 1) if max_increment and max_increment.increment < 9 else 1
 
     @api.constrains('salary')
     def _check_salary_within_bounds(self):
@@ -67,6 +82,8 @@ class HrContract(models.Model):
     increment_level_id = fields.Many2one("hr.pay.grade.increment", string="Increment Level", domain="[('pay_grade_id', '=', pay_grade_id)]", help="Increment level within the pay grade.")
     performance_score = fields.Float(string="Performance Score", help="Performance score to determine step progression.")
 
+    
+    
     @api.depends('pay_grade_id', 'increment_level_id')
     def _compute_wage(self):
         for record in self:
