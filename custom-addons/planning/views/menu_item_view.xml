@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<menuitem id="menu_planning_root" name="Planning"/>
+
+		<menuitem
+        id="hr_annual_plan_menu"
+        name="HR Annual Plan"
+        action="hr_annual_plan_action"
+        parent="menu_planning_root"
+        />
+
+        <menuitem
+        id="hr_strategic_plan_menu"
+        name="HR Strategic Plan"
+        action="hr_strategic_plan_action"
+        parent="menu_planning_root"
+        />
+	</data>
+</odoo>

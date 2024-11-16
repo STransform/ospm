@@ -1,0 +1,92 @@
+<odoo>
+    <record id="view_medical_coverage_form" model="ir.ui.view">
+        <field name="name">hr_medical_coverage_form</field>
+        <field name="model">hr.medical.coverage</field>
+        <field name="arch" type="xml">
+            <form string="Medical Coverage Request">
+                <header>
+                    <!-- Submit Button (Visible only in Draft State) -->
+                    <button name="actionSubmit" type="object" string="Submit"
+                        attrs="{'invisible': [('status', '!=', 'draft')]}" class="btn-primary"
+                        confirm="Are you sure you want to process this?" />
+
+                    <!-- HR Approval Buttons (Visible only in Submitted State) -->
+                    <button name="actionHrApprove" type="object" string="HR Approve"
+                        attrs="{'invisible': [('status', '!=', 'submitted')]}" class="btn-success"
+                        groups="hr_medical_coverage.group_hr_director"
+                        confirm="Are you sure you want to process this?" />
+                    <button name="actionHrReject" type="object" string="HR Reject"
+                        attrs="{'invisible': [('status', '!=', 'submitted')]}" class="btn-danger"
+                        groups="hr_medical_coverage.group_hr_director"
+                        confirm="Are you sure you want to process this?" />
+                    <!-- Finance Approval Buttons (Visible only in HR Approved State) -->
+                    <button name="actionFinanceApprove" type="object" string="Finance Approve"
+                        attrs="{'invisible': [('status', '!=', 'hr_approved')]}" class="btn-success"
+                        groups="hr_medical_coverage.group_finance_officer"
+                        confirm="Are you sure you want to process this?" />
+                    <button name="actionFinanceReject" type="object" string="Finance Reject"
+                        attrs="{'invisible': [('status', '!=', 'hr_approved')]}" class="btn-danger"
+                        groups="hr_medical_coverage.group_finance_officer"
+                        confirm="Are you sure you want to process this?" />
+
+                    <!-- Statusbar Widget for Tracking Approval Process -->
+                    <field name="status" widget="statusbar"
+                        statusbar_visible="draft,submitted,hr_approved,hr_rejected,finance_approved,finance_rejected" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="description"
+                            attrs="{'readonly': [('status', '!=', 'draft')]}" />
+                        <field name="hr_description"
+                            attrs="{
+                                'invisible': [('status', '=', 'draft')],
+                                'readonly': [('status', '!=', 'submitted')]
+                            }" />
+                    </group>
+                    <!-- Medical Costs Section -->
+                    <group string="Medical Costs">
+                        <field name="costItemIds"
+                            attrs="{'readonly': [('status', '!=', 'draft')]}">
+                            <tree editable="bottom">
+                                <field name="providerType" />
+                                <field name="providerCategory" />
+                                <field name="providerName" />
+                                <field name="description" />
+                                <field name="date" />
+                                <field name="amount" />
+                            </tree>
+                        </field>
+                    </group>
+                    <!-- Attachments Section -->
+                    <group>
+                        <group string="Attachments">
+                            <field name="attachment_ids" widget="many2many_binary"
+                                string="Upload Documents"
+                                attrs="{'readonly': [('status', '!=', 'draft')]}" />
+                        </group>
+                        <group string="Total Requested Amount">
+                            <field name="totalRequestedAmount" readonly="1" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_medical_coverage_tree" model="ir.ui.view">
+        <field name="name">hr.medical.coverage.tree</field>
+        <field name="model">hr.medical.coverage</field>
+        <field name="arch" type="xml">
+            <tree string="Medical Coverage Requests">
+                <field name="create_date" />
+                <field name="create_uid" />
+                <field name="totalRequestedAmount" />
+                <field name="description" />
+                <field name="status" />
+            </tree>
+        </field>
+    </record>
+    <record id="hr_medical_coverage_dashboard_action" model='ir.actions.client'>
+        <field name="name">Training Dashboard</field>
+        <field name='tag'>hr_medical_coverage.dashboard</field>
+    </record>
+</odoo>
