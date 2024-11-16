@@ -1,0 +1,125 @@
+<odoo>
+    <record id="view_recruitment_requests_form" model="ir.ui.view">
+        <field name="name">hr.recruitments.request.form</field>
+        <field name="model">hr.recruitments</field>
+        <field name="arch" type="xml">
+            <form string="Recruitment Request">
+                <header>
+                    <!-- approval by hr director -->
+                    <button name="action_approve_hr_director" type="object" string="Accept" groups="hr_recruitment_request.group_hr_recruitment_hr_director" attrs="{'invisible': [('state_by_hr_director', 'in', ['approved', 'refused'])]}"/>
+                    <button name="action_reject_hr_director" type="object" string="Refuse" groups="hr_recruitment_request.group_hr_recruitment_hr_director" attrs="{'invisible': [('state_by_hr_director', 'in', ['approved', 'refused'])]}"/>
+
+                    <!-- approval by dco -->
+                    <button name="action_approve_dceo" type="object" string="Accept" groups="hr_recruitment_request.group_hr_recruitment_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']), ('state_by_hr_director', '!=', 'approved')]}"/>
+                    <button name="action_reject_dceo" type="object" string="Refuse" groups="hr_recruitment_request.group_hr_recruitment_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']), ('state_by_hr_director', '!=', 'approved')]}"/>
+
+                    <!-- approval by ceo -->
+                    <button name="action_approve_ceo" type="object" string="Accept" groups="hr_recruitment_request.group_hr_recruitment_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}"/>
+                    <button name="action_reject_ceo" type="object" string="Refuse" groups="hr_recruitment_request.group_hr_recruitment_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}"/>
+                   <field name="combined_state" widget="statusbar" statusbar_visible="approved,refused,pending"/>
+                </header>
+                
+             <sheet>
+                    <div class="oe_title">
+                        <h1 class="d-flex flex-row">
+                            <field name="name" placeholder="Request Name" required="True" style="font-size: min(4vw, 2.6rem);"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="number_of_recruits"/>
+                            <field name="job_position_id"/>
+                            <field name="employment_type_id"/>
+                            <field name="state_by_hr_director" invisible="1"/>
+                            <field name="state_by_dceo" invisible="1"/>
+                            <field name="state_by_ceo" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="HR Officer Comment" attrs="{'invisible': [('state_by_hr_director', 'not in', ['approved', 'refused'])]}">
+                            <group>
+                                <field name="recruitment_type" groups="hr_recruitment_request.group_hr_recruitment_hr_director" />
+                                <field name="comment_by_hr_director" groups="hr_recruitment_request.group_hr_recruitment_hr_director"/>
+
+                                <field name="recruitment_type" groups="hr_recruitment_request.group_hr_recruitment_dceo, hr_recruitment_request.group_hr_recruitment_ceo" readonly="1"  />
+                                <field name="comment_by_hr_director" groups="hr_recruitment_request.group_hr_recruitment_dceo, hr_recruitment_request.group_hr_recruitment_ceo" readonly="1" />
+                            </group>
+                        </page>
+
+                        <page string="DCEO Comment"  attrs="{'invisible': [('state_by_dceo', 'not in', ['approved', 'refused'])]}">
+                            <group>
+                                <field name="comment_by_dceo" groups="hr_recruitment_request.group_hr_recruitment_dceo"/>
+                                <field name="comment_by_dceo" groups="hr_recruitment_request.group_hr_recruitment_hr_director, hr_recruitment_request.group_hr_recruitment_ceo" readonly="1" />
+                            </group>
+                        </page>
+
+                        <page string="CEO Comment"  attrs="{'invisible': [('state_by_ceo', 'not in', ['approved', 'refused'])]}">
+                            <group>
+                                <field name="comment_by_ceo" groups="hr_recruitment_request.group_hr_recruitment_ceo" />
+                                <field name="comment_by_ceo" groups="hr_recruitment_request.group_hr_recruitment_dceo, hr_recruitment_request.group_hr_recruitment_hr_director"  readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_training_tree" model="ir.ui.view">
+        <field name="name">hr.training.tree</field>
+        <field name="model">hr.recruitments</field>
+        <field name="arch" type="xml">
+            <tree string="Training Management">
+                <field name="name"/>
+                <field name="number_of_recruits"/>
+                <field name="department_id"/>
+                <field name="created_by"/>
+                <field name="state_by_hr_director" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_training_kanban" model="ir.ui.view">
+        <field name="name">hr.training.view.kanban</field>
+        <field name="model">hr.recruitments</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="row">
+                                <div class="col-12">
+                                    <strong>
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div>
+                                <field name="number_of_recruits"/>
+                            </div>
+                            <div>
+                                <field name="created_by"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+
+    <record id="hr_recruitment_request_action" model="ir.actions.act_window">
+        <field name="name">Recruitment Management</field>
+        <field name="res_model">hr.recruitments</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_id" ref="view_training_tree"/>
+    </record>
+    <!-- 
+    <record id="training_dashboard_action" model='ir.actions.client'>
+        <field name="name">Training Dashboard</field>
+        <field name='tag'>hr_training.dashboard</field>
+    </record> -->
+</odoo>

@@ -1,0 +1,6 @@
+<odoo>
+    <data>
+        <menuitem id="menu_hr_request" name="Recruitment Request" parent="hr.menu_hr_root"/>
+        <menuitem id="Manage_recruitment" name="Requests" parent="menu_hr_request" action="hr_recruitment_request_action"/>
+    </data>
+</odoo>
