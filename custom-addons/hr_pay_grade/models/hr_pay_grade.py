@@ -5,6 +5,14 @@ from odoo.exceptions import ValidationError
 class HrPayGrade(models.Model):
     _name = "hr.pay.grade"
     _description = "Pay Grade"
+    
+    # @api.model
+    # def _select_grade(self):
+    #     grades = set([i for i in range(1,17)])
+    #     selected_grades = self.env['hr.pay.grade'].search([])
+    #     for grade in selected_grades:
+    #         grades.remove(int(grade.name))
+    #     return [(str(i),f"Grade {i}") for i in sorted(grades)]
 
     name = fields.Selection(
         selection=[(str(i), f"Grade {i}") for i in range(1, 17)],
