@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <!-- Performance Period Form View -->
+    <record id="view_performance_period_form" model="ir.ui.view">
+        <field name="name">hr.performance.period.form</field>
+        <field name="model">hr.performance.period</field>
+        <field name="arch" type="xml">
+            <form string="Performance Period">
+                <sheet>
+                    <group>
+                        <field name="name" required="1" placeholder="e.g. Q1 Evaluation Period" />
+                        <field name="start_date" required="1" />
+                        <field name="end_date" required="1" />
+                        <field name="active" readonly="1" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Performance Period Tree View -->
+    <record id="view_performance_period_tree" model="ir.ui.view">
+        <field name="name">hr.performance.period.tree</field>
+        <field name="model">hr.performance.period</field>
+        <field name="arch" type="xml">
+            <tree string="Performance Periods">
+                <field name="name" string="Name" />
+                <field name="start_date" string="Start Date" />
+                <field name="end_date" string="End Date" />
+                <!-- <field name="active" string="Active" /> -->
+            </tree>
+        </field>
+    </record>
+
+    <!-- Performance Period Action -->
+    <record id="action_performance_period" model="ir.actions.act_window">
+        <field name="name">Performance Periods</field>
+        <field name="res_model">hr.performance.period</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help">Manage periods during which performance evaluations will be conducted.</field>
+    </record>
+</odoo>

@@ -11,8 +11,9 @@
     "depends": ["hr"],
     "data": [
         "security/ir.model.access.csv",
-        "views/menu.xml",
+        "views/hr_performance_period.xml",
         "views/hr_performance_measure_view.xml",
+        "views/menu.xml",
     ],
     "images": ["static/description/HRGradeRank.png"],
     "sequence": 1,
