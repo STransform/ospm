@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <!-- Menu Items -->
+    <menuitem id="menu_performance_root" name="Staff Performance Evaluation" />
+    <menuitem id="menu_performance_management" name="Performance Management"
+        parent="menu_performance_root" sequence="10" />
+    <menuitem id="menu_performance_configuration" name="Configuration"
+        parent="menu_performance_root" sequence="10" />
+    <menuitem id="menu_performance_configuration_period" name="Period"
+        parent="menu_performance_configuration" action="action_performance_measure" />
+    <menuitem id="menu_performance_measure" name="Performance Measures"
+        parent="menu_performance_management" action="action_performance_measure" sequence="10" />
+</odoo>

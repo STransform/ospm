@@ -1,4 +1,79 @@
-<?xml version='1.0' encoding='utf-8'?>
 <odoo>
+    <!-- Performance Measure Form View -->
+    <record id="view_performance_measure_form" model="ir.ui.view">
+        <field name="name">hr.performance.measure.form</field>
+        <field name="model">hr.performance.measure</field>
+        <field name="arch" type="xml">
+            <form string="Performance Measure">
+                <sheet>
+                    <group>
+                        <field name="employee_id" required="1" string="Employee"/>
+                        <field name="contract_id" required="1" string="Contract" domain="[('employee_id', '=', employee_id)]"/>
+                        <field name="evaluation_period_start" required="1" string="Evaluation Start Date"/>
+                        <field name="evaluation_period_end" required="1" string="Evaluation End Date"/>
+                        <field name="evaluation_date" required="1" string="Evaluation Date"/>
+                        <field name="evaluator_id" string="Evaluator"/>
+                        <field name="state" readonly="1" widget="statusbar" statusbar_visible="draft,submitted,approved"/>
+                    </group>
+                    <notebook>
+                        <page string="Performance Criteria">
+                            <field name="criteria_ids">
+                                <tree editable="bottom">
+                                    <field name="category" required="1" string="Category"/>
+                                    <field name="sub_criteria" required="1" string="Sub-Criteria"/>
+                                    <field name="rating" required="1" string="Rating"/>
+                                    <field name="score" readonly="1" string="Score"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Summary">
+                            <group>
+                                <field name="total_score" readonly="1" string="Total Score"/>
+                                <field name="overall_rating" readonly="1" string="Overall Rating"/>
+                                <field name="performance_score" readonly="1" string="Performance Score"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary" states="draft"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-success" states="submitted"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Performance Measure Tree View -->
+    <record id="view_performance_measure_tree" model="ir.ui.view">
+        <field name="name">hr.performance.measure.tree</field>
+        <field name="model">hr.performance.measure</field>
+        <field name="arch" type="xml">
+            <tree string="Performance Measures">
+                <field name="employee_id" string="Employee"/>
+                <field name="contract_id" string="Contract"/>
+                <field name="evaluation_period_start" string="Start Date"/>
+                <field name="evaluation_period_end" string="End Date"/>
+                <field name="total_score" string="Total Score"/>
+                <field name="overall_rating" string="Overall Rating"/>
+                <field name="state" string="Status"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Performance Measure Action -->
+    <record id="action_performance_measure" model="ir.actions.act_window">
+        <field name="name">Performance Measures</field>
+        <field name="res_model">hr.performance.measure</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Period Set Action -->
+    <record id="action_period_set" model="ir.actions.act_window">
+        <field name="name">Performance Measures</field>
+        <field name="res_model">hr.performance.measure</field>
+        <field name="view_mode">tree,form</field>
+    </record>
     
+
 </odoo>

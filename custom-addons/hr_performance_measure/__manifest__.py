@@ -9,7 +9,11 @@
     "category": "Human Resources",
     "website": "https://www.otech.et",
     "depends": ["hr"],
-    "data": ["security/ir.model.access.csv", "views/hr_performance_measure_view.xml"],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/menu.xml",
+        "views/hr_performance_measure_view.xml",
+    ],
     "images": ["static/description/HRGradeRank.png"],
     "sequence": 1,
     "installable": True,
