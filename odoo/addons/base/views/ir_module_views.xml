@@ -48,9 +48,9 @@
                         <filter string="Category" name="category" domain="[]" context="{'group_by':'category_id'}"/>
                         <filter string="Status" name="state" domain="[]" context="{'group_by':'state'}"/>
                     </group>
-                    <!-- <searchpanel>
+                    <searchpanel>
                         <field name="category_id" string="Categories" enable_counters="1"/>
-                    </searchpanel> -->
+                    </searchpanel>
                </search>
             </field>
         </record>
