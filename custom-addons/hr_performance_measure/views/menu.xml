@@ -8,6 +8,8 @@
         parent="menu_performance_root" sequence="10" />
     <menuitem id="menu_performance_period" parent="menu_performance_configuration" name="Periods"
         action="action_performance_period" sequence="10" />
+    <menuitem id="menu_performance_form" parent="menu_performance_configuration" name="Forms"
+        action="action_performance_form" sequence="10" />
     <menuitem id="menu_performance_measure" name="Performance Measures"
         parent="menu_performance_management" action="action_performance_measure" sequence="10" />
 </odoo>

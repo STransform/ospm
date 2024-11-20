@@ -11,6 +11,7 @@
     "depends": ["hr"],
     "data": [
         "security/ir.model.access.csv",
+        "views/hr_performance_form.xml",
         "views/hr_performance_period.xml",
         "views/hr_performance_measure_view.xml",
         "views/menu.xml",
