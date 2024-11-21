@@ -11,7 +11,7 @@ class HrPerformancePeriod(models.Model):
     assessment_end_date = fields.Datetime(string="Assessment Period To", required=True, help="The end date of the performance evaluation period.")
     form_activation_start_date = fields.Datetime(string="Assessment Start Date", required=True, help="The start date of the performance evaluation period.")
     form_activation_end_date = fields.Datetime(string="Assessment  End Date", required=True, help="The end date of the performance evaluation period.")
-    form_ids = fields.Many2many('hr.performance.form', string="Rating Foctars")
+    form_ids = fields.Many2many('hr.performance.form', string="Rating Factors")
     active = fields.Boolean(
         string="Active", 
         compute="_compute_active", 
@@ -31,7 +31,7 @@ class HrPerformancePeriod(models.Model):
         current_date = datetime.now()
         for record in self:
             # Check if the current date falls within the period
-            if record.assessment_start_date and record.assessment_end_date:
-                record.active = record.assessment_start_date <= current_date <= record.assessment_end_date
+            if record.form_activation_start_date and record.form_activation_end_date:
+                record.active = record.form_activation_start_date <= current_date <= record.form_activation_end_date
             else:
                 record.active = False

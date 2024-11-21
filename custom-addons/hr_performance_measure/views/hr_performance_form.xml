@@ -2,7 +2,7 @@
 <odoo>
     <!-- Action for Performance Forms -->
     <record id="action_performance_form" model="ir.actions.act_window">
-        <field name="name">Performance Forms</field>
+        <field name="name">Performance Rating Factors</field>
         <field name="res_model">hr.performance.form</field>
         <field name="view_mode">tree,form</field>
         <field name="help">Manage Forms during which performance evaluations will be conducted.</field>
@@ -14,7 +14,7 @@
         <field name="model">hr.performance.form</field>
         <field name="arch" type="xml">
             <tree string="Performance Forms">
-                <field name="name" string="Rating Factor" />
+                <field name="name" string="Rating Factors" />
                 <field name="description" string="Rating Factors List"/>
             </tree>
         </field>

@@ -10,7 +10,7 @@ class HrPerformanceMeasure(models.Model):
     manager_id = fields.Many2one('hr.employee', string="Manager", related="employee_id.parent_id", store=True, readonly=True, help="The manager responsible for this employee.")
     period_id = fields.Many2one('hr.performance.period', string="Evaluation Period", required=True, help="The active performance evaluation period.")
     evaluation_date = fields.Date(string="Evaluation Date", default=fields.Date.context_today, required=True, readonly=True)
-    criteria_ids = fields.One2many('hr.performance.measure.criteria', 'performance_measure_id', string="Evaluation Criteria", help="Criteria for performance evaluation.")
+    criteria_ids = fields.One2many('hr.performance.measure.criteria', 'performance_id', string="Evaluation Criteria", help="Criteria for performance evaluation.")
     total_score = fields.Float(string="Total Score", compute="_compute_total_score", store=True, help="Total score for the evaluation.")
     overall_rating = fields.Selection([
         ('excellent', 'Excellent'),
@@ -53,6 +53,19 @@ class HrPerformanceMeasure(models.Model):
         for record in self:
             record.performance_score = record.total_score / len(record.criteria_ids) if record.criteria_ids else 0.0
 
+    @api.onchange('period_id')
+    def _onchange_period_id(self):
+        """Automatically populate rating factors based on the selected period."""
+        if self.period_id:
+            self.criteria_ids = [(5, 0, 0)]  # Clear existing criteria
+            criteria_lines = [
+                {
+                    'factor_id': form.id,
+                }
+                for form in self.period_id.form_ids
+            ]
+            self.criteria_ids = [(0, 0, line) for line in criteria_lines]
+
     @api.constrains('period_id')
     def _check_period_active(self):
         """Ensure evaluations are tied to active periods."""
@@ -80,18 +93,36 @@ class HrPerformanceMeasureCriteria(models.Model):
     _name = "hr.performance.measure.criteria"
     _description = "Performance Evaluation Criteria"
 
-    performance_measure_id = fields.Many2one('hr.performance.measure', string="Performance Measure", required=True, ondelete="cascade")
-    rating = fields.Selection([
-        ('5', 'Excellent'),
-        ('4', 'Very Good'),
-        ('3', 'Good'),
-        ('2', 'Indifferent'),
-        ('1', 'Unsatisfactory'),
-    ], string="Rating", required=True, help="Rating for the criterion.")
-    score = fields.Float(string="Score", compute="_compute_score", store=True, help="Calculated score from rating.")
+    performance_id = fields.Many2one('hr.performance.measure', string="Performance Measure", required=True, ondelete="cascade")
+    factor_id = fields.Many2one('hr.performance.form', string="Rating Factor", required=True, help="The factor being evaluated.")
+    rating = fields.Selection(
+        selection=[
+            ('5', 'Excellent'),
+            ('4', 'Very Good'),
+            ('3', 'Good'),
+            ('2', 'Average'),
+            ('1', 'Poor'),
+        ],
+        string="Rating",
+        required=True,
+        help="Rating for this factor."
+    )
+    score = fields.Float(string="Score", compute="_compute_score", store=True, help="Score derived from the rating.")
 
     @api.depends('rating')
     def _compute_score(self):
         """Convert the rating to a numeric score."""
         for record in self:
             record.score = int(record.rating) if record.rating else 0
+
+    @api.constrains('factor_id', 'performance_id')
+    def _check_unique_factor(self):
+        """Ensure no duplicate factors in an evaluation."""
+        for record in self:
+            duplicate = self.search([
+                ('performance_id', '=', record.performance_id.id),
+                ('factor_id', '=', record.factor_id.id),
+                ('id', '!=', record.id)
+            ])
+            if duplicate:
+                raise ValidationError("Duplicate rating factors are not allowed in the same evaluation.")
