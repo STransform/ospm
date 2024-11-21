@@ -15,8 +15,6 @@
         <field name="arch" type="xml">
             <tree string="Performance Forms">
                 <field name="name" string="Form Name" />
-                <field name="description" string="Description" />
-                <field name="period_id" string="Evaluation Period" />
             </tree>
         </field>
     </record>
@@ -30,16 +28,12 @@
                 <sheet>
                     <group>
                         <field name="name" required="1" string="Form Name" />
-                        <field name="description" string="Description" />
-                        <field name="period_id" string="Evaluation Period" />
                     </group>
                     <notebook>
                         <page string="Rating Factors">
                             <field name="rating_factors">
                                 <tree editable="bottom">
                                     <field name="name" string="Rating Factor" />
-                                    <field name="description" string="Description" />
-                                    <field name="weight" string="Weight (%)" />
                                 </tree>
                             </field>
                         </page>

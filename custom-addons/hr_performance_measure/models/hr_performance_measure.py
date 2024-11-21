@@ -9,8 +9,7 @@ class HrPerformanceMeasure(models.Model):
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True, help="The employee being evaluated.")
     manager_id = fields.Many2one('hr.employee', string="Manager", related="employee_id.parent_id", store=True, readonly=True, help="The manager responsible for this employee.")
     period_id = fields.Many2one('hr.performance.period', string="Evaluation Period", required=True, help="The active performance evaluation period.")
-    form_id = fields.Many2one('hr.performance.form', string="Evaluation Form", required=True, help="The form used for this evaluation.")
-    evaluation_date = fields.Date(string="Evaluation Date", default=fields.Date.context_today, required=True)
+    evaluation_date = fields.Date(string="Evaluation Date", default=fields.Date.context_today, required=True, readonly=True)
     criteria_ids = fields.One2many('hr.performance.measure.criteria', 'performance_measure_id', string="Evaluation Criteria", help="Criteria for performance evaluation.")
     total_score = fields.Float(string="Total Score", compute="_compute_total_score", store=True, help="Total score for the evaluation.")
     overall_rating = fields.Selection([
@@ -82,8 +81,6 @@ class HrPerformanceMeasureCriteria(models.Model):
     _description = "Performance Evaluation Criteria"
 
     performance_measure_id = fields.Many2one('hr.performance.measure', string="Performance Measure", required=True, ondelete="cascade")
-    factor_id = fields.Many2one('hr.performance.form', string="Rating Factor", required=True, help="Rating factor associated with this criterion.")
-    description = fields.Text(string="Factor Description", related="factor_id.description", readonly=True)
     rating = fields.Selection([
         ('5', 'Excellent'),
         ('4', 'Very Good'),

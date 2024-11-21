@@ -10,7 +10,6 @@
                         <field name="employee_id" required="1" string="Employee"/>
                         <field name="manager_id" string="Manager" readonly="1"/>
                         <field name="period_id" required="1" string="Evaluation Period"/>
-                        <field name="form_id" required="1" string="Evaluation Form"/>
                         <field name="evaluation_date" required="1" string="Evaluation Date"/>
                         <field name="state" readonly="1" widget="statusbar" statusbar_visible="draft,submitted,approved"/>
                     </group>
@@ -18,8 +17,6 @@
                         <page string="Performance Criteria">
                             <field name="criteria_ids">
                                 <tree editable="bottom">
-                                    <field name="factor_id" required="1" string="Rating Factor"/>
-                                    <field name="description" string="Factor Description" readonly="1"/>
                                     <field name="rating" required="1" string="Rating"/>
                                     <field name="score" readonly="1" string="Score"/>
                                 </tree>
@@ -50,7 +47,6 @@
         <field name="arch" type="xml">
             <tree string="Performance Evaluations">
                 <field name="employee_id" string="Employee"/>
-                <field name="period_id" string="Evaluation Period"/>
                 <field name="total_score" string="Total Score"/>
                 <field name="overall_rating" string="Overall Rating"/>
                 <field name="state" string="Status"/>
