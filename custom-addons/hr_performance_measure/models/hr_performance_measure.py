@@ -95,6 +95,8 @@ class HrPerformanceMeasureCriteria(models.Model):
 
     performance_id = fields.Many2one('hr.performance.measure', string="Performance Measure", required=True, ondelete="cascade")
     factor_id = fields.Many2one('hr.performance.form', string="Rating Factor", required=True, help="The factor being evaluated.")
+    factor = fields.Char(string="Factor", compute="_compute_factor", required=True)
+    description = fields.Html(string="Description", compute="_compute_description")
     rating = fields.Selection(
         selection=[
             ('5', 'Excellent'),
@@ -114,6 +116,15 @@ class HrPerformanceMeasureCriteria(models.Model):
         """Convert the rating to a numeric score."""
         for record in self:
             record.score = int(record.rating) if record.rating else 0
+    
+    @api.depends('factor_id')
+    def _compute_description(self):
+        for record in self:
+            record.description = record.factor_id.description
+    @api.depends('factor_id')
+    def _compute_factor(self):
+        for record in self:
+            record.factor = record.factor_id.name
 
     @api.constrains('factor_id', 'performance_id')
     def _check_unique_factor(self):
