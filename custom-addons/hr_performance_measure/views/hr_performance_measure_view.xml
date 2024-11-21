@@ -4,23 +4,22 @@
         <field name="name">hr.performance.measure.form</field>
         <field name="model">hr.performance.measure</field>
         <field name="arch" type="xml">
-            <form string="Performance Measure">
+            <form string="Performance Evaluation">
                 <sheet>
                     <group>
                         <field name="employee_id" required="1" string="Employee"/>
-                        <field name="contract_id" required="1" string="Contract" domain="[('employee_id', '=', employee_id)]"/>
-                        <field name="evaluation_period_start" required="1" string="Evaluation Start Date"/>
-                        <field name="evaluation_period_end" required="1" string="Evaluation End Date"/>
+                        <field name="manager_id" string="Manager" readonly="1"/>
+                        <field name="period_id" required="1" string="Evaluation Period"/>
+                        <field name="form_id" required="1" string="Evaluation Form"/>
                         <field name="evaluation_date" required="1" string="Evaluation Date"/>
-                        <field name="evaluator_id" string="Evaluator"/>
                         <field name="state" readonly="1" widget="statusbar" statusbar_visible="draft,submitted,approved"/>
                     </group>
                     <notebook>
                         <page string="Performance Criteria">
                             <field name="criteria_ids">
                                 <tree editable="bottom">
-                                    <field name="category" required="1" string="Category"/>
-                                    <field name="sub_criteria" required="1" string="Sub-Criteria"/>
+                                    <field name="factor_id" required="1" string="Rating Factor"/>
+                                    <field name="description" string="Factor Description" readonly="1"/>
                                     <field name="rating" required="1" string="Rating"/>
                                     <field name="score" readonly="1" string="Score"/>
                                 </tree>
@@ -49,11 +48,9 @@
         <field name="name">hr.performance.measure.tree</field>
         <field name="model">hr.performance.measure</field>
         <field name="arch" type="xml">
-            <tree string="Performance Measures">
+            <tree string="Performance Evaluations">
                 <field name="employee_id" string="Employee"/>
-                <field name="contract_id" string="Contract"/>
-                <field name="evaluation_period_start" string="Start Date"/>
-                <field name="evaluation_period_end" string="End Date"/>
+                <field name="period_id" string="Evaluation Period"/>
                 <field name="total_score" string="Total Score"/>
                 <field name="overall_rating" string="Overall Rating"/>
                 <field name="state" string="Status"/>
@@ -63,17 +60,9 @@
 
     <!-- Performance Measure Action -->
     <record id="action_performance_measure" model="ir.actions.act_window">
-        <field name="name">Performance Measures</field>
+        <field name="name">Performance Evaluations</field>
         <field name="res_model">hr.performance.measure</field>
         <field name="view_mode">tree,form</field>
+        <field name="context">{'default_state': 'draft'}</field>
     </record>
-
-    <!-- Period Set Action -->
-    <record id="action_period_set" model="ir.actions.act_window">
-        <field name="name">Performance Measures</field>
-        <field name="res_model">hr.performance.measure</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-    
-
 </odoo>

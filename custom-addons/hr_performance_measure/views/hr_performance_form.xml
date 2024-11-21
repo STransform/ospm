@@ -1,9 +1,51 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
+    <!-- Action for Performance Forms -->
     <record id="action_performance_form" model="ir.actions.act_window">
         <field name="name">Performance Forms</field>
         <field name="res_model">hr.performance.form</field>
         <field name="view_mode">tree,form</field>
         <field name="help">Manage Forms during which performance evaluations will be conducted.</field>
+    </record>
+
+    <!-- Tree View for Performance Forms -->
+    <record id="view_performance_form_tree" model="ir.ui.view">
+        <field name="name">hr.performance.form.tree</field>
+        <field name="model">hr.performance.form</field>
+        <field name="arch" type="xml">
+            <tree string="Performance Forms">
+                <field name="name" string="Form Name" />
+                <field name="description" string="Description" />
+                <field name="period_id" string="Evaluation Period" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View for Performance Forms -->
+    <record id="view_performance_form_form" model="ir.ui.view">
+        <field name="name">hr.performance.form.form</field>
+        <field name="model">hr.performance.form</field>
+        <field name="arch" type="xml">
+            <form string="Performance Form">
+                <sheet>
+                    <group>
+                        <field name="name" required="1" string="Form Name" />
+                        <field name="description" string="Description" />
+                        <field name="period_id" string="Evaluation Period" />
+                    </group>
+                    <notebook>
+                        <page string="Rating Factors">
+                            <field name="rating_factors">
+                                <tree editable="bottom">
+                                    <field name="name" string="Rating Factor" />
+                                    <field name="description" string="Description" />
+                                    <field name="weight" string="Weight (%)" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
     </record>
 </odoo>

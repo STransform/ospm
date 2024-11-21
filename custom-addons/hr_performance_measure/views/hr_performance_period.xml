@@ -9,8 +9,11 @@
                 <sheet>
                     <group>
                         <field name="name" required="1" placeholder="e.g. Q1 Evaluation Period" />
-                        <field name="start_date" required="1" />
-                        <field name="end_date" required="1" />
+                        <field name="assessment_start_date" required="1" />
+                        <field name="assessment_end_date" required="1" />
+                        <field name="form_activation_start_date" required="1" />
+                        <field name="form_activation_end_date" required="1" />
+                        <field name="form_ids" />
                         <field name="active" readonly="1" />
                     </group>
                 </sheet>
@@ -25,9 +28,11 @@
         <field name="arch" type="xml">
             <tree string="Performance Periods">
                 <field name="name" string="Name" />
-                <field name="start_date" string="Start Date" />
-                <field name="end_date" string="End Date" />
-                <!-- <field name="active" string="Active" /> -->
+                <field name="assessment_end_date" string="Assessment Period from" />
+                <field name="assessment_end_date" string="Assessment Period to" />
+                <field name="form_activation_start_date" string="Assessment Start Date" />
+                <field name="form_activation_end_date" string="Assessment End Date" />
+                <field name="active" string="Active" />
             </tree>
         </field>
     </record>
