@@ -14,7 +14,8 @@
         <field name="model">hr.performance.form</field>
         <field name="arch" type="xml">
             <tree string="Performance Forms">
-                <field name="name" string="Form Name" />
+                <field name="name" string="Rating Factor" />
+                <field name="description" string="Rating Factors List"/>
             </tree>
         </field>
     </record>
@@ -30,12 +31,8 @@
                         <field name="name" required="1" string="Form Name" />
                     </group>
                     <notebook>
-                        <page string="Rating Factors">
-                            <field name="rating_factors">
-                                <tree editable="bottom">
-                                    <field name="name" string="Rating Factor" />
-                                </tree>
-                            </field>
+                        <page string="Rating Factors List" name="rating_factors_list">
+                            <field name="description" options="{'collaborative': true}"/>
                         </page>
                     </notebook>
                 </sheet>
