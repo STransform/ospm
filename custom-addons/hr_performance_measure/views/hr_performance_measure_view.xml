@@ -18,8 +18,11 @@
                 </header>
                 <sheet>
                     <group>
-                        <field name="employee_id" required="1" string="Employee" />
-                        <field name="period_id" required="1" string="Evaluation Period" />
+                        <field name="employee_id" required="1"
+                            options="{'no_create': True, 'no_create_edit':True}" string="Employee" />
+                        <field name="period_id" required="1"
+                            options="{'no_create': True, 'no_create_edit':True}"
+                            string="Evaluation Period" />
                         <field name="evaluation_date" required="1" string="Evaluation Date" />
                     </group>
                     <notebook>
@@ -53,7 +56,7 @@
         <field name="model">hr.performance.measure</field>
         <field name="arch" type="xml">
             <tree string="Performance Evaluations">
-                <field name="evaluation_date" string="Evaulation Date"/>
+                <field name="evaluation_date" string="Evaulation Date" />
                 <field name="employee_id" string="Employee" />
                 <field name="total_score" string="Total Score" />
                 <field name="overall_rating" string="Overall Rating" />
