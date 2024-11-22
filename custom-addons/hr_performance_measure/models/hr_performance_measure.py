@@ -5,9 +5,9 @@ from odoo.exceptions import ValidationError
 class HrPerformanceMeasure(models.Model):
     _name = "hr.performance.measure"
     _description = "Performance Evaluation"
+    _order = 'create_date desc'
 
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True, help="The employee being evaluated.")
-    manager_id = fields.Many2one('hr.employee', string="Manager", related="employee_id.parent_id", store=True, readonly=True, help="The manager responsible for this employee.")
     period_id = fields.Many2one('hr.performance.period', string="Evaluation Period", required=True, help="The active performance evaluation period.")
     evaluation_date = fields.Date(string="Evaluation Date", default=fields.Date.context_today, required=True, readonly=True)
     criteria_ids = fields.One2many('hr.performance.measure.criteria', 'performance_id', string="Evaluation Criteria", help="Criteria for performance evaluation.")
@@ -24,6 +24,7 @@ class HrPerformanceMeasure(models.Model):
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
         ('approved', 'Approved'),
+        ('rejected', 'Rejected')
     ], default='draft', string="Status", help="The status of the evaluation process.")
 
     @api.depends('criteria_ids.score')
@@ -86,7 +87,10 @@ class HrPerformanceMeasure(models.Model):
             if not record.employee_id.contract_id:
                 raise ValidationError("The employee has no active contract.")
             record.state = 'approved'
-            record.employee_id.contract_id.update_increment_based_on_performance(record.performance_score)
+    
+    def action_reject(self):
+        for record in self:
+            record.state = 'rejected'
 
 
 class HrPerformanceMeasureCriteria(models.Model):

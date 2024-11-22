@@ -2,7 +2,7 @@
 <odoo>
     <!-- Menu Items -->
     <menuitem id="menu_performance_root" name="Staff Performance Evaluation" />
-    <menuitem id="menu_performance_management" name="Performance Management"
+    <menuitem id="menu_performance_management" name="Performance Evaulation"
         parent="menu_performance_root" sequence="10" />
     <menuitem id="menu_performance_configuration" name="Configuration"
         parent="menu_performance_root" sequence="10" />

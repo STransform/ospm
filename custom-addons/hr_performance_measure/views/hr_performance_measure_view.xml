@@ -5,39 +5,44 @@
         <field name="model">hr.performance.measure</field>
         <field name="arch" type="xml">
             <form string="Performance Evaluation">
+                <header>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary"
+                        states="draft" />
+                    <button name="action_approve" type="object" string="Approve" class="btn-success"
+                        states="submitted" />
+                    <button name="action_reject" type="object" string="Reject" class="btn-danger"
+                        states="submitted" />
+                    <!-- Statusbar Widget for Tracking Approval Process -->
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,submitted,approved" />
+                </header>
                 <sheet>
                     <group>
-                        <field name="employee_id" required="1" string="Employee"/>
-                        <field name="manager_id" string="Manager" readonly="1"/>
-                        <field name="period_id" required="1" string="Evaluation Period"/>
-                        <field name="evaluation_date" required="1" string="Evaluation Date"/>
-                        <field name="state" readonly="1" widget="statusbar" statusbar_visible="draft,submitted,approved"/>
+                        <field name="employee_id" required="1" string="Employee" />
+                        <field name="period_id" required="1" string="Evaluation Period" />
+                        <field name="evaluation_date" required="1" string="Evaluation Date" />
                     </group>
                     <notebook>
                         <page string="Performance Criteria">
                             <field name="criteria_ids">
                                 <tree editable="bottom">
-                                    <field name="factor" string="Factor"/>
-                                    <field name="description" string="Description"/>
-                                    <field name="rating" required="1" string="Rating"/>
-                                    <field name="score" readonly="1" string="Score"/>
+                                    <field name="factor" string="Factor" />
+                                    <field name="description" string="Description" />
+                                    <field name="rating" required="1" string="Rating" />
+                                    <field name="score" readonly="1" string="Score" />
                                 </tree>
                             </field>
                         </page>
                         <page string="Summary">
                             <group>
-                                <field name="total_score" readonly="1" string="Total Score"/>
-                                <field name="overall_rating" readonly="1" string="Overall Rating"/>
-                                <field name="performance_score" readonly="1" string="Performance Score"/>
+                                <field name="total_score" readonly="1" string="Total Score" />
+                                <field name="overall_rating" readonly="1" string="Overall Rating" />
+                                <field name="performance_score" readonly="1"
+                                    string="Performance Score" />
                             </group>
                         </page>
                     </notebook>
                 </sheet>
-                <footer>
-                    <button name="action_submit" type="object" string="Submit" class="btn-primary" states="draft"/>
-                    <button name="action_approve" type="object" string="Approve" class="btn-success" states="submitted"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel"/>
-                </footer>
             </form>
         </field>
     </record>
@@ -48,10 +53,11 @@
         <field name="model">hr.performance.measure</field>
         <field name="arch" type="xml">
             <tree string="Performance Evaluations">
-                <field name="employee_id" string="Employee"/>
-                <field name="total_score" string="Total Score"/>
-                <field name="overall_rating" string="Overall Rating"/>
-                <field name="state" string="Status"/>
+                <field name="evaluation_date" string="Evaulation Date"/>
+                <field name="employee_id" string="Employee" />
+                <field name="total_score" string="Total Score" />
+                <field name="overall_rating" string="Overall Rating" />
+                <field name="state" string="Status" />
             </tree>
         </field>
     </record>
