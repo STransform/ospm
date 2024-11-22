@@ -29,8 +29,8 @@
                         <page string="Performance Criteria">
                             <field name="criteria_ids">
                                 <tree editable="bottom">
-                                    <field name="factor" string="Factor" />
-                                    <field name="description" string="Description" />
+                                    <field name="factor_id" string="Factor" />
+                                    <!-- <field ?name="description" /> -->
                                     <field name="rating" required="1" string="Rating" />
                                     <field name="score" readonly="1" string="Score" />
                                 </tree>

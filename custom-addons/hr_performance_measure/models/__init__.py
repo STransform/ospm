@@ -2,4 +2,5 @@
 
 from . import hr_performance_measure
 from . import hr_performance_period
+from . import hr_performance_criteria
 from . import hr_performance_form

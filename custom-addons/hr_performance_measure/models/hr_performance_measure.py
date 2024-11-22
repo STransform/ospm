@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+from datetime import datetime
 
 
 class HrPerformanceMeasure(models.Model):
@@ -72,14 +73,35 @@ class HrPerformanceMeasure(models.Model):
 
     @api.model
     def _get_subordinate_domain(self):
-        """Return a domain to filter only subordinates of the logged-in user's employee record."""
-        user_employee = self.env.user.employee_id
-        if user_employee:
-            return [("id", "child_of", user_employee.id), ('id', '!=', user_employee.id)]
-        return []
+        user = self.env.user
+        subordinate_ids = (
+            self.env["hr.employee"].search([("parent_id.user_id", "=", user.id)]).ids
+        )
 
-    # check for active period
+        # Identify the active performance period
+        active_period = self.env["hr.performance.period"].search(
+            [
+                ("form_activation_start_date", "<=", fields.Datetime.now()),
+                ("form_activation_end_date", ">=", fields.Datetime.now()),
+            ],
+            limit=1,
+        )
 
+        # If no active period, return an empty domain
+        if not active_period:
+            return [("id", "=", -1)]
+
+        # Get employees already evaluated for the active period
+        evaluated_employee_ids = (
+            self.env["hr.performance.measure"]
+            .search([("period_id", "=", active_period.id)])
+            .mapped("employee_id.id")
+        )
+
+        # Exclude already evaluated employees and limit to subordinates
+        return [("id", "in", subordinate_ids), ("id", "not in", evaluated_employee_ids)]
+
+    # check for employee if it is evualated
     @api.depends("criteria_ids.score")
     def _compute_total_score(self):
         """Compute the total score based on the evaluation criteria."""
@@ -111,19 +133,6 @@ class HrPerformanceMeasure(models.Model):
                 else 0.0
             )
 
-    @api.onchange("period_id")
-    def _onchange_period_id(self):
-        """Automatically populate rating factors based on the selected period."""
-        if self.period_id:
-            self.criteria_ids = [(5, 0, 0)]  # Clear existing criteria
-            criteria_lines = [
-                {
-                    "factor_id": form.id,
-                }
-                for form in self.period_id.form_ids
-            ]
-            self.criteria_ids = [(0, 0, line) for line in criteria_lines]
-
     @api.constrains("period_id")
     def _check_period_active(self):
         """Ensure evaluations are tied to active periods."""
@@ -151,72 +160,3 @@ class HrPerformanceMeasure(models.Model):
         for record in self:
             record.state = "rejected"
 
-
-class HrPerformanceMeasureCriteria(models.Model):
-    _name = "hr.performance.measure.criteria"
-    _description = "Performance Evaluation Criteria"
-
-    performance_id = fields.Many2one(
-        "hr.performance.measure",
-        string="Performance Measure",
-        required=True,
-        ondelete="cascade",
-    )
-    factor_id = fields.Many2one(
-        "hr.performance.form",
-        string="Rating Factor",
-        required=True,
-        help="The factor being evaluated.",
-    )
-    factor = fields.Char(string="Factor", compute="_compute_factor", required=True)
-    description = fields.Html(string="Description", compute="_compute_description")
-    rating = fields.Selection(
-        selection=[
-            ("5", "Excellent"),
-            ("4", "Very Good"),
-            ("3", "Good"),
-            ("2", "Average"),
-            ("1", "Poor"),
-        ],
-        string="Rating",
-        required=True,
-        help="Rating for this factor.",
-    )
-    score = fields.Float(
-        string="Score",
-        compute="_compute_score",
-        store=True,
-        help="Score derived from the rating.",
-    )
-
-    @api.depends("rating")
-    def _compute_score(self):
-        """Convert the rating to a numeric score."""
-        for record in self:
-            record.score = int(record.rating) if record.rating else 0
-
-    @api.depends("factor_id")
-    def _compute_description(self):
-        for record in self:
-            record.description = record.factor_id.description
-
-    @api.depends("factor_id")
-    def _compute_factor(self):
-        for record in self:
-            record.factor = record.factor_id.name
-
-    @api.constrains("factor_id", "performance_id")
-    def _check_unique_factor(self):
-        """Ensure no duplicate factors in an evaluation."""
-        for record in self:
-            duplicate = self.search(
-                [
-                    ("performance_id", "=", record.performance_id.id),
-                    ("factor_id", "=", record.factor_id.id),
-                    ("id", "!=", record.id),
-                ]
-            )
-            if duplicate:
-                raise ValidationError(
-                    "Duplicate rating factors are not allowed in the same evaluation."
-                )

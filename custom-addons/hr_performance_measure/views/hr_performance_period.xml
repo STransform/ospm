@@ -13,7 +13,6 @@
                         <field name="assessment_end_date" required="1" />
                         <field name="form_activation_start_date" required="1" />
                         <field name="form_activation_end_date" required="1" />
-                        <field name="form_ids" />
                         <field name="active" readonly="1" />
                     </group>
                 </sheet>

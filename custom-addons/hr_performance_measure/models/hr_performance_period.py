@@ -11,7 +11,6 @@ class HrPerformancePeriod(models.Model):
     assessment_end_date = fields.Datetime(string="Assessment Period To", required=True, help="The end date of the performance evaluation period.")
     form_activation_start_date = fields.Datetime(string="Assessment Start Date", required=True, help="The start date of the performance evaluation period.")
     form_activation_end_date = fields.Datetime(string="Assessment  End Date", required=True, help="The end date of the performance evaluation period.")
-    form_ids = fields.Many2many('hr.performance.form', string="Rating Factors")
     active = fields.Boolean(
         string="Active", 
         compute="_compute_active", 
