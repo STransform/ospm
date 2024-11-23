@@ -27,9 +27,8 @@ class HrPerformanceMeasure(models.Model):
         required=True,
         readonly=True,
     )
-    criteria_ids = fields.One2many(
+    criteria_ids = fields.Many2many(
         "hr.performance.measure.criteria",
-        "performance_id",
         string="Evaluation Criteria",
         help="Criteria for performance evaluation.",
     )
