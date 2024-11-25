@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<data>
-		<menuitem id="menu_planning_root" name="Planning"/>
+		<menuitem 
+        id="menu_planning_root" 
+        name="Planning" 
+        groups="planning.group_ceo,planning.group_dceo,planning.group_director,planning.group_planning_directorate,planning.group_hr_director,planning.group_department_manager"
+        />
 
 		<menuitem
         id="hr_annual_plan_menu"
         name="HR Annual Plan"
         action="hr_annual_plan_action"
         parent="menu_planning_root"
+        groups="planning.group_ceo,planning.group_dceo,planning.group_director,planning.group_planning_directorate,planning.group_hr_director,planning.group_department_manager"
         />
 
         <menuitem
@@ -15,6 +20,7 @@
         name="HR Strategic Plan"
         action="hr_strategic_plan_action"
         parent="menu_planning_root"
+        groups="planning.group_ceo,planning.group_dceo,planning.group_director,planning.group_planning_directorate,planning.group_hr_director,planning.group_department_manager"
         />
 	</data>
 </odoo>
