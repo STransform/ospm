@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem
+            id="Transfer_menu"
+            name="Transfer"
+            sequence="10"/>
+        <menuitem
+            id="transfer_request_menu"
+            name="Transfer_request"
+            action="transfer_request_action"
+            parent="Transfer_menu"
+            sequence="10"/>
+    </data>
+
+</odoo>

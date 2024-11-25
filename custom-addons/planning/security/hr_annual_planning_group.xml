@@ -14,6 +14,16 @@
         <field name="category_id" ref="base.module_category_human_resources"/>
     </record>
 
+    <record id="planning.group_admin_dceo" model="res.groups">
+        <field name="name">D/CEO, Administration and Marketing Division</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+
+    <record id="planning.group_technical_dceo" model="res.groups">
+        <field name="name">D/CEO, Technical Division </field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+
     <record id="planning.group_planning_directorate" model="res.groups">
         <field name="name">Planning Director</field>
         <field name="category_id" ref="base.module_category_human_resources"/>
@@ -29,4 +39,13 @@
         <field name="category_id" ref="base.module_category_human_resources"/>
     </record>
 
+    <record id="planning.group_hr_office" model="res.groups">
+        <field name="name">HR Office</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
+
+    <record id="planning.group_employee" model="res.groups">
+        <field name="name">HR Employee</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+    </record>
 </odoo>
