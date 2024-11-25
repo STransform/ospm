@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_employee_promotion_user,access.employee.promotion.user,model_employee_promotion,base.group_user,1,1,1,1
+access_promotion_type_user,access.promotion.type.user,model_promotion_type,base.group_user,1,1,1,1
+employee_promotion.access_promotion_approved,access_promotion_approved,employee_promotion.model_promotion_approved,base.group_user,1,1,1,1
+employee_promotion.access_promotion_popup,access_promotion_popup,employee_promotion.model_promotion_popup,base.group_user,1,1,1,1
+employee_promotion.access_internal_vacancy,access_internal_vacancy,employee_promotion.model_internal_vacancy,base.group_user,1,1,1,1
+employee_promotion.access_internal_appilication,access_internal_appilication,employee_promotion.model_internal_appilication,base.group_user,1,1,1,1
+employee_promotion.access_ceo_approved,access_ceo_approved,employee_promotion.model_ceo_approved,base.group_user,1,1,1,1
+employee_promotion.access_promotion_minutes,access_promotion_minutes,employee_promotion.model_promotion_minutes,base.group_user,1,1,1,1
