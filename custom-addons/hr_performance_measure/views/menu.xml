@@ -33,9 +33,9 @@
               action="action_performance_rating_factors" 
               sequence="20"/>
 
-    <menuitem id="menu_performance_period" 
+    <!-- <menuitem id="menu_performance_period" 
               name="Evaluation Periods" 
               parent="menu_performance_configuration" 
               action="action_performance_period" 
-              sequence="30"/>
+              sequence="30"/> -->
 </odoo>

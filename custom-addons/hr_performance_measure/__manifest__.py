@@ -12,6 +12,7 @@
     "data": [
         "security/ir.model.access.csv",
         "views/hr_performance_template.xml",
+        "views/hr_performance_measure_view.xml",
         "views/menu.xml",
     ],
     "images": ["static/description/HRGradeRank.png"],

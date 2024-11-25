@@ -52,16 +52,11 @@ class RatingFactorAnswer(models.Model):
 
     # Related to the rating factor
     factor_id = fields.Many2one(
-        "rating.factor",
+        "performance.rating.factor",
         string="Rating Factor",
         ondelete="cascade",
         required=True,
         help="The rating factor this answer is linked to.",
-    )
-    sequence = fields.Integer(
-        "Sequence Order",
-        default=10,
-        help="The display order of this answer for the rating factor.",
     )
 
     # Answer details
