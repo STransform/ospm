@@ -16,7 +16,7 @@
                     <!-- approval by ceo -->
                     <button name="action_approve_ceo" type="object" string="Accept" groups="hr_recruitment_request.group_hr_recruitment_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}"/>
                     <button name="action_reject_ceo" type="object" string="Refuse" groups="hr_recruitment_request.group_hr_recruitment_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}"/>
-                   <field name="combined_state" widget="statusbar" statusbar_visible="approved,refused,pending"/>
+                     <field name="combined_state" widget="statusbar" statusbar_visible="approved,refused,pending"/>
                 </header>
                 
              <sheet>

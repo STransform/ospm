@@ -3,7 +3,7 @@
     'version':'1.0.0', 
     'category': 'Human Resources', 
     'author': "Simon & Yohanes",
-    'depends' : ['hr', 'base', 'web', 'mail', 'bus', 'hr_recruitment'], 
+    'depends' : ['hr', 'base', 'web', 'mail', 'bus', 'web_notify', 'hr_recruitment', 'employee_promotion'], 
     'installable': True, 
     'data': [
         "views/recruitment_request_view.xml",
