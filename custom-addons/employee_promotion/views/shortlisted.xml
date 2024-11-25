@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--Action of employee.promotion model-->
+    <record id="shortlisted_appilications_action" model="ir.actions.act_window">
+        <field name="name">Short Listed</field>
+        <field name="res_model">internal.appilication</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'group_by': 'position'}</field>
+        <field name="domain">[('shortListed', '=', True)]</field>
+    </record>
+
+
+    <!--Form view employee.promotion model-->
+    <record id='shortlisted_appilications_view_form' model='ir.ui.view'>
+        <field name="name">shortlisted.view.form</field>
+        <field name="model">internal.appilication</field>
+        <field name="arch" type="xml">
+            <form string="ShorListed Appilications">
+                <header>
+                    <!-- <button name="action_approve" type="object" string="Approve" groups="employee_promotion.group_hr_recruitment_ceo"  attrs="{'invisible': [('state', 'in', ['approved', 'refused'])]}"/>
+                    <button name="action_refuse" type="object" string="Refuse" groups="employee_promotion.group_hr_recruitment_ceo" attrs="{'invisible': [('state', 'in', ['approved', 'refused'])]}"/> -->
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field class="text-break" name="position" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name_of_employees"/>
+                        </group>
+                    </group>
+                </sheet>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                           Assesments of the employee yes yes yes
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="assesment"/>
+                            <field name="experience"/>
+                            <field name="interview"/>
+                            <field name="other"/>
+                            <field name="total"/>
+                            <field name="state"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--Tree view employee.promotion model-->
+    <record id="shortlisted_appilications_view_tree" model="ir.ui.view">
+        <field name="name">shortlisted.appilication.view.tree</field>
+        <field name="model">internal.appilication</field>
+        <field name="arch" type="xml">
+            <tree string="promotion_fields">
+                <field name="name_of_employees"/>
+                <field name="total"/>
+            </tree>
+        </field>
+    </record>
+    <!--Menu view in employee form-->
+    <menuitem id="shortlisted_appiliactions_sub_menu" name="Short Listed" parent="employee_promotion_menu" action="shortlisted_appilications_action"  groups="employee_promotion.group_hr_recruitment_hr_director,employee_promotion.group_hr_recruitment_ceo"/>
+</odoo>

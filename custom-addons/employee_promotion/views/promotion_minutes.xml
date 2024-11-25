@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--Action of employee.promotion model-->
+    <record id="promotion_minutes_action" model="ir.actions.act_window">
+        <field name="name">Promotion Minutes</field>
+        <field name="res_model">promotion.minutes</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <!--Form view employee.promotion model-->
+    <record id='promotion_minutes_view_form' model='ir.ui.view'>
+        <field name="name">promotion.minutes.view.form</field>
+        <field name="model">promotion.minutes</field>
+        <field name="arch" type="xml">
+        <!-- approve and refuse button by ceo group become hidden upon approval or refusal -->
+
+            <form string="Promotion Minutes">
+                <header>
+                    <button name="action_approve" type="object" string="Approve" groups="employee_promotion.group_hr_recruitment_ceo"  attrs="{'invisible': [('state', 'in', ['approved', 'refused'])]}"/>
+                    <button name="action_refuse" type="object" string="Refuse" groups="employee_promotion.group_hr_recruitment_ceo" attrs="{'invisible': [('state', 'in', ['approved', 'refused'])]}"/> 
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,refused"/>
+                </header>
+                <sheet>
+    
+                    <div class="oe_title">
+                        <h1>
+                            <field class="text-break" name="name"
+                                   placeholder="e.g. Workshop Promotion Minute"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="minutes"/>
+
+                        </group>
+                        <group>
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="minute_by" string="Promotion Committee">
+                            <field name="minute_by"/>
+                        </page>
+                        <page name="description" string="Description">
+                            <field name="description"/>
+                            <field name="state" invisible="1" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!--Tree view employee.promotion model-->
+    <record id="promotion_minute_view_tree" model="ir.ui.view">
+        <field name="name">promotion.minutes.view.tree</field>
+        <field name="model">promotion.minutes</field>
+        <field name="arch" type="xml">
+            <tree string="promotion_minutes">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="minute_by"/>
+                <field name="minutes"/>
+            </tree>
+        </field>
+    </record>
+
+    <menuitem id="promotion_minutes_sub_menu"
+              name="Promotion Minutes"
+              parent="employee_promotion_menu"
+              action="promotion_minutes_action"
+              groups="employee_promotion.group_hr_recruitment_promotion_committe,employee_promotion.group_hr_recruitment_promotion_committe"
+
+              
+              
+              />
+</odoo>

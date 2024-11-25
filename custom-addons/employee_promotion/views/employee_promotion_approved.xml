@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--Action of employee.promotion model-->
+    <record id="promotion_approved_action" model="ir.actions.act_window">
+        <field name="name">Approved Promotion</field>
+        <field name="res_model">promotion.approved</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <!--Form view employee.promotion model-->
+    <record id='promotion_approved_view_form' model='ir.ui.view'>
+        <field name="name">approved.promotion.view.form</field>
+        <field name="model">promotion.approved</field>
+        <field name="arch" type="xml">
+            <form string="Approved Promotion">
+             <header>
+                    <button name="action_change_state" type="object" string="Promotion Done"   attrs="{'invisible': [('state', 'in', ['done'])]}"/>
+                    <button name="action_post_promotion" type="object" string="Post Vacancy"  attrs="{'invisible': [('state', 'in', ['done'])]}"/>
+                </header>
+                <sheet>
+
+                    <widget name="web_ribbon"
+                    title="Pending"
+                    bg_color="bg-warning"
+                    attrs="{'invisible': [('state', '!=', 'pending')]}"/>
+            
+            <!-- Ribbon for Done -->
+            <widget name="web_ribbon"
+                    title="Promotion Done"
+                    bg_color="bg-success"
+                    attrs="{'invisible': [('state', '!=', 'done')]}"/>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field class="text-break" name="request_name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="requested_by"/>
+                            <field name="job_position_id"/>  
+                            <field name="state"/>
+                            <field name="description"/>
+                            <field name="number_of_recruits"/>
+                        
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!--Tree view employee.promotion model-->
+    <record id="promotion_approved_view_tree" model="ir.ui.view">
+        <field name="name">approved.promotion.view.tree</field>
+        <field name="model">promotion.approved</field>
+        <field name="arch" type="xml">
+            <tree string="promotion_fields">
+                <field name="request_name"/>
+                <field name="requested_by"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+<record id="promotion_approved_kanban" model="ir.ui.view">
+    <field name="name">employee.promotion.view.kanban</field>
+    <field name="model">promotion.approved</field>
+    <field name="arch" type="xml">
+        <kanban class="o_kanban_mobile" sample="1">
+            <field name="request_name"/>
+            <field name="requested_by"/>
+            <field name="state"/>
+            <templates>
+                <t t-name="kanban-box">
+                 <div t-attf-class="oe_kanban_global_click">
+                    <div class="oe_kanban_card">
+                        <div class="oe_kanban_details">
+                            <strong>
+                                <field name="request_name"/>
+                            </strong>
+                            <div>
+                                <field name="requested_by"/>
+                            </div>
+                        </div>
+                       <div class="kanban-ribbon"  attrs="{'invisible': [('state', '!=', 'pending')]}"><p>Pending</p></div>
+                       <div class="kanban-ribbon-done"  attrs="{'invisible': [('state', '!=', 'done')]}"><p>Done</p></div>
+                    </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
+    <!--Menu view in employee form-->
+    <menuitem id="promotion_approved_sub_menu" name="Approved Promotion" parent="employee_promotion_menu" action="promotion_approved_action" groups="employee_promotion.group_hr_recruitment_hr_director"/>
+</odoo>

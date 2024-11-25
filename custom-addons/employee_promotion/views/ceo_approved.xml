@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--Action of employee.promotion model-->
+    <record id="ceo_approved_action" model="ir.actions.act_window">
+        <field name="name">CEO Approved Promotions</field>
+        <field name="res_model">ceo.approved</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'group_by': 'position'}</field>
+    </record>
+
+
+    <!--Form view employee.promotion model-->
+    <record id='ceo_approved_view_form' model='ir.ui.view'>
+        <field name="name">ceo.approved.promition.view.form</field>
+        <field name="model">ceo.approved</field>
+        <field name="arch" type="xml">
+            <form string="ShorListed Appilications">
+                <header>
+                    <button name="action_start_hiring" type="object" string="Start Hiring" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field class="text-break" name="position" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="job_position_id"/>    
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--Tree view employee.promotion model-->
+    <record id="ceo_approved_view_tree" model="ir.ui.view">
+        <field name="name">ceo.approved.promotion.view.tree</field>
+        <field name="model">ceo.approved</field>
+        <field name="arch" type="xml">
+            <tree string="promotion_fields">
+                <field name="employee_id"/>
+                <field name="job_position_id"/>
+            </tree>
+        </field>
+    </record>
+    <!--Menu view in employee form-->
+    <menuitem id="ceo_approved_sub_menu" name="CEO Approved" parent="employee_promotion_menu" action="ceo_approved_action"  groups="employee_promotion.group_hr_recruitment_hr_director"/>
+</odoo>
