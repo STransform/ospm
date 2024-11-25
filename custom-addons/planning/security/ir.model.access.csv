@@ -16,3 +16,4 @@ access_hr_strategic_plan_planning_directorate,hr.strategic.plan.planning.directo
 access_attachment_read,access.attachment.read,base.model_ir_attachment,base.group_user,1,0,0,0
 access_hr_employee_read,access.hr.employee.read,hr.model_hr_employee,base.group_user,1,0,0,0
 access_hr_department_read,access.hr.department.read,hr.model_hr_department,base.group_user,1,0,0,0
+access_hr_office_write,access.hr.employee.access.write,hr.model_hr_employee,planning.group_hr_office,1,1,1,1

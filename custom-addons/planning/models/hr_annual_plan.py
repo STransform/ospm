@@ -88,7 +88,35 @@ class HrAnnualPlan(models.Model):
         for plan in plans:
             if plan.status != "approved":
                 raise ValidationError(_(f"All the annual plans for {year} under you directory  must be approved first"))
+        ## add validaton for the hr Annual plan depending on the Strategic HR Plan
+
+        strategic_plans = self.env['hr.strategic.plan'].search([('department_id', '=', employee.department_id.id)])
+        plan_found = False
+        strategic_external_recruitment = 0
+        strategic_promotion = 0
+        strategic_start_year = 0
+        strategic_end_year = 0
+        for plan in strategic_plans:
+            if int(plan.start_year) <= int(year) <= int(plan.end_year):
+                plan_found = True
+                strategic_external_recruitment = plan.strategic_external_recruitment
+                strategic_promotion = plan.strategic_promotion
+                strategic_start_year = int(plan.start_year)
+                strategic_end_year = int(plan.end_year)
+                if plan.status != "approved":
+                    raise ValidationError(_(f"The Strategic plan that include {year} must be approved first"))
+        if not plan_found:
+            raise ValidationError(_(f"There is no Strategic plan for {year}"))
+
+        annual_plans = self.env['hr.annual.plan'].search([('department_id', '=', employee.department_id.id)])
+        for plan in annual_plans:
+            if strategic_start_year <= int(plan.year) <= strategic_end_year:
+                strategic_promotion -= plan.promotion
+                strategic_external_recruitment -= plan.external_recruitment
                 
+        if strategic_promotion < vals['promotion'] or strategic_external_recruitment < vals['external_recruitment']:
+            raise ValidationError(_(f"The Strategic plan that include {year} must be approved first")) 
+            
         if 'department_id' not in vals:
             vals['department_id'] = employee.department_id.id
             vals['approved_by'] = approved_user.user_id.id
