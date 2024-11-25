@@ -1,0 +1,54 @@
+<odoo>
+    <!-- Define the Action -->
+    <record id="action_performance_measure" model="ir.actions.act_window">
+        <field name="name">Performance Measures</field>
+        <field name="res_model">hr.performance.measure</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_performance_measure_tree"/> <!-- Set the default view -->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create and manage employee performance evaluations.
+            </p>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_performance_measure_tree" model="ir.ui.view">
+        <field name="name">hr.performance.measure.tree</field>
+        <field name="model">hr.performance.measure</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="manager_id"/>
+                <field name="survey_id"/>
+                <field name="evaluation_status"/>
+                <field name="response_count"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_performance_measure_form" model="ir.ui.view">
+        <field name="name">hr.performance.measure.form</field>
+        <field name="model">hr.performance.measure</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send_survey" type="object" string="Send Survey" class="btn-primary"/>
+                    <button name="action_view_responses" type="object" string="View Responses" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="employee_id"/>
+                        <field name="manager_id"/>
+                        <field name="survey_id"/>
+                        <field name="evaluation_status"/>
+                        <field name="response_count" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

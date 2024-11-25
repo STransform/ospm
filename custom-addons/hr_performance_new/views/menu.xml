@@ -1,0 +1,11 @@
+<odoo>
+    <!-- Root Menu for Performance -->
+    <menuitem id="menu_hr_performance_root" name="Performance" sequence="10" />
+
+    <!-- Submenu for Performance Measures -->
+    <menuitem id="menu_hr_performance_measure" 
+              name="Measures" 
+              parent="menu_hr_performance_root" 
+              action="action_performance_measure" 
+              sequence="20"/>
+</odoo>
