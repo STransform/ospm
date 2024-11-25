@@ -37,13 +37,14 @@ class RecruitmentRequest(models.Model):
         ('approved', 'Approved'),
         ('refused', 'Refused'),
     ])
-
-
+ 
     combined_state = fields.Selection([
         ('approved', 'Approved'),
         ('refused', 'Rejected'),
         ('pending', 'Pending'),
     ], string="Combined State", compute='_compute_combined_state')
+    
+    promotion_created = fields.Boolean(default=False, readonly=True)
 
     @api.depends('state_by_hr_director', 'state_by_dceo', 'state_by_ceo')
     def _compute_combined_state(self):
@@ -55,6 +56,9 @@ class RecruitmentRequest(models.Model):
             elif all(state == 'approved' for state in [record.state_by_hr_director, record.state_by_dceo, record.state_by_ceo]):
                 record.combined_state = 'approved'
                 record._create_job_position()
+
+                if record.recruitment_type == 'promotion':
+                    record._create_promotion()
             # If none of them are 'approved' or 'refused', set status to 'Pending'
             else:
                 record.combined_state = 'pending'
@@ -105,4 +109,22 @@ class RecruitmentRequest(models.Model):
             'description': "Automatically created position upon CEO approval.",
             # Add other required fields as necessary, such as department_id or expected_employee
         })
-  
+
+    #  Method added for creating promotion automatically
+    def _create_promotion(self):
+        """Automatically create a promotion in the promotion.approved model."""
+        requested_by = self.created_by.name
+        number_of_recruits = self.number_of_recruits
+        if not self.promotion_created:
+            self.env['promotion.approved'].create({
+                'request_name': self.name,  # Customize this as needed
+                'related_recruitment_id': self.id,  # Optional: Add a link to the recruitment request
+                'requested_by': requested_by,
+                'state': 'pending',
+                'job_position_id': self.job_position_id.id,
+                'number_of_recruits': number_of_recruits,
+                'description': "Auto-registered promotion upon CEO approval.",
+            })
+            self.promotion_created = True
+
+
