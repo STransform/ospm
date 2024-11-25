@@ -2,10 +2,17 @@
     <!-- Root Menu for Performance -->
     <menuitem id="menu_hr_performance_root" name="Performance" sequence="10" />
 
-    <!-- Submenu for Performance Measures -->
-    <menuitem id="menu_hr_performance_measure" 
-              name="Measures" 
+    <!-- Submenu for Evaluation Schedules -->
+    <menuitem id="menu_hr_evaluation_schedule" 
+              name="Evaluation Schedules" 
               parent="menu_hr_performance_root" 
-              action="action_performance_measure" 
+              action="action_evaluation_schedule" 
+              sequence="10"/>
+
+    <!-- Submenu for Performance Evaluations -->
+    <menuitem id="menu_hr_performance_evaluation" 
+              name="Evaluations" 
+              parent="menu_hr_performance_root" 
+              action="action_performance_evaluation" 
               sequence="20"/>
 </odoo>

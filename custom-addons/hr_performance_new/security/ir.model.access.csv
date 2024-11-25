@@ -1,2 +1,3 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-access_hr_performance_measure,access_hr_performance_measure,model_hr_performance_measure,base.group_user,1,1,1,1
+access_hr_performance_evaluation,access_hr_performance_evaluation,model_hr_performance_evaluation,base.group_user,1,1,1,1
+access_hr_evaluation_schedule,access_hr_evaluation_schedule,model_hr_evaluation_schedule,base.group_user,1,1,1,1
