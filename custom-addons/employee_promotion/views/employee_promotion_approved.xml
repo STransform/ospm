@@ -19,7 +19,7 @@
                 </header>
                 <sheet>
 
-                    <widget name="web_ribbon"
+                <widget name="web_ribbon"
                     title="Pending"
                     bg_color="bg-warning"
                     attrs="{'invisible': [('state', '!=', 'pending')]}"/>
