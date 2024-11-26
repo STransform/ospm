@@ -173,6 +173,7 @@ class HrPerformanceEvaluation(models.Model):
 
             # Initialize variables to store results
             total_score = 0
+            length = 0
 
             # Process each answer line
             for answer in answers:
@@ -199,8 +200,14 @@ class HrPerformanceEvaluation(models.Model):
                 else:
                     temp = 0
                 total_score += temp
+                length += 1
 
             # Store the total score in the evaluation record
+            curr = 0
+            if length > 0:
+                curr = length*5
+                total_score = total_score*100/curr
+                
             record.total_score = total_score
 
             record.evaluation_status = "employee_review"
