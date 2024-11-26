@@ -23,10 +23,10 @@
                 <header>
                     <button name="action_activate_schedule" type="object" string="Activate"
                         class="btn-primary"
-                        attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        attrs="{'invisible': [('state', '!=', 'draft')]}" />
                     <button name="action_close_schedule" type="object" string="Close"
                         class="btn-secondary"
-                        attrs="{'invisible': [('state', '!=', 'active')]}"/>
+                        attrs="{'invisible': [('state', '!=', 'active')]}" />
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,closed" />
                 </header>
                 <sheet>
@@ -49,7 +49,7 @@
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_evaluation_schedule_tree" /> <!-- Default view -->
         <field name="domain">[]</field> <!-- Allow HR Directors to view all schedules -->
-        <field name="groups_id" eval="[(4, ref('hr_performance.group_hr_director'))]"/>
+        <field name="groups_id" eval="[(4, ref('hr_performance.group_hr_director'))]" />
     </record>
 
     <!-- Tree View for Performance Evaluations -->
@@ -78,26 +78,27 @@
                 <header>
                     <button name="action_start_evaluation" type="object"
                         string="Start Evaluation" class="btn-primary"
-                        attrs="{'invisible': [('evaluation_status', '!=', 'draft')]}"
+                        attrs="{'invisible': [('is_manager_start', '=', False)]}"
                         groups="base.group_user" /> <!-- Accessible by Managers -->
                     <button
                         name="action_submit_to_employee" type="object"
                         string="Submit to Employee" class="btn-secondary"
-                        attrs="{'invisible': [('evaluation_status', '!=', 'in_progress')]}"/>
+                        attrs="{'invisible': [('is_manager_to_employee', '=', False)]}" />
                     <button
                         name="action_employee_reject" type="object" string="Reject"
                         class="btn-danger"
-                        attrs="{'invisible': [('evaluation_status', '!=', 'employee_review')]}"
+                        attrs="{'invisible': ['|', ('evaluation_status', '!=', 'employee_review'), ('is_employee', '=', False)]}"
                         groups="hr_performance.group_employee" />
                     <button
                         name="action_employee_accept" type="object" string="Accept"
                         class="btn-success"
-                        attrs="{'invisible': [('evaluation_status', '!=', 'employee_review')]}"
+                        attrs="{'invisible': ['|', ('evaluation_status', '!=', 'employee_review'), ('is_employee', '=', False)]}"
                         groups="hr_performance.group_employee" />
                     <button
                         name="action_submit_to_hr" type="object" string="Submit to HR"
                         class="btn-warning"
-                        attrs="{'invisible': [('evaluation_status', '!=', 'employee_accepted')]}" />
+                        attrs="{'invisible': [('is_manager', '=', False)]}"
+                    />
                     <button
                         name="action_mark_completed" type="object"
                         string="Mark as Completed" class="btn-success"
@@ -121,6 +122,10 @@
                             'invisible': [('evaluation_status', '=', 'draft')],
                             'readonly': [('evaluation_status', '!=', 'employee_review')]
                         }" />
+                        <field name="is_employee" invisible="1" />
+                        <field name="is_manager" invisible="1" />
+                        <field name="is_manager_to_employee" invisible="1" />
+                        <field name="is_manager_start" invisible="1" />
                     </group>
                     <notebook>
                         <page string="Evaluation Answers">

@@ -57,6 +57,37 @@ class HrPerformanceEvaluation(models.Model):
     total_score = fields.Float("Total Score", readonly=True, tracking=True)
     all_answers = fields.Text("Recorded Answers", readonly=True)
 
+    is_employee = fields.Boolean(compute="_compute_is_employee")
+    is_manager = fields.Boolean(compute="_compute_is_manager")
+    is_manager_to_employee = fields.Boolean(compute="_compute_is_manager_to_employee")
+    is_manager_start = fields.Boolean(compute="_compute_is_manager_start")
+
+    @api.depends("employee_id", "employee_id.user_id")
+    def _compute_is_employee(self):
+        for record in self:
+            record.is_employee = record.employee_id.user_id.id == self.env.uid
+
+    def _compute_is_manager(self):
+        for record in self:
+            record.is_manager = (
+                record.employee_id.parent_id.user_id.id == self.env.uid
+                and record.evaluation_status == "employee_accepted"
+            )
+
+    def _compute_is_manager_start(self):
+        for record in self:
+            record.is_manager_start = (
+                record.employee_id.parent_id.user_id.id == self.env.uid
+                and record.evaluation_status == "draft"
+            )
+
+    def _compute_is_manager_to_employee(self):
+        for record in self:
+            record.is_manager_to_employee = (
+                record.employee_id.parent_id.user_id.id == self.env.uid
+                and record.evaluation_status == "in_progress"
+            )
+
     @api.depends("employee_id")
     def _compute_manager_id(self):
         """Automatically assign the manager based on the employee's parent_id."""
@@ -64,7 +95,7 @@ class HrPerformanceEvaluation(models.Model):
             record.manager_id = (
                 record.employee_id.parent_id if record.employee_id else None
             )
-          
+
     def action_start_evaluation(self):
         """Start the survey for the manager using the survey URL in a new tab."""
         for record in self:
@@ -86,8 +117,13 @@ class HrPerformanceEvaluation(models.Model):
                         "The manager does not have a linked user/partner to start the survey."
                     )
                 )
-            if record.schedule_id.state == "closed" or record.schedule_id.scheduled_date < fields.Date.today():
-                raise ValidationError("The Form is either closed or expiered! please conctact Hr Director")
+            if (
+                record.schedule_id.state == "closed"
+                or record.schedule_id.scheduled_date < fields.Date.today()
+            ):
+                raise ValidationError(
+                    "The Form is either closed or expiered! please conctact Hr Director"
+                )
 
             # Create and link the survey response
             response = record.survey_id._create_answer(
