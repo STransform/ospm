@@ -29,6 +29,9 @@ class HrPerformanceEvaluation(models.Model):
     response_id = fields.Many2one(
         "survey.user_input", "Survey Response", ondelete="set null"
     )
+
+    score = fields.Float("Survey Score", readonly=True, tracking=True)
+
     evaluation_status = fields.Selection(
         [
             ("draft", "Draft"),
@@ -91,9 +94,41 @@ class HrPerformanceEvaluation(models.Model):
             }
 
     def action_mark_completed(self):
-        """Mark the evaluation as completed."""
-        if self.evaluation_status != "in_progress":
-            raise ValidationError(
-                _("The evaluation must be in progress to mark it as completed.")
-            )
-        self.evaluation_status = "completed"
+        """Mark the evaluation as completed and calculate the survey score."""
+        for record in self:
+            # Validation: Ensure the survey is completed
+            if not record.response_id or record.response_id.state != 'done':
+                raise ValidationError(_("The survey has not been completed. Complete the survey before marking this evaluation as completed."))
+
+            # Fetch the answers from the survey
+            answers = self.env['survey.user_input.line'].search([
+                ('user_input_id', '=', record.response_id.id)
+            ])
+
+            if not answers:
+                raise ValidationError(_("No answers found for this survey response."))
+
+            # Map answer values to scores
+            score_map = {
+                '5': 5,  # Excellent
+                '4': 4,  # Very Good
+                '3': 3,  # Good
+                '2': 2,  # Fine
+                '1': 1   # Poor
+            }
+
+            total_score = 0
+            total_questions = 0
+
+            for answer in answers:
+                if answer.value in score_map:
+                    total_score += score_map[answer.value]
+                    total_questions += 1
+
+            # Calculate average score
+            if total_questions > 0:
+                record.score = total_score / total_questions
+            else:
+                record.score = 0
+
+            record.evaluation_status = 'completed'

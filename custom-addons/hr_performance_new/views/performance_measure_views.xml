@@ -59,6 +59,7 @@
                 <field name="manager_id" />
                 <field name="survey_id" />
                 <field name="evaluation_status" />
+                <field name="score" />
             </tree>
         </field>
     </record>
@@ -89,6 +90,7 @@
                         <field name="manager_id" readonly="1" />
                         <field name="survey_id" readonly="1" />
                         <field name="evaluation_status" readonly="1" />
+                        <field name="score" />
                     </group>
                 </sheet>
             </form>
