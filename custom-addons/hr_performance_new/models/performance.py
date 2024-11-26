@@ -42,6 +42,11 @@ class HrPerformanceEvaluation(models.Model):
         string="Status",
         tracking=True,
     )
+    
+    answer_ids = fields.One2many('hr.performance.evaluation.answer', 'performance_evaluation_id', string="Answers")
+    total_score = fields.Float("Total Score", readonly=True, tracking=True)
+    all_answers = fields.Text("Recorded Answers", readonly=True)
+
 
     @api.depends("employee_id")
     def _compute_manager_id(self):
@@ -94,7 +99,7 @@ class HrPerformanceEvaluation(models.Model):
             }
 
     def action_mark_completed(self):
-        """Mark the evaluation as completed and calculate the survey score."""
+        """Mark the evaluation as completed, store questions and answers, and calculate the total score."""
         for record in self:
             # Validation: Ensure the survey is completed
             if not record.response_id or record.response_id.state != 'done':
@@ -108,27 +113,38 @@ class HrPerformanceEvaluation(models.Model):
             if not answers:
                 raise ValidationError(_("No answers found for this survey response."))
 
-            # Map answer values to scores
-            score_map = {
-                '5': 5,  # Excellent
-                '4': 4,  # Very Good
-                '3': 3,  # Good
-                '2': 2,  # Fine
-                '1': 1   # Poor
-            }
+            # Clear existing answers
+            record.answer_ids.unlink()
 
+            # Initialize variables to store results
             total_score = 0
-            total_questions = 0
 
+            # Process each answer line
             for answer in answers:
-                if answer.value in score_map:
-                    total_score += score_map[answer.value]
-                    total_questions += 1
+                question_text = answer.question_id.display_name or answer.question_id.name
+                answer_text = answer.display_name or _('Skipped')
+                score = answer.answer_score or 0
 
-            # Calculate average score
-            if total_questions > 0:
-                record.score = total_score / total_questions
-            else:
-                record.score = 0
+                # Create an answer record
+                self.env['hr.performance.evaluation.answer'].create({
+                    'performance_evaluation_id': record.id,
+                    'question': question_text,
+                    'answer': answer_text,
+                    'score': score,
+                })
 
+                # Add the score to the total score
+                total_score += score
+
+            # Store the total score in the evaluation record
+            record.total_score = total_score
+
+            # Update evaluation status
             record.evaluation_status = 'completed'
+
+            # Log the result for the employee
+            record.message_post(
+                body=_("Survey completed with a total score of %.2f for %s.") % (
+                    record.total_score, record.employee_id.name),
+                subtype_id=self.env.ref('mail.mt_note').id
+            )
