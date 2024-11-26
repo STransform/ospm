@@ -10,7 +10,15 @@
             <xpath expr="//page[@name='hr_settings']"
                    position="after">
                 <page string="Transfer">
-                    <field name="transfer_ids"/>
+                    <field name="transfer_history_ids" readonly="1">
+                        <tree>
+                            <field name="transfer_date" widget="date"/>
+                            <field name="from_department_name" />
+                            <field name="to_department_name" />
+                            <field name="from_position_id" />
+                            <field name="to_position_id" />
+                        </tree>
+                    </field>
                 </page>
             </xpath>
         </field>

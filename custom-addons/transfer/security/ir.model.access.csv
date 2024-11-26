@@ -7,3 +7,4 @@ access_transfer_request_ceo,access.transfer.request.ceo,model_transfer_request,p
 access_transfer_request_hr_office,access.transfer.request.hr.office,model_transfer_request,planning.group_hr_office,1,1,1,1
 
 access_job_position_user,access.job.position.user,hr.model_hr_job,base.group_user,1,0,0,0
+access_transfer_history_user,access.transfer.history.user,model_transfer_history,base.group_user,1,1,1,1
