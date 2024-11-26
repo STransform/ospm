@@ -64,7 +64,7 @@ class HrPerformanceEvaluation(models.Model):
             record.manager_id = (
                 record.employee_id.parent_id if record.employee_id else None
             )
-
+          
     def action_start_evaluation(self):
         """Start the survey for the manager using the survey URL in a new tab."""
         for record in self:

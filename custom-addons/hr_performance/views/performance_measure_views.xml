@@ -1,4 +1,5 @@
 <odoo>
+    <!-- Tree View for Evaluation Schedule -->
     <record id="view_evaluation_schedule_tree" model="ir.ui.view">
         <field name="name">hr.evaluation.schedule.tree</field>
         <field name="model">hr.evaluation.schedule</field>
@@ -13,7 +14,7 @@
         </field>
     </record>
 
-
+    <!-- Form View for Evaluation Schedule -->
     <record id="view_evaluation_schedule_form" model="ir.ui.view">
         <field name="name">hr.evaluation.schedule.form</field>
         <field name="model">hr.evaluation.schedule</field>
@@ -22,10 +23,10 @@
                 <header>
                     <button name="action_activate_schedule" type="object" string="Activate"
                         class="btn-primary"
-                        attrs="{'invisible': [('state', '!=', 'draft')]}" />
+                        attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                     <button name="action_close_schedule" type="object" string="Close"
                         class="btn-secondary"
-                        attrs="{'invisible': [('state', '!=', 'active')]}" />
+                        attrs="{'invisible': [('state', '!=', 'active')]}"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,closed" />
                 </header>
                 <sheet>
@@ -41,13 +42,17 @@
         </field>
     </record>
 
+    <!-- Action for Evaluation Schedule -->
     <record id="action_evaluation_schedule" model="ir.actions.act_window">
         <field name="name">Evaluation Schedules</field>
         <field name="res_model">hr.evaluation.schedule</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_evaluation_schedule_tree" /> <!-- Default view -->
+        <field name="domain">[]</field> <!-- Allow HR Directors to view all schedules -->
+        <field name="groups_id" eval="[(4, ref('hr_performance.group_hr_director'))]"/>
     </record>
 
+    <!-- Tree View for Performance Evaluations -->
     <record id="view_performance_evaluation_tree" model="ir.ui.view">
         <field name="name">hr.performance.evaluation.tree</field>
         <field name="model">hr.performance.evaluation</field>
@@ -64,6 +69,7 @@
         </field>
     </record>
 
+    <!-- Form View for Performance Evaluations -->
     <record id="view_performance_evaluation_form" model="ir.ui.view">
         <field name="name">hr.performance.evaluation.form</field>
         <field name="model">hr.performance.evaluation</field>
@@ -72,19 +78,22 @@
                 <header>
                     <button name="action_start_evaluation" type="object"
                         string="Start Evaluation" class="btn-primary"
-                        attrs="{'invisible': [('evaluation_status', '!=', 'draft')]}" />
+                        attrs="{'invisible': [('evaluation_status', '!=', 'draft')]}"
+                        groups="base.group_user" /> <!-- Accessible by Managers -->
                     <button
                         name="action_submit_to_employee" type="object"
                         string="Submit to Employee" class="btn-secondary"
-                        attrs="{'invisible': [('evaluation_status', '!=', 'in_progress')]}" />
+                        attrs="{'invisible': [('evaluation_status', '!=', 'in_progress')]}"/>
                     <button
                         name="action_employee_reject" type="object" string="Reject"
                         class="btn-danger"
-                        attrs="{'invisible': [('evaluation_status', '!=', 'employee_review')]}" />
+                        attrs="{'invisible': [('evaluation_status', '!=', 'employee_review')]}"
+                        groups="hr_performance.group_employee" />
                     <button
                         name="action_employee_accept" type="object" string="Accept"
                         class="btn-success"
-                        attrs="{'invisible': [('evaluation_status', '!=', 'employee_review')]}" />
+                        attrs="{'invisible': [('evaluation_status', '!=', 'employee_review')]}"
+                        groups="hr_performance.group_employee" />
                     <button
                         name="action_submit_to_hr" type="object" string="Submit to HR"
                         class="btn-warning"
@@ -92,7 +101,8 @@
                     <button
                         name="action_mark_completed" type="object"
                         string="Mark as Completed" class="btn-success"
-                        attrs="{'invisible': [('evaluation_status', '!=', 'submitted_to_hr')]}" />
+                        attrs="{'invisible': [('evaluation_status', '!=', 'submitted_to_hr')]}"
+                        groups="hr_performance.group_hr_director" />
                     <field
                         name="evaluation_status" widget="statusbar"
                         statusbar_visible="draft,in_progress,employee_review,submitted_to_hr,completed" />
@@ -113,7 +123,7 @@
                         }" />
                     </group>
                     <notebook>
-                        <page string="Evaulation Answers">
+                        <page string="Evaluation Answers">
                             <field name="answer_ids" nolabel="1" readonly="1">
                                 <tree>
                                     <field name="question" />
@@ -127,13 +137,11 @@
         </field>
     </record>
 
+    <!-- Action for Performance Evaluations -->
     <record id="action_performance_evaluation" model="ir.actions.act_window">
         <field name="name">Performance Evaluations</field>
         <field name="res_model">hr.performance.evaluation</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_performance_evaluation_tree" /> <!-- Default view -->
-        <field name="domain">[('employee_id.parent_id.user_id', '=', uid)]</field>
     </record>
-
-
 </odoo>

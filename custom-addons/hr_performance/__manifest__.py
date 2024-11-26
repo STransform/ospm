@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Hr_performance_new',
+    'name': 'hr_performance',
     'version': '',
-    'summary': """ Hr_performance_new Summary """,
+    'summary': """ hr_performance Summary """,
     'author': '',
     'website': '',
     'category': '',
     'depends': ['base', 'hr', 'survey'],
     'data': [
+        "security/hr_performance_group.xml",
         "security/ir.model.access.csv",
         "views/performance_measure_views.xml",
         "views/menu.xml",

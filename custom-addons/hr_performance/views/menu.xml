@@ -7,6 +7,7 @@
               name="Evaluation Schedules" 
               parent="menu_hr_performance_root" 
               action="action_evaluation_schedule" 
+              groups="hr_performance.group_hr_director,base.group_system"
               sequence="10"/>
 
     <!-- Submenu for Performance Evaluations -->
