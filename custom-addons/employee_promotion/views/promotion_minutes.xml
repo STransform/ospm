@@ -68,14 +68,11 @@
             </tree>
         </field>
     </record>
-
+    <!--Menu item for employee promotion-->
     <menuitem id="promotion_minutes_sub_menu"
               name="Promotion Minutes"
               parent="employee_promotion_menu"
               action="promotion_minutes_action"
               groups="employee_promotion.group_hr_recruitment_promotion_committe,employee_promotion.group_hr_recruitment_promotion_committe"
-
-              
-              
               />
 </odoo>

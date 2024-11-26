@@ -1,32 +1,50 @@
 .kanban-ribbon {
- font-size: 15px;
+ font-size: 12px;
  font-weight: bold;
  height: 20px;
  width: 150px;
  color: white !important;
- background: #ffac00;
+ background: #f9ce77;
  padding-top: 10px;
  padding-left: 10px;
  padding-right: 10px;
- border-radius: 6px;
+ border-radius: 2px;
  display: inline-flex;
  text-align: center;
 align-items: center;
 }
 
 .kanban-ribbon-done {
-    font-size: 15px;
+    font-size: 12px;
     font-weight: bold;
     height: 20px;
     width: 150px;
     color: white !important;
-    background: #28a745;
+    background: #71d187;
     padding-top: 10px;
     padding-left: 10px;
     padding-right: 10px;
-    border-radius: 6px;
+    border-radius: 2px;
     display: inline-flex;
     text-align: center;
-   align-items: center;
+    align-items: center;
    }
+
+   .kanban-ribbon-danger {
+    font-size: 12px;
+    font-weight: bold;
+    height: 20px;
+    width: 150px;
+    color: white !important;
+    background: #ff8686;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 2px;
+    display: inline-flex;
+    text-align: center;
+    align-items: center;
+   }
+
+   
    
