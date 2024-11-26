@@ -134,7 +134,7 @@ class HrPerformanceEvaluation(models.Model):
                 })
 
                 # Add the score to the total score
-                total_score += score
+                total_score += eval(answer_text) if answer_text.isnumeric() else 0
 
             # Store the total score in the evaluation record
             record.total_score = total_score
