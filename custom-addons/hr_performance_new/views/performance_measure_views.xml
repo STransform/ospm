@@ -70,17 +70,32 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_start_evaluation"
-                        type="object"
-                        string="Start Survey"
-                        class="btn-primary"
+                    <button name="action_start_evaluation" type="object"
+                        string="Start Evaluation" class="btn-primary"
                         attrs="{'invisible': [('evaluation_status', '!=', 'draft')]}" />
-
-                    <button name="action_mark_completed" type="object" string="Mark as Completed"
-                        class="btn-success"
+                    <button
+                        name="action_submit_to_employee" type="object"
+                        string="Submit to Employee" class="btn-secondary"
                         attrs="{'invisible': [('evaluation_status', '!=', 'in_progress')]}" />
-                    <field name="evaluation_status" widget="statusbar"
-                        statusbar_visible="draft,in_progress,completed" />
+                    <button
+                        name="action_employee_reject" type="object" string="Reject"
+                        class="btn-danger"
+                        attrs="{'invisible': [('evaluation_status', '!=', 'employee_review')]}" />
+                    <button
+                        name="action_employee_accept" type="object" string="Accept"
+                        class="btn-success"
+                        attrs="{'invisible': [('evaluation_status', '!=', 'employee_review')]}" />
+                    <button
+                        name="action_submit_to_hr" type="object" string="Submit to HR"
+                        class="btn-warning"
+                        attrs="{'invisible': [('evaluation_status', '!=', 'employee_accepted')]}" />
+                    <button
+                        name="action_mark_completed" type="object"
+                        string="Mark as Completed" class="btn-success"
+                        attrs="{'invisible': [('evaluation_status', '!=', 'submitted_to_hr')]}" />
+                    <field
+                        name="evaluation_status" widget="statusbar"
+                        statusbar_visible="draft,in_progress,employee_review,submitted_to_hr,completed" />
                 </header>
                 <sheet>
                     <group>
@@ -91,10 +106,15 @@
                         <field name="survey_id" readonly="1" />
                         <field name="evaluation_status" readonly="1" />
                         <field name="total_score" readonly="1" />
+                        <field name="employee_comment"
+                            attrs="{
+                            'invisible': [('evaluation_status', '=', 'draft')],
+                            'readonly': [('evaluation_status', '!=', 'employee_review')]
+                        }" />
                     </group>
                     <notebook>
                         <page string="Evaulation Answers">
-                            <field name="answer_ids" nolabel="1">
+                            <field name="answer_ids" nolabel="1" readonly="1">
                                 <tree>
                                     <field name="question" />
                                     <field name="answer" />
