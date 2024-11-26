@@ -8,7 +8,7 @@ class HrEvaluationSchedule(models.Model):
 
     name = fields.Char("Schedule Name", required=True, default=lambda self: _('New'))
     survey_id = fields.Many2one('survey.survey', "Survey Template", required=True, tracking=True)
-    scheduled_date = fields.Date("Scheduled Date", required=True, tracking=True)
+    scheduled_date = fields.Date("Deadline", required=True, tracking=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active'),

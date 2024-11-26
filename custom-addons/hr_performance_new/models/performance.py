@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+from datetime import datetime
 
 
 class HrPerformanceEvaluation(models.Model):
@@ -85,6 +86,8 @@ class HrPerformanceEvaluation(models.Model):
                         "The manager does not have a linked user/partner to start the survey."
                     )
                 )
+            if record.schedule_id.state == "closed" or record.schedule_id.scheduled_date < fields.Date.today():
+                raise ValidationError("The Form is either closed or expiered! please conctact Hr Director")
 
             # Create and link the survey response
             response = record.survey_id._create_answer(
@@ -107,16 +110,20 @@ class HrPerformanceEvaluation(models.Model):
                 "url": survey_url,
                 "target": "new",
             }
-            
+
     def action_submit_to_employee(self):
         """Submit the evaluation for employee review."""
         for record in self:
             if record.evaluation_status != "in_progress":
-                raise ValidationError(_("You can only submit evaluations that are in progress."))
+                raise ValidationError(
+                    _("You can only submit evaluations that are in progress.")
+                )
 
             if not record.response_id or record.response_id.state != "done":
-                raise ValidationError(_("The survey must be completed before submission."))
-            
+                raise ValidationError(
+                    _("The survey must be completed before submission.")
+                )
+
             # Fetch the answers from the survey
             answers = self.env["survey.user_input.line"].search(
                 [("user_input_id", "=", record.response_id.id)]
@@ -160,28 +167,22 @@ class HrPerformanceEvaluation(models.Model):
             # Store the total score in the evaluation record
             record.total_score = total_score
 
-
             record.evaluation_status = "employee_review"
-    
+
     def action_employee_reject(self):
         # emplooyee reject
         for record in self:
             if record.evaluation_status != "employee_review":
-                raise ValidationError(
-                    _("You can only reject after review")
-                )
-            record.evaluation_status ="employee_rejected"
-            
-    
+                raise ValidationError(_("You can only reject after review"))
+            record.evaluation_status = "employee_rejected"
+
     def action_employee_accept(self):
         # emplooyee reject
         for record in self:
             if record.evaluation_status != "employee_review":
-                raise ValidationError(
-                    _("You can only accept after review")
-                )
-            record.evaluation_status ="employee_accepted"
-    
+                raise ValidationError(_("You can only accept after review"))
+            record.evaluation_status = "employee_accepted"
+
     def action_submit_to_hr(self):
         """Submit the evaluation to HR."""
         for record in self:
@@ -191,8 +192,6 @@ class HrPerformanceEvaluation(models.Model):
                 )
 
             record.evaluation_status = "submitted_to_hr"
-
-
 
     def action_mark_completed(self):
         """Mark the evaluation as completed, store questions and answers, and calculate the total score."""
