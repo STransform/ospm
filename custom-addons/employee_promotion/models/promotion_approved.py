@@ -27,13 +27,38 @@ class PromotionApproved(models.Model):
         for record in self:
             record.state = 'done'
 
+    # def action_post_promotion(self):
+    #     job_title = self.request_name
+    #     posted_by = self.env.user.name
+    #     self.env['internal.vacancy'].create({
+    #         'name': job_title,
+    #         'job_description': "This Position is open for Application",
+    #         'posted_by': posted_by,
+    #         'job_position_id': self.job_position_id.id, 
+    #         'number_of_recruits': self.number_of_recruits,
+    #     })
+
     def action_post_promotion(self):
+        """
+        Opens a modal to prompt for the vacancy's start and end dates 
+        before creating a record in the internal.vacancy model.
+        """
         job_title = self.request_name
         posted_by = self.env.user.name
-        self.env['internal.vacancy'].create({
-            'name': job_title,
-            'job_description': "This Position is open for Application",
-            'posted_by': posted_by,
-            'job_position_id': self.job_position_id.id, 
-            'number_of_recruits': self.number_of_recruits,
-        })
+
+        # Open the modal form view
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Post Vacancy',
+            'res_model': 'internal.vacancy',
+            'view_mode': 'form',
+            'view_id': self.env.ref('employee_promotion.internal_vacancy_view_form').id,  # Replace with your form view ID
+            'target': 'new',
+            'context': {
+                'default_name': job_title,
+                'default_job_description': "This Position is open for Application",
+                'default_posted_by': posted_by,
+                'default_job_position_id': self.job_position_id.id,
+                'default_number_of_recruits': self.number_of_recruits,
+            },
+        }

@@ -1,5 +1,7 @@
+import uuid
 from odoo import models, fields, api
 from odoo.exceptions import UserError, ValidationError
+from datetime import date
 
 
 class InternalVacancy(models.Model):
@@ -12,27 +14,42 @@ class InternalVacancy(models.Model):
     job_position_id = fields.Many2one('hr.job', string='Job Position', required=True, readonly=True)
     posted_by = fields.Text( string='Posted By', readonly=True)
     number_of_recruits = fields.Integer(string='Number of Recruits', required=True, readonly=True)
+    start_date = fields.Date(string="Start Date", required=True,  default=fields.Date.today, readonly=True)
+    end_date = fields.Date(string="End Date", required=True)
+    remaining_days = fields.Char(string="Remaining Days", compute='_compute_remaining_days', readonly=True, store=True)
+    vacancy_id = fields.Char(string="Vacancy ID", required=True, readonly=True, default=lambda self: uuid.uuid4().hex)
 
 
+    def write(self, vals):
+         # Ensure end_date is not modified after creation
+        if 'end_date' in vals and any(record.id for record in self):
+            raise ValidationError("You cannot modify the End Date after the vacancy is created.")
+        return super(InternalVacancy, self).write(vals)
 
-    # def action_apply(self):
-    #     position = self.name
-    #     # Retrieve the currently logged-in user
-    #     user = self.env.user
+    @api.model
+    def create(self, vals):
+        # Initialize readonly behavior or additional logic here if needed
+        record = super(InternalVacancy, self).create(vals)
+        return record
 
-    #     # Fetch the employee record associated with the user
-    #     employee = self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1)
-    #     if not employee:
-    #         raise ValueError("No employee record found for the current user.")
+    @api.depends('start_date', 'end_date')
+    def _compute_remaining_days(self):
+        for record in self:
+            if record.end_date and record.start_date:
+                delta = (record.end_date - date.today()).days
+                if delta > 0:
+                    record.remaining_days = f"{delta} days remaining"
+                else:
+                    record.remaining_days = "Out of Date"
+            else:
+                record.remaining_days = "Invalid Dates"
 
-    #     # Create the internal application
-    #     self.env['internal.application'].create({
-    #         'position': position,
-    #         'name_of_employees': employee.id,  # Save the employee ID
-    #         'job_position_id': self.job_position_id.id
-    #     })
 
-    # Check if the employee has already applied for this position
+    @api.constrains('end_date')
+    def _check_end_date(self):
+        for record in self:
+            if record.end_date and record.end_date <= record.start_date:
+                raise ValidationError("End Date cannot be earlier than or the same as Start Date.")
 
     def action_apply(self):
         # Get the employee record of the current user
@@ -44,6 +61,7 @@ class InternalVacancy(models.Model):
             ('name_of_employees', '=', employee.id),
             ('job_position_id', '=', self.job_position_id.id), 
             ('position', '=', self.name),
+            ('vacancy_id', '=', self.vacancy_id)
         ], limit=1)
 
         if existing_application:
@@ -54,8 +72,11 @@ class InternalVacancy(models.Model):
         self.env['internal.appilication'].create({
             'position': self.name,
             'name_of_employees': employee.id,  # Use the employee record ID
-            'job_position_id': self.job_position_id.id
+            'job_position_id': self.job_position_id.id, 
+            'vacancy_id': self.vacancy_id
         })
+
+
 
 
 

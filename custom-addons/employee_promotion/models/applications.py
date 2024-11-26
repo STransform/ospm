@@ -21,6 +21,9 @@ class Appilications(models.Model):
         'ir.attachment', string='Attachments',
         help="Attach documents related to this training session.",
     )
+    vacancy_id = fields.Char(string="Vacancy ID", required=True, readonly=True)
+
+
 
 
     state = fields.Selection(
