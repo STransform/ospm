@@ -86,7 +86,7 @@
         </field>
     </record>
     <record id="hr_medical_coverage_dashboard_action" model='ir.actions.client'>
-        <field name="name">Training Dashboard</field>
+        <field name="name">Dashboard</field>
         <field name='tag'>hr_medical_coverage.dashboard</field>
     </record>
 </odoo>

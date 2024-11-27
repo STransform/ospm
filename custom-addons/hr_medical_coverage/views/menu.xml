@@ -10,8 +10,7 @@
     <record id="action_medical_coverage_organization" model="ir.actions.act_window">
         <field name="name">Medical Organization</field>
         <field name="res_model">hr.medical.coverage.organization</field>
-        <field name="view_mode">tree, form</field>
-
+        <field name="view_mode">tree,form</field>
     </record>
 
     <!-- Main Menu for Medical Coverage -->
