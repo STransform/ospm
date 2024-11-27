@@ -6,6 +6,14 @@
         <field name="view_mode">tree,form</field>
     </record>
 
+    <!-- action for medical organization -->
+    <record id="action_medical_coverage_organization" model="ir.actions.act_window">
+        <field name="name">Medical Organization</field>
+        <field name="res_model">hr.medical.coverage.organization</field>
+        <field name="view_mode">tree, form</field>
+
+    </record>
+
     <!-- Main Menu for Medical Coverage -->
     <menuitem id="menu_medical_coverage_root"
         name="Manage Medical Coverage"
@@ -24,8 +32,14 @@
 
     <!-- Requests Submenu under Medical Coverage -->
     <menuitem id="menu_medical_coverage"
-        name="Requests"
+        name="Requests for Coverage"
         parent="menu_medical_coverage_root"
         action="action_medical_coverage"
         sequence="2" />
+
+    <menuitem id="menu_medical_coverage_organization"
+        name="Organization registeration"
+        parent="menu_medical_coverage_root"
+        action="action_medical_coverage_organization"
+        sequence="3" />
 </odoo>

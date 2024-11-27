@@ -8,6 +8,7 @@
         'security/hr_medical_coverage_group.xml',
         'security/ir.model.access.csv', 
         'views/medical_coverage.xml', 
+        'views/medical_coverage_organization.xml',
         'views/menu.xml', 
     ], 
     'assets': {
