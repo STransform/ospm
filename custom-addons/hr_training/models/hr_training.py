@@ -57,21 +57,25 @@ class Training(models.Model):
         for record in self:
             record.state = 'approved'
             # Notify all users in the system
-            message = _("Training '%s' has been approved.") % record.name
-            if record.created_by:
-                        record.message_post(
-                            partner_ids=[record.created_by.partner_id.id],  # Notify the creator only
-                            body=message,
-                            subject=_("Training Approved"),
-                            message_type='notification',
-                            subtype_id=self.env.ref('mail.mt_comment').id
-                        )
-    
-       
+
+            # if record.created_by:
+            # Send a danger notification to the creator
+            record.created_by.notify_success("Training is Accepted by CEO", sticky=True)
+            #    if record.created_by:
+            #             message = _('Training %s has been approved') % record.name
+            #             self._notify_creator(record.created_by, message, title='Training Approved')  
+            # channel = ('otechenterprise', 'res.partner', record.created_by.partner_id.id)
+            # message = {
+            #     'title': 'Training Approved',
+            #     'body': f'The training "{record.name}" has been approved.',
+            #     'sticky': False
+            # }
+            # self.env['bus.bus']._sendone(channel, 'notify_info', message)   
 
     def action_refused(self):
         for record in self:
             record.state = 'refused'
+            record.created_by.notify_danger("Training is refused by CEO", sticky=True)
 
     def actions_taken(self):
         for record in self:

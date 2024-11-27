@@ -1,0 +1,116 @@
+<odoo>
+    <!-- Form View for Training -->
+    <record id="training_request_form" model="ir.ui.view">
+        <field name="name">hr.training.request.form</field>
+        <field name="model">dept.request</field>
+        <field name="arch" type="xml">
+            <form string="Training Request">
+                <header>
+                    <button name="action_request_approval" string="Request Training" type="object" class="btn-primary"   groups="hr_training.group_hr_training_department_director" attrs="{'invisible': [('state', 'in', ['requested', 'approved'])]}"/>
+                    <button name="action_approve_request" string="Approve" type="object" class="btn-primary"   groups="hr_training.group_hr_training_hr_officer" attrs="{'invisible': [('state', 'in', ['draft', 'approved', 'refused'])]}"/>
+                    <button name="action_refuse_request" string="Refuse" type="object" class="btn-primary"   groups="hr_training.group_hr_training_hr_officer" attrs="{'invisible': [('state', 'in', ['draft', 'approved', 'refused'])]}"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,requested,approved,refused"/>
+                </header>
+                <sheet>
+                    <h1 class="d-flex flex-row">
+                        <field name="name" placeholder="Request Name" required="True" style="font-size: min(4vw, 2.6rem);"/>
+                    </h1>
+                    <group>
+                        <field name='department_id' />
+                    </group>
+                    <group>
+                        <field name="attachment_ids" widget="many2many_binary"/>
+                    </group>
+                    <div>
+                        <span>Your training description should be descriptive and clear.</span>
+                    </div>
+                    <field name='description' string='Description'/>
+
+
+                    <notebook>
+                        <page string="Training Programs">
+                            <field name="training_programs">
+                               <tree >  <!--  editable="bottom"-->
+                                    <field name="program_name"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="employee_count"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Tree View for Training -->
+    <record id="view_training_tree" model="ir.ui.view">
+        <field name="name">hr.training.request.tree</field>
+        <field name="model">dept.request</field>
+        <field name="arch" type="xml">
+            <tree string="Training Management">
+                <field name="name"/>
+                <field name='department_id' />
+            </tree>
+        </field>
+    </record>
+    <!-- 
+     <record id="hr_training_kanban" model="ir.ui.view">
+        <field name="name">hr.training.view.kanban</field>
+        <field name="model">hr.training</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="row">
+                                <div class="col-12">
+                                    <strong>
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div>
+                                <field name="department_id"/>
+                            </div>
+
+                            <t t-if="record.state.raw_value == 'approved'">
+                                <hr class="mt8 mb8"/>
+                                <div class="text-success">
+                                    <field name="state"/>
+                                </div>
+                            </t>
+
+                            <t t-if="record.state.raw_value == 'refused'">
+                                <hr class="mt8 mb8"/>
+                                <div class="text-danger">
+                                    <field name="state"/>
+                                </div>
+                            </t>
+
+                            <t t-if="record.state.raw_value == 'taken'">
+                                <hr class="mt8 mb8"/>
+                                <div class="text-danger">
+                                    <field name="state"/>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record> -->
+
+
+    <!-- Action to Open the Views -->
+    <record id="dept_request_action" model="ir.actions.act_window">
+        <field name="name">Training Request</field>
+        <field name="res_model">dept.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context"  >{'group_by': 'department_id'}</field>
+    </record>
+
+</odoo>
