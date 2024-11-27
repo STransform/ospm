@@ -194,12 +194,21 @@ class TransferRequest(models.Model):
         # self.employee_id.department_id = self.new_department_id.id
         # self.employee_id.job_id = self.requested_position.id
 
-        # Log previous information for tracking
-        previous_department = self.employee_id.department_id
-        previous_job = self.employee_id.job_id
+      
         self.employee_id.write({
             'department_id': self.new_department_id.id,
             'job_id': self.requested_position.id
+        })
+
+        self.env['transfer.history'].create({
+        'employee_id': self.employee_id.id,
+        'transfer_date': fields.Datetime.now(),
+        'from_department_id': self.department_id.id,
+        'to_department_id': self.new_department_id.id,
+        'from_position_id': self.current_job_position.id,
+        'to_position_id': self.requested_position.id,
+        'reason': self.reason,
+        'approved_by': self.env.user.id,
         })
         if self.new_department_id != self.employee_id.department_id:
             raise ValidationError(_("Please Update The employee Information before making the transfer Completed"))

@@ -23,35 +23,55 @@
             <sheet>
                 <header>
                     <!-- Submit button -->
-                    <button name="submit" type="object" string="Submit" attrs="{'invisible': [('status', '!=', 'draft')]}"/>
+                    <button name="submit" type="object" string="Submit" attrs="{'invisible': [('status', '!=', 'draft')]}" class="btn-primary"
+                    confirm="Are you sure you want to submit the request?"
+                    />
 
                     <!-- Approve and Reject buttons for current department manager -->
-                    <button name="approve_by_current_department" type="object" string="Approve"
-                        attrs="{'invisible': ['|',('status', '!=', 'submitted'),('is_current_manager','=', False)]}"/>
+                    <button name="approve_by_current_department" type="object" string="Approve" class="btn-success"
+                        attrs="{'invisible': ['|',('status', '!=', 'submitted'),('is_current_manager','=', False)]}"
+                        confirm="Are you sure you want to Approve the Request?"
+                        />
                     <button name="reject" type="object" string="Reject"
-                        attrs="{'invisible': ['|',('status', '!=', 'submitted'),('is_current_manager','=', False)]}"/>
+                        attrs="{'invisible': ['|',('status', '!=', 'submitted'),('is_current_manager','=', False)]}" class="btn-danger" 
+                        confirm="Are you sure you want to Reject the Request?"
+                        />
 
                     <!-- Approve and Reject buttons for new department manager -->
                     <button name="approve_by_new_department" type="object" string="Approve"
-                        attrs="{'invisible': ['|',('status', '!=', 'approved_by_current'),('is_new_manager','=', False)]}"/>
+                        attrs="{'invisible': ['|',('status', '!=', 'approved_by_current'),('is_new_manager','=', False)]}" class="btn-success"
+                        confirm="Are you sure you want to Approve the Request?"
+                        />
                     <button name="reject" type="object" string="Reject"
-                        attrs="{'invisible': ['|',('status', '!=', 'approved_by_current'),('is_new_manager','=', False)]}"/>
+                        attrs="{'invisible': ['|',('status', '!=', 'approved_by_current'),('is_new_manager','=', False)]}" class="btn-danger"
+                        confirm="Are you sure you want to Reject the Request?"
+                        />
 
                     <!-- Approve and Reject buttons for DCEO -->
                     <button name="approve_by_dceo" type="object" string="Approve"
-                        attrs="{'invisible': [('status', '!=', 'approved_by_new')]}" groups="planning.group_dceo"/>
+                        attrs="{'invisible': [('status', '!=', 'approved_by_new')]}" groups="planning.group_dceo" class="btn-success"
+                        confirm="Are you sure you want to Approve the Request?"
+                        />
                     <button name="reject" type="object" string="Reject"
-                        attrs="{'invisible': [('status', '!=', 'approved_by_new')]}" groups="planning.group_dceo"/>
+                        attrs="{'invisible': [('status', '!=', 'approved_by_new')]}" groups="planning.group_dceo" class="btn-danger"
+                        confirm="Are you sure you want to Reject the Request?"
+                        />
 
                     <!-- Approve and Reject buttons for CEO -->
                     <button name="approve_by_ceo" type="object" string="Approve"
-                        attrs="{'invisible': [('status', '!=', 'approved_by_dceo')]}" groups="planning.group_ceo"/>
+                        attrs="{'invisible': [('status', '!=', 'approved_by_dceo')]}" groups="planning.group_ceo" class="btn-success"
+                        confirm="Are you sure you want to Approve the Request?"
+                        />
                     <button name="reject" type="object" string="Reject"
-                        attrs="{'invisible': [('status', '!=', 'approved_by_dceo')]}" groups="planning.group_ceo"/>
+                        attrs="{'invisible': [('status', '!=', 'approved_by_dceo')]}" groups="planning.group_ceo" class="btn-danger"
+                        confirm="Are you sure you want to Reject the Request?"
+                        />
 
                     <!-- Process transfer button for HR Office -->
                     <button name="hr_office_proceed" type="object" string="Process the Transfer"
-                        attrs="{'invisible': [('status', '!=', 'approved_by_ceo')]}" groups="planning.group_hr_office"/>
+                        attrs="{'invisible': [('status', '!=', 'approved_by_ceo')]}" groups="planning.group_hr_office" class="btn-success"
+                        confirm="Are you sure you want to procced the Request?"
+                        />
 
                     <field name="status" widget="statusbar" statusbar_visible="draft,submitted,approved_by_current,approved_by_new,approved_by_dceo,approved_by_ceo,completed,rejected"/>
                 </header>
@@ -69,8 +89,8 @@
                     <group>
                         <group>
                             <field name="employee_id" readonly="1"/>
-                            <field name="department_id" readonly="1"/>
-                            <field name="new_department_id" attrs="{'readonly':[('status','!=','draft')]}"/>
+                            <field name="department_id" readonly="1" options="{'no_create_edit': True}"/>
+                            <field name="new_department_id" attrs="{'readonly':[('status','!=','draft')]}" options="{'no_create_edit': True}"/>
                         </group>
                         <group>
                             <field name="email" readonly="1"/>
@@ -106,14 +126,14 @@
                     <!-- DCEO Comment -->
                     <page string="D/CEO Comment" attrs="{'invisible':[('status','in',['draft', 'submitted', 'approved_by_current'])]}">
                         <group>
-                            <field name="dceo_comment" groups="planning.group_dceo" attrs="{'readonly':[('is_dceo','=',False)]}"/>
+                            <field name="dceo_comment" attrs="{'readonly':[('is_dceo','=',False)]}"/>
                         </group>
                     </page>
 
                     <!-- CEO Comment -->
                     <page string="CEO Comment" attrs="{'invisible':[('status','in',['draft', 'submitted', 'approved_by_current', 'approved_by_new'])]}">
                         <group>
-                            <field name="ceo_comment" groups="planning.group_ceo" attrs="{'readonly':[('is_ceo','=',False)]}"/>
+                            <field name="ceo_comment" attrs="{'readonly':[('is_ceo','=',False)]}"/>
                         </group>
                     </page>
                 </notebook>
