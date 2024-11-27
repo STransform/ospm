@@ -55,3 +55,9 @@ package.json
 
 # Virtual Environment by Kuma
 /.venv/
+
+# kumas ignore file 
+/custom-addons/hr_grade_rank/
+/custom-addons/oh_appraisal/
+/visualize/
+
