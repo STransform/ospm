@@ -12,4 +12,7 @@ access_hr_medical_coverage3,access_hr_medical_coverage,model_hr_medical_coverage
 access_hr_medical_cost_item3,access_hr_medical_cost_item,model_hr_medical_cost_item,hr_medical_coverage.group_hr_director,1,1,1,0
 
 
-access_hr_medical_coverage_organization_user,access_hr_medical_coverage_organization_user,model_hr_medical_coverage_organization,,1,1,1,1
+access_hr_medical_coverage_organization,access_hr_medical_coverage_organization,model_hr_medical_coverage_organization,,1,1,1,1
+
+
+access_hr_medical_pre_request, access_hr_medical_pre_request,model_hr_medical_pre_request,base.group_user, 1,1,1,1
