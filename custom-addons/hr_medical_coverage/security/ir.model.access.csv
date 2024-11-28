@@ -15,4 +15,4 @@ access_hr_medical_cost_item3,access_hr_medical_cost_item,model_hr_medical_cost_i
 access_hr_medical_coverage_organization,access_hr_medical_coverage_organization,model_hr_medical_coverage_organization,,1,1,1,1
 
 
-access_hr_medical_pre_request, access_hr_medical_pre_request,model_hr_medical_pre_request,base.group_user, 1,1,1,1
+access_hr_medical_pre_request,access_hr_medical_pre_request,model_hr_medical_pre_request,base.group_user,1,1,1,1

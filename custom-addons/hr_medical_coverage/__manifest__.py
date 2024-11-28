@@ -9,6 +9,7 @@
         'security/ir.model.access.csv', 
         'views/medical_coverage.xml', 
         'views/medical_coverage_organization.xml',
+        'views/medical_pre_request.xml',
         'views/menu.xml', 
     ], 
     'assets': {
