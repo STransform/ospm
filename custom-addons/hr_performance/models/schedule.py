@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+from datetime import datetime, date
 
 class HrEvaluationSchedule(models.Model):
     _name = 'hr.evaluation.schedule'
@@ -7,6 +8,8 @@ class HrEvaluationSchedule(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char("Schedule Name", required=True)
+    from_date = fields.Date(string="From", required=True, tracking=True)
+    to_date = fields.Date(string="To",required=True, tracking=True)
     survey_id = fields.Many2one('survey.survey', "Survey Template", required=True, tracking=True)
     scheduled_date = fields.Date("Deadline", required=True, tracking=True)
     state = fields.Selection([
@@ -33,3 +36,26 @@ class HrEvaluationSchedule(models.Model):
     def action_close_schedule(self):
         """Close the schedule when evaluations are completed."""
         self.state = 'closed'
+        
+    
+    # validate from to date
+    @api.constrains('from_date', 'to_date')
+    def _check_dates(self):
+        for record in self:
+            if record.to_date and record.from_date and record.to_date < record.from_date:
+                raise ValidationError("'To' date cannot be earlier than 'From' date.")
+    
+    
+    # close form if it is expired
+    # @api.depends('scheduled_date', 'state')
+    # def update_status_based_on_deadline(self):
+    #     today = date.today()
+    #     print("================>", today)
+    #     records_to_update = self.search([
+    #         ('state', '!=', 'closed'),
+    #         ('scheduled_date', '<', today)
+    #     ])
+    #     for record in records_to_update:
+    #         record.state = 'closed'
+
+    

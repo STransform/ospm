@@ -6,7 +6,7 @@
     'author': '',
     'website': '',
     'category': '',
-    'depends': ['base', 'hr', 'survey'],
+    'depends': ['base', 'hr', 'survey', 'mail'],
     'data': [
         "security/hr_performance_group.xml",
         "security/ir.model.access.csv",
