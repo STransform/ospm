@@ -1,8 +1,0 @@
-<odoo>
-    <record id="training_dashboard_action" model='ir.actions.client'>
-        <field name="name">Training Dashboard</field>
-        <field name='tag'>training_dashboard_tag</field>
-    </record>
-    
-    <menuitem id="Manage_training" name="Manage Training" parent="menu_hr_training" action="training_dashboard_action"/>
-</odoo>
