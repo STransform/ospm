@@ -23,8 +23,7 @@
 
     <!-- Main Menu for Medical Coverage -->
     <menuitem id="menu_medical_coverage_root"
-        name="Manage Medical Coverage"
-        parent="hr.menu_hr_root"
+        name="Medical Coverage"
         sequence="20" />
 
 
@@ -39,20 +38,21 @@
 
     <!-- Requests Submenu under Medical Coverage -->
     <menuitem id="menu_medical_coverage"
-        name="Requests for Medical Coverage"
+        name="Refund"
         parent="menu_medical_coverage_root"
         action="action_medical_coverage"
         sequence="2" />
 
     <menuitem id="menu_medical_pre_request"
-        name="Requests for Medical"
+        name="Credit"
         parent="menu_medical_coverage_root"
         action="action_medical_pre_request"
         sequence="2" />
 
     <menuitem id="menu_medical_coverage_organization"
-        name="Organization registeration"
+        name="Organization Registration"
         parent="menu_medical_coverage_root"
         action="action_medical_coverage_organization"
+        groups="hr_medical_coverage.group_hr_director"
         sequence="4" />
 </odoo>
