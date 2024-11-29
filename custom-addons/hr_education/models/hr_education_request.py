@@ -95,6 +95,10 @@ class HrEducationRequest(models.Model):
     def action_reject_planning(self):
         for record in self:
             record.state_by_planning = 'rejected'
+            
+    def action_resubmit_planning(self):
+        for record in self:
+            record.state_by_planning = 'pending'
 
     _sql_constraints = [
         (
