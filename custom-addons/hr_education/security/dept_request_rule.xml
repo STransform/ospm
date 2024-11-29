@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<record id="dept_request_rule_creator" model="ir.rule">
+    <field name="name">Dept Request: Created by User</field>
+    <field name="model_id" ref="model_education_department_request"/>
+    <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+</record>
+
+<record id="dept_request_rule_hr_manager" model="ir.rule">
+    <field name="name">Dept Request: HR Manager</field>
+    <field name="model_id" ref="model_education_department_request"/>
+    <field name="domain_force">[('state', '!=', "draft")]</field>
+    <field name="groups" eval="[(4, ref('planning.group_hr_director'))]"/>
+</record>
+</odoo>
+
+
