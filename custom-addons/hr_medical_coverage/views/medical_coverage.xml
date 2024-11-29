@@ -65,7 +65,8 @@
                                 attrs="{'readonly': [('status', '!=', 'draft')]}" />
                         </group>
                         <group string="Total Requested Amount">
-                            <field name="totalRequestedAmount" readonly="1" />
+                            <field name="totalRequestedAmount" readonly="1"
+                                decoration-success="totalRequestedAmount > 0" />
                         </group>
                     </group>
                 </sheet>

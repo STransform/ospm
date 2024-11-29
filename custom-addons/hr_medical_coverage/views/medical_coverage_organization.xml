@@ -5,7 +5,7 @@
         <field name="name">hr_medical_coverage_organization.view.form</field>
         <field name="model">hr.medical.coverage.organization</field>
         <field name="arch" type="xml">
-            <form string="Medical Organization">
+            <form string="Medical Institution">
                 <sheet>
                     <group col="2">
                         <group>
@@ -34,7 +34,7 @@
         <field name="name">hr_medical_coverage_organization.view.tree</field>
         <field name="model">hr.medical.coverage.organization</field>
         <field name="arch" type="xml">
-            <tree string="Medical Organization">
+            <tree string="Medical Institution">
                 <field name="name" />
                 <field name="organization_type" />
                 <field name="organization_category" />

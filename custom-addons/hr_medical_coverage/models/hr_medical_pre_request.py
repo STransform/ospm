@@ -11,9 +11,12 @@ class HrMedicalPreRequest(models.Model):
 
     description = fields.Text(string="Description", required=True, tracking=True)
     organization_id = fields.Many2one(
-        "hr.medical.coverage.organization", string="Organization"
+        "hr.medical.coverage.organization",
+        string="Institution",
+        required=True,
+        tracking=True,
     )
-    hr_comment = fields.Text(string="Hr Comment")
+    hr_comment = fields.Text(string="Hr Comment", tracking=True)
     status = fields.Selection(
         [
             ("draft", "Draft"),

@@ -8,11 +8,11 @@ class HrMedicalOrganization(models.Model):
     _inherit = "mail.thread"
     _order = "create_date desc"
 
-    name = fields.Char(string="Organization Name", required=True, tracking=True)
+    name = fields.Char(string="Institution Name", required=True, tracking=True)
     location = fields.Char(string="Location", required=True, tracking=True)
     phone_number = fields.Char(string="Phone Number", required=True, tracking=True)
     organization_type = fields.Selection(
-        string="Organization Type",
+        string="Institution Type",
         selection=[
             ("governmental", "Governmental"),
             ("private", "Private"),
@@ -21,7 +21,7 @@ class HrMedicalOrganization(models.Model):
          tracking=True
     )
     organization_category = fields.Selection(
-        string="Organization Category",
+        string="Institution Category",
         selection=[
             ("hospital", "Hospital"),
             ("clinic", "Clinic"),
