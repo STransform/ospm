@@ -11,7 +11,7 @@
     <field name="name">Dept Request: HR Manager</field>
     <field name="model_id" ref="model_education_department_request"/>
     <field name="domain_force">[('state', '!=', "draft")]</field>
-    <field name="groups" eval="[(4, ref('planning.group_hr_director'))]"/>
+    <field name="groups" eval="[(4, ref('planning.group_hr_office'))]"/>
 </record>
 </odoo>
 
