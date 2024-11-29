@@ -1,7 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hr_training,access_hr_training,model_hr_training,base.group_user,1,1,1,1
-hr_training.access_dept_request,access_dept_request,hr_training.model_dept_request,base.group_user,1,1,1,1
-hr_training.access_training_program,access_training_program,hr_training.model_training_program,base.group_user,1,1,1,1
-hr_training.access_hrtraining_program,access_hrtraining_program,hr_training.model_hrtraining_program,base.group_user,1,1,1,1
-hr_training.access_hrtraining_request,access_hrtraining_request,hr_training.model_hrtraining_request,base.group_user,1,0,0,0
-hr_training.access_hrtraining_directorate,access_hrtraining_directorate,hr_training.model_hrtraining_request,hr_training.group_hr_training_hr_officer,1,1,1,1
