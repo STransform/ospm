@@ -1,14 +1,12 @@
 {
-    'name': "Training",
+    'name': "Education Planning",
     'version':'1.0.0', 
     'category': 'Human Resources', 
-    'author': "yohanes Mesfin",
-    'depends' : ['hr', 'base', 'web', 'mail', 'bus', 'web_notify'], 
+    'author': "Chala Olani",
+    'depends' : ['hr', 'base', 'web', 'mail', 'bus', 'web_notify','planning'], 
     'data' : [
         'security/ir.model.access.csv',
-        'security/groups.xml',
         'security/dept_request_rule.xml',
-        # 'views/training_view.xml', 
         'views/dept_request.xml',
         'views/hr_request.xml',
         'views/menu.xml', 
@@ -19,5 +17,8 @@
             'hr_training/static/src/**/*',
         ],
     },
-    'installable': True, 
+    "installable": True,
+    "auto_install": False,
+    "application": True,
+    'license': 'LGPL-3'
 }
