@@ -1,7 +1,7 @@
 <odoo>
     <data>
         <menuitem id="menu_hr_education" name="Education" parent="hr.menu_hr_root"/>
-        <menuitem id="dept_education_request_menu" name="Education Request" parent="menu_hr_education" action="dept_education_request_action" groups="planning.group_department_manager,planning.group_hr_director"/>
-        <menuitem id="hr_director_request_menu" name="HR Director Plan" parent="menu_hr_education" action="hr_director_request_action" groups="planning.group_planning_directorate,planning.group_hr_director,planning.group_ceo"/>
+        <menuitem id="dept_education_request_menu" name="Education Request" parent="menu_hr_education" action="dept_education_request_action" groups="planning.group_department_manager,planning.group_hr_office"/>
+        <menuitem id="hr_office_request_menu" name="HR Office Education Plan" parent="menu_hr_education" action="hr_office_request_action" groups="planning.group_planning_directorate,planning.group_hr_office,planning.group_ceo"/>
     </data>
 </odoo>

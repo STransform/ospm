@@ -46,9 +46,9 @@
                         <field name="attachment_ids" widget="many2many_binary"/>
                     </group>
                     <div>
-                        <span>Your education request description should be descriptive and clear.</span>
+                        <strong>Description</strong>
                     </div>
-                    <field name='description' string='Description'/>
+                    <field name='description' string='Description' placeholder="Your education request description should be descriptive and clear."/>
 
                     <notebook>
                         <page string="Education Programs">
@@ -81,53 +81,6 @@
             </tree>
         </field>
     </record>
-    <!-- 
-     <record id="hr_training_kanban" model="ir.ui.view">
-        <field name="name">hr.training.view.kanban</field>
-        <field name="model">hr.training</field>
-        <field name="arch" type="xml">
-            <kanban class="o_kanban_mobile" sample="1">
-                <templates>
-                    <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_global_click">
-                            <div class="row">
-                                <div class="col-12">
-                                    <strong>
-                                        <field name="name"/>
-                                    </strong>
-                                </div>
-                            </div>
-                            <div>
-                                <field name="department_id"/>
-                            </div>
-
-                            <t t-if="record.state.raw_value == 'approved'">
-                                <hr class="mt8 mb8"/>
-                                <div class="text-success">
-                                    <field name="state"/>
-                                </div>
-                            </t>
-
-                            <t t-if="record.state.raw_value == 'rejected'">
-                                <hr class="mt8 mb8"/>
-                                <div class="text-danger">
-                                    <field name="state"/>
-                                </div>
-                            </t>
-
-                            <t t-if="record.state.raw_value == 'taken'">
-                                <hr class="mt8 mb8"/>
-                                <div class="text-danger">
-                                    <field name="state"/>
-                                </div>
-                            </t>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record> -->
-    
 
     <!-- Action to Open the Views -->
     <record id="dept_education_request_action" model="ir.actions.act_window">

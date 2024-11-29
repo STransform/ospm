@@ -1,13 +1,13 @@
 <odoo>
     <!-- Form View for Education -->
-    <record id="hr_director_education_request_form" model="ir.ui.view">
-        <field name="name">hr.director.education.request.form</field>
+    <record id="hr_office_education_request_form" model="ir.ui.view">
+        <field name="name">hr.office.education.request.form</field>
         <field name="model">hr.education.request</field>
         <field name="arch" type="xml">
 
-            <form string="HR Director Education Request">
+            <form string="HR Office Education Request">
               <header>
-                    <!-- approval by dco -->
+                    <!-- approval by planning directorte -->
                     <button name="action_approve_planning" type="object" string="Approved" groups="planning.group_planning_directorate" attrs="{'invisible': [('state_by_planning', 'in', ['approved', 'rejected'])]}"/>
                     <button name="action_reject_planning" type="object" string="Refuse" groups="planning.group_planning_directorate" attrs="{'invisible': [('state_by_planning', 'in', ['approved', 'rejected'])]}"/>
 
@@ -26,9 +26,9 @@
                         <field name="year"/>
                     </group>
                     <div>
-                        <span>Your education description should be descriptive and clear.</span>
+                        <strong>Description</strong>
                     </div>
-                    <field name='description' string='Description'/>
+                    <field name='description' string='Description' placeholder="Your education description should be descriptive and clear."/>
                     <field name="state_by_ceo" invisible="1"/>
                     <field name="state_by_planning" invisible="1"/>
                     <field name="combined_state" invisible="1"/>
@@ -50,8 +50,8 @@
 
 
     <!-- Tree View for Education -->
-    <!-- <record id="hr_director_education_tree" model="ir.ui.view">
-        <field name="name">hr.director.eduction.request.tree</field>
+    <record id="hr_office_education_tree" model="ir.ui.view">
+        <field name="name">hr.office.eduction.request.tree</field>
         <field name="model">hr.education.request</field>
         <field name="arch" type="xml">
             <tree string="Education Management">
@@ -60,7 +60,7 @@
                 <field name="total_employee_count" />
             </tree>
         </field>
-    </record> -->
+    </record>
     <record id="view_hr_education_request_kanban" model="ir.ui.view">
         <field name="name">hr.education.request.kanban</field>
         <field name="model">hr.education.request</field>
@@ -94,10 +94,10 @@
 
 
     <!-- Action to Open the Views -->
-    <record id="hr_director_request_action" model="ir.actions.act_window">
-        <field name="name">HR Director Education Plan</field>
+    <record id="hr_office_request_action" model="ir.actions.act_window">
+        <field name="name">HR Office Education Plan</field>
         <field name="res_model">hr.education.request</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         
     </record>
 
