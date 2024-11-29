@@ -1,15 +1,29 @@
 <odoo>
-    <!-- Action for Medical Coverage Requests -->
+    <!-- Action for Refund -->
     <record id="action_medical_coverage" model="ir.actions.act_window">
-        <field name="name">Medical Coverage Requests</field>
+        <field name="name">Refund</field>
         <field name="res_model">hr.medical.coverage</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- action for medical organization -->
+    <record id="action_medical_coverage_organization" model="ir.actions.act_window">
+        <field name="name">Medical Organization</field>
+        <field name="res_model">hr.medical.coverage.organization</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- action for medical pre request -->
+
+    <record id="action_medical_pre_request" model="ir.actions.act_window">
+        <field name="name">Credit</field>
+        <field name="res_model">hr.medical.pre.request</field>
         <field name="view_mode">tree,form</field>
     </record>
 
     <!-- Main Menu for Medical Coverage -->
     <menuitem id="menu_medical_coverage_root"
-        name="Manage Medical Coverage"
-        parent="hr.menu_hr_root"
+        name="Medical Coverage"
         sequence="20" />
 
 
@@ -24,8 +38,21 @@
 
     <!-- Requests Submenu under Medical Coverage -->
     <menuitem id="menu_medical_coverage"
-        name="Requests"
+        name="Refund"
         parent="menu_medical_coverage_root"
         action="action_medical_coverage"
         sequence="2" />
+
+    <menuitem id="menu_medical_pre_request"
+        name="Credit"
+        parent="menu_medical_coverage_root"
+        action="action_medical_pre_request"
+        sequence="2" />
+
+    <menuitem id="menu_medical_coverage_organization"
+        name="Institution"
+        parent="menu_medical_coverage_root"
+        action="action_medical_coverage_organization"
+        groups="hr_medical_coverage.group_hr_director"
+        sequence="4" />
 </odoo>

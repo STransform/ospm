@@ -3,11 +3,11 @@
         <field name="name">hr_medical_coverage_form</field>
         <field name="model">hr.medical.coverage</field>
         <field name="arch" type="xml">
-            <form string="Medical Coverage Request">
+            <form string="Refund">
                 <header>
                     <!-- Submit Button (Visible only in Draft State) -->
                     <button name="actionSubmit" type="object" string="Submit"
-                        attrs="{'invisible': [('status', '!=', 'draft')]}" class="btn-primary"
+                        attrs="{'invisible': [('is_employee', '=', False)]}" class="btn-primary"
                         confirm="Are you sure you want to process this?" />
 
                     <!-- HR Approval Buttons (Visible only in Submitted State) -->
@@ -35,9 +35,10 @@
                 </header>
                 <sheet>
                     <group>
+                        <field name="is_employee" invisible="1"/>
                         <field name="description"
                             attrs="{'readonly': [('status', '!=', 'draft')]}" />
-                        <field name="hr_description"
+                        <field name="hr_comment"
                             attrs="{
                                 'invisible': [('status', '=', 'draft')],
                                 'readonly': [('status', '!=', 'submitted')]
@@ -65,10 +66,14 @@
                                 attrs="{'readonly': [('status', '!=', 'draft')]}" />
                         </group>
                         <group string="Total Requested Amount">
-                            <field name="totalRequestedAmount" readonly="1" />
+                            <field name="totalRequestedAmount" readonly="1"
+                                decoration-success="totalRequestedAmount > 0" />
                         </group>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
             </form>
         </field>
     </record>
@@ -76,9 +81,9 @@
         <field name="name">hr.medical.coverage.tree</field>
         <field name="model">hr.medical.coverage</field>
         <field name="arch" type="xml">
-            <tree string="Medical Coverage Requests">
-                <field name="create_date" />
-                <field name="create_uid" />
+            <tree string="Refund">
+                <field name="create_date" string="Date" />
+                <field name="create_uid" string="Employee" />
                 <field name="totalRequestedAmount" />
                 <field name="description" />
                 <field name="status" />
@@ -86,7 +91,7 @@
         </field>
     </record>
     <record id="hr_medical_coverage_dashboard_action" model='ir.actions.client'>
-        <field name="name">Training Dashboard</field>
+        <field name="name">Dashboard</field>
         <field name='tag'>hr_medical_coverage.dashboard</field>
     </record>
 </odoo>

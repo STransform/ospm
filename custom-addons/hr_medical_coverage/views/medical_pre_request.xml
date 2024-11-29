@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- form viewm for medical pre request -->
+    <record id="hr_medical_pre_request_view_form" model="ir.ui.view">
+        <field name="name">hr_medical_pre_request.view.form</field>
+        <field name="model">hr.medical.pre.request</field>
+        <field name="arch" type="xml">
+            <form string="Credit">
+                <header>
+                    <!-- Submit Button (Visible only in Draft State) -->
+                    <button name="actionSubmit" type="object" string="Submit"
+                        attrs="{'invisible': [('is_employee', '=', False)]}" class="btn-primary"
+                        confirm="Are you sure you want to process this?" />
+
+                    <!-- HR Approval Buttons (Visible only in Submitted State) -->
+                    <button name="actionHrApprove" type="object" string="HR Approve"
+                        attrs="{'invisible': [('status', '!=', 'submitted')]}" class="btn-success"
+                        groups="hr_medical_coverage.group_hr_director"
+                        confirm="Are you sure you want to process this?" />
+                    <button name="actionHrReject" type="object" string="HR Reject"
+                        attrs="{'invisible': [('status', '!=', 'submitted')]}" class="btn-danger"
+                        groups="hr_medical_coverage.group_hr_director"
+                        confirm="Are you sure you want to process this?" />
+                    <!-- Statusbar Widget for Tracking Approval Process -->
+                    <field name="status" widget="statusbar"
+                        statusbar_visible="draft,submitted,hr_approved,hr_rejected" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="is_employee" invisible="1" />
+                        <field name="description" attrs="{'readonly': [('status', '!=', 'draft')]}" />
+                        <field name="organization_id"
+                            options="{'no_create': True, 'no_create_edit':True}"
+                            attrs="{'readonly': [('status', '!=', 'draft')]}" />
+                        <field name="hr_comment"
+                            attrs="{
+                                'invisible': [('status', '=', 'draft')],
+                                'readonly': [('status', '!=', 'submitted')]
+                            }" />
+                    </group>
+                    <group string="Attachments">
+                        <field name="attachment_ids" widget="many2many_binary"
+                            string="Upload Documents"
+                            attrs="{'readonly': [('status', '!=', 'draft')]}" />
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree view for request medical -->
+    <record id="hr_medical_pre_request_view_tree" model="ir.ui.view">
+        <field name="name">hr_medical_pre_request.view.tree</field>
+        <field name="model">hr.medical.pre.request</field>
+        <field name="arch" type="xml">
+            <tree string="Credit">
+                <field name="create_date" string="Date" />
+                <field name="create_uid" string="Employee" />
+                <field name="organization_id" />
+                <field name="description" />
+                <field name="hr_comment" />
+                <field name="status" />
+            </tree>
+        </field>
+    </record>
+
+</odoo>

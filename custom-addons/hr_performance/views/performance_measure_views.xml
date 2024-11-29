@@ -31,7 +31,7 @@
                 </header>
                 <sheet>
                     <group>
-                        <field name="name" />
+                        <field name="name" placeholder="2024 1 - 6 month evaulation" />
                         <field name="survey_id" />
                         <field name="scheduled_date" />
                         <field name="state" readonly="1" />
@@ -58,13 +58,18 @@
         <field name="model">hr.performance.evaluation</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name" />
                 <field name="schedule_id" />
                 <field name="employee_id" />
                 <field name="manager_id" />
                 <field name="survey_id" />
-                <field name="evaluation_status" />
-                <field name="total_score" />
+                <field name="evaluation_status"
+                    decoration-muted="evaluation_status == 'draft'"
+                    decoration-primary="evaluation_status == 'in_progress'"
+                    decoration-info="evaluation_status == 'employee_review'"
+                    decoration-danger="evaluation_status == 'employee_rejected'"
+                    decoration-warning="evaluation_status == 'submitted_to_hr'"
+                    decoration-success="evaluation_status == 'completed'" />
+                <field name="total_score" decoration-success="total_score > 0" />
             </tree>
         </field>
     </record>
@@ -110,11 +115,10 @@
                 </header>
                 <sheet>
                     <group>
-                        <field name="name" readonly="1" />
-                        <field name="schedule_id" readonly="1" />
+                        <field name="schedule_id" readonly="1" options="{'no_open': True}"/>
                         <field name="employee_id" readonly="1" />
                         <field name="manager_id" readonly="1" />
-                        <field name="survey_id" readonly="1" />
+                        <field name="survey_id" readonly="1" options="{'no_open': True}"/>
                         <field name="evaluation_status" readonly="1" />
                         <field name="total_score" readonly="1" />
                         <field name="employee_comment"
