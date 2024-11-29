@@ -1,8 +1,8 @@
 <odoo>
     <data>
         <menuitem id="menu_hr_training" name="Training" parent="hr.menu_hr_root"/>
-       <!--  <menuitem id="training_dashboard" name="Dashboard" parent="menu_hr_training" action="training_dashboard_action"/>
-        <menuitem id="Manage_training" name="Manage Training" parent="menu_hr_training" action="hr_training_action"/> -->
+        <!-- <menuitem id="training_dashboard" name="Dashboard" parent="menu_hr_training" action="training_dashboard_action"/> -->
+        <!-- <menuitem id="Manage_training" name="Manage Training" parent="menu_hr_training" action="hr_training_action"/> -->
         <menuitem id="dept_request_menu" name="Training Request" parent="menu_hr_training" action="dept_request_action" groups="hr_training.group_hr_training_department_director,hr_training.group_hr_training_hr_officer"/>
         <menuitem id="HRDirector_request_menu" name="HR Director Plan" parent="menu_hr_training" action="hrDirector_request_action" groups="hr_training.group_hr_training_planning_directorate,hr_training.group_hr_training_hr_officer,hr_training.group_hr_training_ceo"/>
     </data>

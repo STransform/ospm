@@ -1,0 +1,104 @@
+<odoo>
+    <!-- Form View for Education -->
+    <record id="hr_director_education_request_form" model="ir.ui.view">
+        <field name="name">hr.director.education.request.form</field>
+        <field name="model">hr.education.request</field>
+        <field name="arch" type="xml">
+
+            <form string="HR Director Education Request">
+              <header>
+                    <!-- approval by dco -->
+                    <button name="action_approve_planning" type="object" string="Approved" groups="planning.group_planning_directorate" attrs="{'invisible': [('state_by_planning', 'in', ['approved', 'rejected'])]}"/>
+                    <button name="action_reject_planning" type="object" string="Refuse" groups="planning.group_planning_directorate" attrs="{'invisible': [('state_by_planning', 'in', ['approved', 'rejected'])]}"/>
+
+                    <!-- approval by ceo -->
+                    <button name="action_approve_ceo" type="object" string="Approved" groups="planning.group_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'rejected']),  ('state_by_planning', '!=', 'approved')]}"/>
+                    <button name="action_reject_ceo" type="object" string="Refuse" groups="planning.group_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'rejected']),  ('state_by_planning', '!=', 'approved')]}"/>
+                    <field name="combined_state" widget="statusbar" statusbar_visible="approved,rejected,pending"/>
+              
+              </header>
+                <sheet>
+                    <h1 class="d-flex flex-row">
+                        <field name="name" placeholder="Request Name" required="True" style="font-size: min(4vw, 2.6rem);"/>
+                    </h1>
+                    <group>
+                        <field name="attachment_ids" widget="many2many_binary"/>
+                        <field name="year"/>
+                    </group>
+                    <div>
+                        <span>Your education description should be descriptive and clear.</span>
+                    </div>
+                    <field name='description' string='Description'/>
+                    <field name="state_by_ceo" invisible="1"/>
+                    <field name="state_by_planning" invisible="1"/>
+                    <field name="combined_state" invisible="1"/>
+                    <notebook>
+                        <page string="Education Programs">
+                            <field name="education_programs">
+                               <tree >  <!--  editable="bottom"-->
+                                    <field name="program_name"/>
+                                    <field name="departement_id"/>
+                                    <field name="employee_count"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Tree View for Education -->
+    <!-- <record id="hr_director_education_tree" model="ir.ui.view">
+        <field name="name">hr.director.eduction.request.tree</field>
+        <field name="model">hr.education.request</field>
+        <field name="arch" type="xml">
+            <tree string="Education Management">
+                <field name="name"/>
+                <field name="year" />
+                <field name="total_employee_count" />
+            </tree>
+        </field>
+    </record> -->
+    <record id="view_hr_education_request_kanban" model="ir.ui.view">
+        <field name="name">hr.education.request.kanban</field>
+        <field name="model">hr.education.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="combined_state" quick_create='false'>
+                <field name="combined_state"/>
+                <field name="name"/>
+                <field name="description"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card" t-attf-class="oe_kanban_global_click">
+                            <div>
+                                <strong><field name="name"/></strong>
+                            </div>
+                            
+                            <div>
+                                <field name="combined_state"/>
+                            </div>
+                            
+                            
+                            <div>
+                                <field name="description" widget="text"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+    <!-- Action to Open the Views -->
+    <record id="hr_director_request_action" model="ir.actions.act_window">
+        <field name="name">HR Director Education Plan</field>
+        <field name="res_model">hr.education.request</field>
+        <field name="view_mode">tree,form</field>
+        
+    </record>
+
+</odoo>
