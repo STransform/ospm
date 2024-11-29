@@ -7,15 +7,54 @@
 
             <form string="HR Office Education Request">
               <header>
+                    <!-- Submit button for the HR Office  -->
+                    <button name="action_resubmit_planning" 
+                            type="object" 
+                            string="Resubmit" 
+                            groups="planning.group_hr_office" 
+                            attrs="{'invisible': [('combined_state', '!=', 'rejected')]}"
+                            class="btn-success"
+                            confirm="Are You sure you want to Resubmit the Plan"
+                            />
+
                     <!-- approval by planning directorte -->
-                    <button name="action_approve_planning" type="object" string="Approved" groups="planning.group_planning_directorate" attrs="{'invisible': [('state_by_planning', 'in', ['approved', 'rejected'])]}"/>
-                    <button name="action_reject_planning" type="object" string="Refuse" groups="planning.group_planning_directorate" attrs="{'invisible': [('state_by_planning', 'in', ['approved', 'rejected'])]}"/>
+                    <button name="action_approve_planning" 
+                            type="object" 
+                            string="Approved" 
+                            groups="planning.group_planning_directorate" 
+                            attrs="{'invisible': [('state_by_planning', 'in', ['approved', 'rejected'])]}"
+                            class="btn-success"
+                            confirm="Are you sure you want to Approve the request?"
+                            />
+
+                    <button name="action_reject_planning" 
+                            type="object" 
+                            string="Reject" 
+                            groups="planning.group_planning_directorate" 
+                            attrs="{'invisible': [('state_by_planning', 'in', ['approved', 'rejected'])]}"
+                            confirm="Are you sure you want to Reject the request?"
+                            class="btn-danger"
+                            />
 
                     <!-- approval by ceo -->
-                    <button name="action_approve_ceo" type="object" string="Approved" groups="planning.group_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'rejected']),  ('state_by_planning', '!=', 'approved')]}"/>
-                    <button name="action_reject_ceo" type="object" string="Refuse" groups="planning.group_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'rejected']),  ('state_by_planning', '!=', 'approved')]}"/>
+                    <button name="action_approve_ceo" 
+                            type="object" 
+                            string="Approved" 
+                            groups="planning.group_ceo" 
+                            attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'rejected']),  ('state_by_planning', '!=', 'approved')]}"
+                            class="btn-success"
+                            confirm="Are you sure you want to Approve the request?"
+                            />
+                    <button name="action_reject_ceo" 
+                            type="object" 
+                            string="Reject" 
+                            groups="planning.group_ceo" 
+                            attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'rejected']),  ('state_by_planning', '!=', 'approved')]}"
+                            confirm="Are you sure you want to Reject the request?"
+                            class="btn-danger"
+                            />
                     <field name="combined_state" widget="statusbar" statusbar_visible="approved,rejected,pending"/>
-              
+
               </header>
                 <sheet>
                     <h1 class="d-flex flex-row">
