@@ -7,10 +7,9 @@ class HrPerformanceEvaluation(models.Model):
     _name = "hr.performance.evaluation"
     _description = "Performance Evaluation"
     _inherit = ["mail.thread", "mail.activity.mixin"]
+    _rec_name = "employee_id"
+    _order = "create_date desc"
 
-    name = fields.Char(
-        "Evaluation Reference", required=True, default=lambda self: _("New")
-    )
     schedule_id = fields.Many2one(
         "hr.evaluation.schedule", "Evaluation Schedule", ondelete="cascade"
     )

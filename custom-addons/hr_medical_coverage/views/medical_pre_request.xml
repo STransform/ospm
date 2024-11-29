@@ -30,6 +30,7 @@
                     <group>
                         <field name="description" attrs="{'readonly': [('status', '!=', 'draft')]}" />
                         <field name="organization_id"
+                            options="{'no_create': True, 'no_create_edit':True}"
                             attrs="{'readonly': [('status', '!=', 'draft')]}" />
                         <field name="hr_comment"
                             attrs="{
