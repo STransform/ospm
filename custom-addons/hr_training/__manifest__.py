@@ -8,7 +8,7 @@
         'security/ir.model.access.csv',
         'security/groups.xml',
         'security/dept_request_rule.xml',
-        #'views/training_view.xml', 
+        # 'views/training_view.xml', 
         'views/dept_request.xml',
         'views/hr_request.xml',
         'views/menu.xml',

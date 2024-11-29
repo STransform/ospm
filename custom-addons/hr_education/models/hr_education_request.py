@@ -41,7 +41,7 @@ class HrEducationRequest(models.Model):
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('pending', 'Pending'),
-    ], string="Combined State", compute='_compute_combined_state')
+    ], string="Combined State", compute='_compute_combined_state', store=True)
  
 
 
