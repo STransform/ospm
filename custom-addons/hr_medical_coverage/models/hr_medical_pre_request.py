@@ -28,10 +28,21 @@ class HrMedicalPreRequest(models.Model):
         string="Status",
         tracking=True,
     )
+    is_employee = fields.Boolean(compute="_compute_is_employee", store=False)
 
     attachment_ids = fields.Many2many(
         "ir.attachment", string="Attachments", tracking=True
     )
+    
+    # validate for submition
+    @api.depends('status')
+    def _compute_is_employee(self):
+        for record in self:
+            record.is_employee = (
+                record.create_uid.id == self.env.uid
+                and record.status == "draft"
+            )
+
 
     def actionSubmit(self):
         self.status = "submitted"

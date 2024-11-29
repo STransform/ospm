@@ -7,7 +7,7 @@
                 <header>
                     <!-- Submit Button (Visible only in Draft State) -->
                     <button name="actionSubmit" type="object" string="Submit"
-                        attrs="{'invisible': [('status', '!=', 'draft')]}" class="btn-primary"
+                        attrs="{'invisible': [('is_employee', '=', False)]}" class="btn-primary"
                         confirm="Are you sure you want to process this?" />
 
                     <!-- HR Approval Buttons (Visible only in Submitted State) -->
@@ -35,9 +35,10 @@
                 </header>
                 <sheet>
                     <group>
+                        <field name="is_employee" invisible="1"/>
                         <field name="description"
                             attrs="{'readonly': [('status', '!=', 'draft')]}" />
-                        <field name="hr_description"
+                        <field name="hr_comment"
                             attrs="{
                                 'invisible': [('status', '=', 'draft')],
                                 'readonly': [('status', '!=', 'submitted')]
