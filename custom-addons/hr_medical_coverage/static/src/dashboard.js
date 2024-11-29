@@ -10,7 +10,7 @@ const { onWillStart, useState } = owl;
 
 class MedicalCoverageDashboard extends Component {
     async getCoverageData() {
-        // Fetch medical coverage requests and categorize them by status
+        // Fetch Refund and categorize them by status
         const coverages = await this.orm.searchRead(
             'hr.medical.coverage', 
             [['status', 'in', ['draft', 'submitted', 'hr_approved', 'hr_rejected', 'finance_approved', 'finance_rejected']], ['create_date', '>', this.state.date]], 
@@ -109,7 +109,7 @@ class MedicalCoverageDashboard extends Component {
         this.actionService.doAction("hr_medical_coverage.hr_medical_coverage_action", {
             additionalContext: {
                 type: "ir.actions.act_window",
-                name: "Medical Coverage Requests",
+                name: "Refund",
                 res_model: "hr.medical.coverage",
                 domain: domain,
                 views: [[false, 'list'], [false, 'form']],

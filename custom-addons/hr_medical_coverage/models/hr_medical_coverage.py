@@ -10,9 +10,9 @@ class HrMedicalCoverage(models.Model):
     _rec_name = 'create_uid'
     _order = 'create_date desc'
 
-    description = fields.Text(string="Description", required=True)
-    hr_description = fields.Text(string="Hr Director Description")
-    totalRequestedAmount = fields.Float(string="Total Requested Amount", compute="_compute_total_amount", store=True)
+    description = fields.Text(string="Description", required=True, tracking=True)
+    hr_description = fields.Text(string="Hr Director Description",  tracking=True)
+    totalRequestedAmount = fields.Float(string="Total Requested Amount", compute="_compute_total_amount", store=True,tracking=True)
     status = fields.Selection([
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
@@ -20,13 +20,13 @@ class HrMedicalCoverage(models.Model):
         ('hr_rejected', 'HR Rejected'),
         ('finance_approved', 'Finance Approved'),
         ('finance_rejected', 'Finance Rejected')
-    ], default='draft', string="Status")
+    ], default='draft', string="Status",  tracking=True)
 
     # Medical Cost List
-    costItemIds = fields.One2many('hr.medical.cost.item', 'coverageId', string="Medical Cost Items", required=True)
+    costItemIds = fields.One2many('hr.medical.cost.item', 'coverageId', string="Medical Cost Items", required=True, tracking=True)
 
     # Attachments
-    attachment_ids = fields.Many2many('ir.attachment', string="Attachments")
+    attachment_ids = fields.Many2many('ir.attachment', string="Attachments" , tracking=True)
 
     @api.depends('costItemIds.amount')
     def _compute_total_amount(self):

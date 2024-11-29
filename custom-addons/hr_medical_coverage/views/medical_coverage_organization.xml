@@ -7,16 +7,24 @@
         <field name="arch" type="xml">
             <form string="Medical Organization">
                 <sheet>
-                    <group>
-                        <field name="name" />
-                        <field name="organization_type" />
-                        <field name="location" />
-                        <field name="phone_number" />
-                        <field name="email_address" />
-                        <field name="website" />
-                        <field name="emergency_contact_phone" />
+                    <group col="2">
+                        <group>
+                            <field name="name" />
+                            <field name="organization_type" />
+                            <field name="organization_category" />
+                            <field name="location" />
+                        </group>
+                        <group>
+                            <field name="phone_number" />
+                            <field name="email_address" />
+                            <field name="website" />
+                            <field name="emergency_contact_phone" />
+                        </group>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
             </form>
         </field>
     </record>
@@ -29,6 +37,7 @@
             <tree string="Medical Organization">
                 <field name="name" />
                 <field name="organization_type" />
+                <field name="organization_category" />
                 <field name="location" />
                 <field name="phone_number" />
                 <field name="email_address" />

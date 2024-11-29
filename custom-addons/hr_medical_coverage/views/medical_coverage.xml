@@ -3,7 +3,7 @@
         <field name="name">hr_medical_coverage_form</field>
         <field name="model">hr.medical.coverage</field>
         <field name="arch" type="xml">
-            <form string="Medical Coverage Request">
+            <form string="Refund">
                 <header>
                     <!-- Submit Button (Visible only in Draft State) -->
                     <button name="actionSubmit" type="object" string="Submit"
@@ -69,6 +69,9 @@
                         </group>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
             </form>
         </field>
     </record>
@@ -76,9 +79,9 @@
         <field name="name">hr.medical.coverage.tree</field>
         <field name="model">hr.medical.coverage</field>
         <field name="arch" type="xml">
-            <tree string="Medical Coverage Requests">
-                <field name="create_date" />
-                <field name="create_uid" />
+            <tree string="Refund">
+                <field name="create_date" string="Date" />
+                <field name="create_uid" string="Employee" />
                 <field name="totalRequestedAmount" />
                 <field name="description" />
                 <field name="status" />

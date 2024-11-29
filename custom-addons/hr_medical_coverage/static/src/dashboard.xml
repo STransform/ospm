@@ -10,8 +10,7 @@
                         <div class="col m-0 p-0">
                             <div class="shadow-sm border m-2 p-4 bg-white">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <h1 class="text-primary fw-bold">Medical Coverage Request
-                                        Dashboard</h1>
+                                    <h1 class="text-primary fw-bold">Refund Dashboard</h1>
                                     <div>
                                         <select class="form-select" t-model="state.period"
                                             t-on-change="onChangePeriod">
@@ -51,7 +50,7 @@
                             <div class="col-lg-6 m-0 p-0">
                                 <div class="shadow-sm border m-2 p-4 bg-white">
                                     <div class="d-flex align-items-center justify-content-between">
-                                        <h3 class="text-primary fw-bold">Medical Coverage Status</h3>
+                                        <h3 class="text-primary fw-bold">Refund Status</h3>
                                         <div class="px-3 py-1 bg-primary cursor-pointer">
                                             <span class="fa fa-arrow-right text-white" />
                                         </div>
@@ -63,7 +62,7 @@
                             <div class="col-lg-6 m-0 p-0">
                                 <div class="shadow-sm border m-2 p-4 bg-white">
                                     <div class="d-flex align-items-center justify-content-between">
-                                        <h3 class="text-primary fw-bold">Medical Coverage Status</h3>
+                                        <h3 class="text-primary fw-bold">Refund Status</h3>
                                         <div class="px-3 py-1 bg-primary cursor-pointer">
                                             <span class="fa fa-arrow-right text-white" />
                                         </div>
@@ -80,7 +79,7 @@
                         <div class="col m-0 p-0">
                             <div class="shadow-sm border m-2 p-4 bg-white">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <h3 class="text-primary fw-bold">Medical Coverage Status</h3>
+                                    <h3 class="text-primary fw-bold">Refund Status</h3>
                                     <div class="px-3 py-1 bg-primary cursor-pointer">
                                         <span class="fa fa-arrow-right text-white" />
                                     </div>

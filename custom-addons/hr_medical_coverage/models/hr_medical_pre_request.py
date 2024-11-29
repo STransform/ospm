@@ -6,9 +6,10 @@ class HrMedicalPreRequest(models.Model):
     _name = "hr.medical.pre.request"
     _description = "Medical Pre Request"
     _rec_name = "create_uid"
+    _inherit = "mail.thread"
     _order = "create_date desc"
 
-    description = fields.Text(string="Description", required=True)
+    description = fields.Text(string="Description", required=True, tracking=True)
     organization_id = fields.Many2one(
         "hr.medical.coverage.organization", string="Organization"
     )
@@ -22,9 +23,12 @@ class HrMedicalPreRequest(models.Model):
         ],
         default="draft",
         string="Status",
+        tracking=True,
     )
 
-    attachment_ids = fields.Many2many("ir.attachment", string="Attachments")
+    attachment_ids = fields.Many2many(
+        "ir.attachment", string="Attachments", tracking=True
+    )
 
     def actionSubmit(self):
         self.status = "submitted"
