@@ -13,6 +13,7 @@ class HrMedicalCoverage(models.Model):
 
     description = fields.Text(string="Description", required=True, tracking=True)
     hr_comment = fields.Text(string="Hr Director Comment", tracking=True)
+    finance_comment = fields.Text(string="Finance Comment", tracking=True)
     totalRequestedAmount = fields.Float(
         string="Total Requested Amount",
         compute="_compute_total_amount",
@@ -49,12 +50,11 @@ class HrMedicalCoverage(models.Model):
     )
 
     # validation for submitio
-    @api.depends('status')
+    @api.depends("status")
     def _compute_is_employee(self):
         for record in self:
             record.is_employee = (
-                record.create_uid.id == self.env.uid
-                and record.status == "draft"
+                record.create_uid.id == self.env.uid and record.status == "draft"
             )
 
     @api.depends("costItemIds.amount")
@@ -104,9 +104,15 @@ class HrMedicalCoverage(models.Model):
         if "hr_comment" in vals:
             # Check if the current user is in the HR Director group
             if not self.env.user.has_group("hr_medical_coverage.group_hr_director"):
+                raise AccessError("You are not allowed to edit the HR Comment field.")
+
+        # check if finance comment is changed
+        if "finance_comment" in vals:
+            if not self.env.user.has_group("hr_medical_coverage.group_finance_officer"):
                 raise AccessError(
-                    "You are not allowed to edit the HR Description field."
+                    "You are not allowed to edit the Finance Comment field."
                 )
+
         return super(HrMedicalCoverage, self).write(vals)
 
     # Hr description read only
