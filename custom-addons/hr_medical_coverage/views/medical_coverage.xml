@@ -35,13 +35,18 @@
                 </header>
                 <sheet>
                     <group>
-                        <field name="is_employee" invisible="1"/>
+                        <field name="is_employee" invisible="1" />
                         <field name="description"
                             attrs="{'readonly': [('status', '!=', 'draft')]}" />
                         <field name="hr_comment"
                             attrs="{
                                 'invisible': [('status', '=', 'draft')],
                                 'readonly': [('status', '!=', 'submitted')]
+                            }" />
+                        <field name="finance_comment"
+                            attrs="{
+                                'invisible': [('status', '=', 'draft')],
+                                'readonly': [('status', '!=', 'hr_approved')]
                             }" />
                     </group>
                     <!-- Medical Costs Section -->
