@@ -40,7 +40,6 @@ class HrPerformanceEvaluation(models.Model):
             ("employee_review", "Employee Review"),
             ("employee_rejected", "Employee Rejected"),
             ("employee_accepted", "Employee Accepted"),
-            ("submitted_to_hr", "Submitted to HR"),
             ("completed", "Completed"),
         ],
         default="draft",

@@ -111,18 +111,13 @@
                         attrs="{'invisible': ['|', ('evaluation_status', '!=', 'employee_review'), ('is_employee', '=', False)]}"
                         groups="hr_performance.group_employee" />
                     <button
-                        name="action_submit_to_hr" type="object" string="Submit to HR"
-                        class="btn-warning"
-                        attrs="{'invisible': [('is_manager', '=', False)]}"
-                    />
-                    <button
                         name="action_mark_completed" type="object"
                         string="Mark as Completed" class="btn-success"
-                        attrs="{'invisible': [('evaluation_status', '!=', 'submitted_to_hr')]}"
+                        attrs="{'invisible': [('evaluation_status', '!=', 'employee_accepted')]}"
                         groups="hr_performance.group_hr_director" />
                     <field
                         name="evaluation_status" widget="statusbar"
-                        statusbar_visible="draft,in_progress,employee_review,submitted_to_hr,completed" />
+                        statusbar_visible="draft,in_progress,employee_review,completed" />
                 </header>
                 <sheet>
                     <group>

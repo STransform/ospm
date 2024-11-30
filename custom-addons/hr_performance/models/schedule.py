@@ -6,6 +6,7 @@ class HrEvaluationSchedule(models.Model):
     _name = 'hr.evaluation.schedule'
     _description = 'Evaluation Schedule'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = "create_date desc"
 
     name = fields.Char("Schedule Name", required=True)
     from_date = fields.Date(string="From", required=True, tracking=True)

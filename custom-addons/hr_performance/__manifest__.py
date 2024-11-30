@@ -3,9 +3,9 @@
     'name': 'hr_performance',
     'version': '',
     'summary': """ hr_performance Summary """,
-    'author': '',
-    'website': '',
-    'category': '',
+    'author': 'Kuma Telila @otech',
+    'website': 'www.otech.et',
+    'category': 'Human Resources',
     'depends': ['base', 'hr', 'survey', 'mail'],
     'data': [
         "security/hr_performance_group.xml",
