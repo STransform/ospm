@@ -63,6 +63,7 @@
                     <group>
                         <field name="attachment_ids" widget="many2many_binary"/>
                         <field name="year"/>
+                        <field name="total_employee_count" />
                     </group>
                     <div>
                         <strong>Description</strong>
