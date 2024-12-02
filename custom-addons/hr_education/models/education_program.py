@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+
 class EducationProgram(models.Model):
     _name = 'education.program'
     _description = 'Education Program'
@@ -15,3 +16,9 @@ class EducationProgram(models.Model):
         if self.employee_count <= 0:
             raise ValidationError("Employee count should be greter than 1.")
     
+    @api.onchange('start_date','end_date')
+    def is_valid_date(self):
+        if self.start_date and self.end_date:
+            if self.start_date >= self.end_date:
+                raise ValidationError(_("The Date you Enter is not Correct"))
+        
