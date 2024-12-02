@@ -20,8 +20,7 @@
         'views/shortlisted.xml',
         'views/ceo_approved.xml',
         'views/promotion_minutes.xml',
-
-
+        'data/cron_job.xml',
     ],
 
     'assets': {
