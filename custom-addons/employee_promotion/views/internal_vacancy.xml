@@ -63,39 +63,36 @@
         <field name="name">employee.promotion.view.kanban</field>
         <field name="model">internal.vacancy</field>
         <field name="arch" type="xml">
-            <kanban class="o_kanban_mobile" sample="1">
+            <kanban class="o_kanban_mobile" sample="1" default_order="create_date desc">
                 <field name="name"/>
-                <field name="job_position_id" />
+                <field name="job_position_id"/>
                 <field name="job_description"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_global_click">
                             <div class="oe_kanban_card">
                                 <div class="oe_kanban_details">
-                                <div class="bg-dark text-xl text-white text-center font-weight-bold">
-                                    <strong>
-                                        <field name="name"/>
-                                    </strong>
-                                
-                                </div>
-
-
-                                     <div>
-                                       <field name="job_position_id"/>
+                                    <div class="bg-dark text-xl text-white text-center font-weight-bold">
+                                        <strong>
+                                            <field name="name"/>
+                                        </strong>
                                     </div>
                                     <div>
-                                        <span class="text-success">Open Positions: </span> <field name="number_of_recruits"/> 
+                                        <field name="job_position_id"/>
+                                    </div>
+                                    <div>
+                                        <span class="text-success">Open Positions: </span> 
+                                        <field name="number_of_recruits"/> 
                                     </div>
                                     <div>
                                         <field name="job_description"/>
                                     </div>
-                                    <div>
-                                   
+                                    <div class="kanban-ribbon-done" attrs="{'invisible': [('remaining_days', '==', 'Out of Date')]}">
+                                        <p><field name="remaining_days"/></p>
                                     </div>
-                                     <div class="kanban-ribbon-done"  attrs="{'invisible': [('remaining_days', '==', 'Out of Date')]}"><p><field name="remaining_days"/></p></div>
-                                     <div class="kanban-ribbon-danger"  attrs="{'invisible': [('remaining_days', '!=', 'Out of Date')]}"><p><field name="remaining_days"/></p></div>
-
-
+                                    <div class="kanban-ribbon-danger" attrs="{'invisible': [('remaining_days', '!=', 'Out of Date')]}">
+                                        <p><field name="remaining_days"/></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -104,6 +101,7 @@
             </kanban>
         </field>
     </record>
+
     <!--Menu view in employee form-->
     <menuitem id="internal_vacancy_sub_menu" name="Internal Vacancy" parent="employee_promotion_menu" action="internal_vacancy_action"/>
 </odoo>

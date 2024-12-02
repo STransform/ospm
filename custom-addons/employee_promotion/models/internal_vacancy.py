@@ -32,18 +32,6 @@ class InternalVacancy(models.Model):
         record = super(InternalVacancy, self).create(vals)
         return record
 
-    # @api.depends('start_date', 'end_date')
-    # def _compute_remaining_days(self):
-    #     for record in self:
-    #         if record.end_date and record.start_date:
-    #             delta = (record.end_date - date.today()).days
-    #             if delta > 0:
-    #                 record.remaining_days = f"{delta} days remaining"
-    #             else:
-    #                 record.remaining_days = "Out of Date"
-    #         else:
-    #             record.remaining_days = "Invalid Dates"
-
     @api.depends('start_date', 'end_date')
     def _compute_remaining_days(self):
         for record in self:
@@ -60,7 +48,6 @@ class InternalVacancy(models.Model):
         all_records = self.search([])
         all_records._compute_remaining_days()
     
-
 
     @api.constrains('end_date')
     def _check_end_date(self):
