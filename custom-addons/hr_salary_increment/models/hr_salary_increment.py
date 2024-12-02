@@ -34,3 +34,23 @@ class HrSalaryIncrement(models.Model):
         string="Increment",
         related="employee_id.contract_id.increment_level_id",
     )
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("submitted", "Submitted"),
+            ("approved", "Approved"),
+            ("rejected", "Rejected"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
+
+    def actionSubmitt(self):
+        self.state = "submitted"
+        
+    def actionApprove(self):
+        self.state = "approved"
+        
+    def actionReject(self):
+        self.state = "rejected"

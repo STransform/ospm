@@ -6,5 +6,17 @@
         name="Salary Increment"
         action="hr_salary_increment_action"
         parent="hr.menu_hr_root"
-        sequence="20"/>
+        sequence="20" />
+    <menuitem
+        id="request_salary_increment_menu"
+        name="Request Salary Increment"
+        action="hr_salary_increment_action"
+        parent="hr_salary_increment_menu"
+        sequence="1" />
+    <menuitem
+        id="salary_increment_approve_menu"
+        name="Salary Increment Approve"
+        action="hr_salary_increment_action"
+        parent="hr_salary_increment_menu"
+        sequence="2"/>
 </odoo>
