@@ -3,6 +3,20 @@
     <record id="hr_salary_increment_action" model="ir.actions.act_window">
         <field name="name">Salary Increment</field>
         <field name="res_model">hr.salary.increment</field>
+        <field name="view_mode">tree,form</field>
     </record>
-
+    <record id="hr_salary_increment_view_tree" model="ir.ui.view">
+        <field name="name">hr_salary_increment.view.tree</field>
+        <field name="model">hr.salary.increment</field>
+        <field name="arch" type="xml">
+            <tree string="Salary Increment">
+                <field name="employee_id" />
+                <field name="contract_id" />
+                <field name="grade_id" />
+                <field name="increment_id" />
+                <field name="wage_id" />
+                <field name="currency_id" />
+            </tree>
+        </field>
+    </record>
 </odoo>
