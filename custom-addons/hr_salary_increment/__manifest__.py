@@ -6,7 +6,7 @@
     'author': 'Kuma Telila @otech',
     'website': 'https://otech.et',
     'category': 'Human Resource',
-    'depends': ['base', 'hr','hr_pay_grade', 'mail'],
+    'depends': ['base', 'hr','hr_pay_grade', 'mail', 'hr_contract'],
     'data': [
         
     ],
