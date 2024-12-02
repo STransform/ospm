@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_salary_increment_action" model="ir.actions.act_window">
+        <field name="name">Salary Increment</field>
+        <field name="res_model">hr.salary.increment</field>
+    </record>
+
+</odoo>

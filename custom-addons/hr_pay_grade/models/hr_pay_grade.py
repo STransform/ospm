@@ -147,41 +147,41 @@ class HrContract(models.Model):
             else:
                 record.wage = 0.0
 
-    def update_increment_based_on_performance(self):
-        for record in self:
-            if not record.performance_score or not record.pay_grade_id:
-                continue
+    # def update_increment_based_on_performance(self):
+    #     for record in self:
+    #         if not record.performance_score or not record.pay_grade_id:
+    #             continue
 
-            increment_change = 0
-            if 75 <= record.performance_score < 85:
-                increment_change = 1
-            elif 85 <= record.performance_score < 95:
-                increment_change = 2
-            elif record.performance_score >= 95:
-                increment_change = 3
+    #         increment_change = 0
+    #         if 75 <= record.performance_score < 85:
+    #             increment_change = 1
+    #         elif 85 <= record.performance_score < 95:
+    #             increment_change = 2
+    #         elif record.performance_score >= 95:
+    #             increment_change = 3
 
-            current_increment = (
-                int(record.increment_level_id.increment)
-                if record.increment_level_id
-                else 0
-            )
-            new_increment = current_increment + increment_change
+    #         current_increment = (
+    #             int(record.increment_level_id.increment)
+    #             if record.increment_level_id
+    #             else 0
+    #         )
+    #         new_increment = current_increment + increment_change
 
-            if new_increment > 9:
-                new_increment = 9
+    #         if new_increment > 9:
+    #             new_increment = 9
 
-            next_increment = self.env["hr.pay.grade.increment"].search(
-                [
-                    ("pay_grade_id", "=", record.pay_grade_id.id),
-                    ("increment", "=", str(new_increment)),
-                ],
-                limit=1,
-            )
+    #         next_increment = self.env["hr.pay.grade.increment"].search(
+    #             [
+    #                 ("pay_grade_id", "=", record.pay_grade_id.id),
+    #                 ("increment", "=", str(new_increment)),
+    #             ],
+    #             limit=1,
+    #         )
 
-            if next_increment:
-                record.increment_level_id = next_increment
-                record.wage = min(
-                    next_increment.salary, record.pay_grade_id.ceiling_salary
-                )
-            else:
-                record.wage = record.pay_grade_id.ceiling_salary
+    #         if next_increment:
+    #             record.increment_level_id = next_increment
+    #             record.wage = min(
+    #                 next_increment.salary, record.pay_grade_id.ceiling_salary
+    #             )
+    #         else:
+    #             record.wage = record.pay_grade_id.ceiling_salary

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem
+        id="hr_salary_increment_menu"
+        name="Salary Increment"
+        action="hr_salary_increment_action"
+        parent="hr.menu_hr_root"
+        sequence="20"/>
+</odoo>
