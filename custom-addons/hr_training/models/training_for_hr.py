@@ -16,4 +16,3 @@ class TrainingProgramForHr(models.Model):
         for record in self:
             if record.employee_count <= 0:
                 raise ValidationError("Employee count should be greater than 0.")
-            

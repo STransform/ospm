@@ -17,3 +17,8 @@ class TrainingProgram(models.Model):
             if record.employee_count <= 0:
                 raise ValidationError("Employee count should be greater than 0.")
             
+    @api.onchange('end_date')
+    def _check_end_date(self):
+        for record in self:
+            if record.end_date and record.end_date <= record.start_date:
+                raise ValidationError("End Date cannot be earlier than or the same as Start Date.")
