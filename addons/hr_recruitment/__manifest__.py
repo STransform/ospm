@@ -32,7 +32,13 @@
         'views/mail_activity_views.xml',
         'views/digest_views.xml',
         'wizard/applicant_refuse_reason_views.xml',
+        'wizard/applicant_approve_reason.xml',
+        'wizard/applicant_refuse_reason.xml',
+        #'views/hr_approval_reason_views.xml',
+   
         'wizard/applicant_send_mail_views.xml',
+        
+
     ],
     'demo': [
         'data/hr_recruitment_demo.xml',
@@ -43,8 +49,10 @@
         'web.assets_backend': [
             'hr_recruitment/static/src/**/*.js',
             'hr_recruitment/static/src/**/*.scss',
+            'hr_recruitment/static/src/**/*.css',
             'hr_recruitment/static/src/**/*.xml',
             'hr_recruitment/static/src/js/tours/hr_recruitment.js',
+            'hr_recruitment/static/src/js/tours/cgpa_filter.js',
         ],
     },
     'license': 'LGPL-3',
