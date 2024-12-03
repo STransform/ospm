@@ -1,4 +1,4 @@
-#!/home/otech_erp/ERP_WEB/ospm/ospmvenv/bin/python3
+#!/opt/ospm/ospmvenv/bin/python3
 # -*- coding: utf-8 -*-
 # Copyright (c) 2003, Taro Ogawa.  All Rights Reserved.
 # Copyright (c) 2013, Savoir-faire Linux inc.  All Rights Reserved.

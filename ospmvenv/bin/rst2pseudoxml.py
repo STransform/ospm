@@ -1,4 +1,4 @@
-#!/home/otech_erp/ERP_WEB/ospm/ospmvenv/bin/python3
+#!/opt/ospm/ospmvenv/bin/python3
 
 # $Id: rst2pseudoxml.py 4564 2006-05-21 20:44:42Z wiemann $
 # Author: David Goodger <goodger@python.org>

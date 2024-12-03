@@ -1,4 +1,4 @@
-#!/home/otech_erp/ERP_WEB/ospm/ospmvenv/bin/python3
+#!/opt/ospm/ospmvenv/bin/python3
 
 # Author:
 # Contact: grubert@users.sf.net

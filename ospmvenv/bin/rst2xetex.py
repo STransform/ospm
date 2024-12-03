@@ -1,4 +1,4 @@
-#!/home/otech_erp/ERP_WEB/ospm/ospmvenv/bin/python3
+#!/opt/ospm/ospmvenv/bin/python3
 
 # $Id: rst2xetex.py 7847 2015-03-17 17:30:47Z milde $
 # Author: Guenter Milde

@@ -1,4 +1,4 @@
-#!/home/otech_erp/ERP_WEB/ospm/ospmvenv/bin/python3
+#!/opt/ospm/ospmvenv/bin/python3
 
 # $Id: rst2latex.py 5905 2009-04-16 12:04:49Z milde $
 # Author: David Goodger <goodger@python.org>
