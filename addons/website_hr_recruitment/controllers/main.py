@@ -90,12 +90,17 @@ class WebsiteHrRecruitment(http.Controller):
             'name': _('Job Title'),
         })
         return f"/jobs/detail/{slug(job)}"
-
+    
     @http.route('''/jobs/detail/<model("hr.job"):job>''', type='http', auth="public", website=True, sitemap=True)
     def jobs_detail(self, job, **kwargs):
+        # Search for the recruitment request related to the job position
+        #In the jobs_detail method, fetch the job_description from the hr.recruitments model using the job_position_id relationship.
+        #To Ensure the job_description is passed to the template.
+        recruitment_request = request.env['hr.recruitments'].sudo().search([('job_position_id', '=', job.id)], limit=1)
         return request.render("website_hr_recruitment.detail", {
             'job': job,
             'main_object': job,
+            'job_description': recruitment_request.job_description if recruitment_request else 'No description available',
         })
 
     @http.route('''/jobs/apply/<model("hr.job"):job>''', type='http', auth="public", website=True, sitemap=True)

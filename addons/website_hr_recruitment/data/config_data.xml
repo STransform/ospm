@@ -28,6 +28,9 @@
                 'job_id',
                 'department_id',
                 'linkedin_profile',
+                'cgpa',
+                'experience'
+                
             ]"/>
         </function>
     </data>

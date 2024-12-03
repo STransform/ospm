@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<odoo>
+    <!-- Form view for entering the refuse reason -->
+    <record id="applicant_get_refuse_reason_view_form" model="ir.ui.view">
+        <field name="name">applicant.refuse.reason.wizard.form</field>
+        <field name="model">applicant.refuse.reason.wizard</field>  <!-- Make sure this matches the model -->
+        <field name="arch" type="xml">
+            <form string="Refuse Reason">
+                <group col="1">
+                    <field name="refuse_reason" placeholder="Provide the reason for refusal..." widget="text"/>
+                    <field name="applicant_ids" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="action_refuse_reason_apply" 
+                            string="Refuse" 
+                            type="object" 
+                            class="btn-primary" 
+                            data-hotkey="q"/>
+                    <button string="Cancel" 
+                            class="btn-secondary" 
+                            special="cancel" 
+                            data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    
+    <!-- Tree view for refused applicants -->
+    <record id="view_hr_applicant_tree_with_refuse_reason" model="ir.ui.view">
+        <field name="name">hr.applicant.tree.with.refuse.reason</field>
+        <field name="model">hr.applicant</field>
+        <field name="arch" type="xml">
+            <tree string="Refused Applicants">
+                <field name="name"/>
+                <field name="stage_id"/>
+                <field name="refuse_reason"/>
+                <field name="ceo_approval_status"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Action to list refused applicants -->
+    <record id="action_refused_applicants" model="ir.actions.act_window">
+        <field name="name">Refused Applicants</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_hr_applicant_tree_with_refuse_reason"/>
+        <field name="domain">[('ceo_approval_status', '=', 'refuse')]</field>
+    </record>
+    
+    <!-- Menu for refused applicants -->
+    <menuitem id="menu_refused_applicants" 
+              name="Refused Applicants" 
+              parent="hr_recruitment.menu_hr_recruitment_root" 
+              action="action_refused_applicants" 
+              sequence="20"/>
+    
+    <!-- Action to open the refuse reason wizard -->
+    <record id="applicant_get_refuse_reason_action" model="ir.actions.act_window">
+        <field name="name">Refuse Reason</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">applicant.refuse.reason.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="applicant_get_refuse_reason_view_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

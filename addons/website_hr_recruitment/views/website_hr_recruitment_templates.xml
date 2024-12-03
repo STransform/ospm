@@ -93,32 +93,38 @@
             <!-- Job name -->
             <section class="pb32">
                 <div class="container">
-                    <div class="mt32">
-                        <div class="float-end">
-                            <a role="button" t-attf-href="/jobs/apply/#{slug(job)}" class="btn btn-primary btn-lg float-end">Apply Now!</a>
-                        </div>
-                        <h1 t-field="job.name"/>
+                    <!-- Job Details Section -->
+                    <div class="mt32 text-center mx-auto" style="max-width: 800px;">
+                        <!-- Centered Job Name -->
+                        <h1 t-field="job.name" class="my-4"/>
+
+                        <!-- Centered Job Address -->
                         <h5 class="fw-light o_not_editable" t-field="job.address_id" t-options='{
                             "widget": "contact",
                             "fields": ["city"],
                             "no_tag_br": True
                         }'/>
+
+                        <!-- Job Description Section -->
+                        <div class="mt16">
+                            <p t-esc="job_description" class="fs-5"/>
+                        </div>
+
+                        <!-- Apply Button (KEEP THIS ONE) -->
+                        <div class="mt32">
+                            <a role="button" t-attf-href="/jobs/apply/#{slug(job)}" class="btn btn-primary btn-lg">Apply</a>
+                        </div>
+                        
                     </div>
                 </div>
             </section>
 
+            <!-- Removed Duplicate Button Section -->
             <div t-field="job.website_description"/>
-
-            <div class="oe_structure">
-                <section class="o_job_bottom_bar mt32 mb32">
-                    <div class="text-center">
-                        <a role="button" t-attf-href="/jobs/apply/#{slug(job)}" class="btn btn-primary btn-lg">Apply Now!</a>
-                    </div>
-                </section>
-            </div>
         </div>
     </t>
 </template>
+
 
 <template id="apply">
     <t t-call="website.layout">
@@ -153,7 +159,7 @@
                                         data-type="char" data-name="Field">
                                         <div class="row s_col_no_resize s_col_no_bgcolor">
                                             <label class="col-4 col-sm-auto s_website_form_label" style="width: 200px" for="recruitment1">
-                                                <span class="s_website_form_label_content">Your Name</span>
+                                                <span class="s_website_form_label_content">Full Name</span>
                                                 <span class="s_website_form_mark"> *</span>
                                             </label>
                                             <div class="col-sm">
@@ -195,6 +201,36 @@
                                         </div>
                                     </div>
                                     <div class="col-12 mb-0 py-2 s_website_form_field s_website_form_required"
+                                        data-type="float" data-name="Field">
+                                        <div class="row s_col_no_resize s_col_no_bgcolor">
+                                            <label class="col-4 col-sm-auto s_website_form_label" style="width: 200px">
+                                                <span class="s_website_form_label_content">CGPA</span>
+                                                <span class="s_website_form_mark"> *</span>
+                                            </label>
+                                            <div class="col-sm">
+                                                <input  type="number" class="form-control s_website_form_input"
+                                                    name="cgpa" step="any" data-fill-with="cgpa"
+                                                     required=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                              
+                                <div class="col-12 mb-0 py-2 s_website_form_field">
+                                    <div class="row s_col_no_resize">
+                                        <label class="col-4 col-sm-auto s_website_form_label" style="width: 200px">
+                                            <span class="s_website_form_label_content">Years of Experience</span>
+                                        </label>
+                                        <div class="col-sm">
+                                            <input type="number" step="any" min="0" class="form-control s_website_form_input" name="experience" data-fill-with="experience"/>
+                                              <!--step="any" is to Allow decimals -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                    <div class="col-12 mb-0 py-2 s_website_form_field s_website_form_required"
                                         data-type="char" data-name="Field">
                                         <div class="row s_col_no_resize s_col_no_bgcolor">
                                             <label class="col-4 col-sm-auto s_website_form_label" style="width: 200px" for="recruitment4">
@@ -227,20 +263,7 @@
                                         <!-- TODO: remove in master -->
                                         <span class="d-none text-muted" style="margin-left: 200px; font-size: 0.8rem">The resume is optional if you have a Linkedin profile</span>
                                     </div>
-                                    <div class="col-12 mb-0 py-2 s_website_form_field"
-                                        data-type="text" data-name="Field">
-                                        <div class="row s_col_no_resize s_col_no_bgcolor">
-                                            <label class="col-4 col-sm-auto s_website_form_label" style="width: 200px" for="recruitment5">
-                                                <span class="s_website_form_label_content">Short Introduction</span>
-                                            </label>
-                                            <div class="col-sm">
-                                                <textarea id="recruitment5"
-                                                    class="form-control s_website_form_input"
-                                                    placeholder="Optional introduction, or any question you might have about the job…"
-                                                    name="description" rows="5"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   
                                     <div class="col-12 mb-0 py-2 s_website_form_field s_website_form_dnone">
                                         <div class="row s_col_no_resize s_col_no_bgcolor">
                                             <label class="col-4 col-sm-auto s_website_form_label" style="width: 200px" for="recruitment7">
@@ -267,10 +290,12 @@
                                     </div>
                                     <div class="col-12 s_website_form_submit mb64" data-name="Submit Button">
                                         <div style="width: 200px" class="s_website_form_label"/>
-                                        <a href="#" role="button" class="btn btn-primary btn-lg s_website_form_send">I'm feeling lucky</a>
+                                        <a href="#" role="button" class="btn btn-primary btn-lg s_website_form_send">Apply</a>
                                         <span id="s_website_form_result"></span>
                                     </div>
+                                    
                                 </div>
+                                
                             </form>
                         </div>
                     </section>
@@ -307,6 +332,13 @@
             </div>
             <div class="oe_structure mt-2"/>
         </div>
+        <!-- <div class="oe_structure">
+                        <section class="o_job_bottom_bar mt32 mb32">
+                            <div class="text-center">
+                                <a role="button" t-attf-href="/jobs/apply/#{slug(job)}" class="btn btn-primary btn-lg">Submit</a>
+                            </div>
+                        </section>
+            </div> -->
     </t>
 </template>
 

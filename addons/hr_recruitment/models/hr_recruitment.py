@@ -4,7 +4,7 @@
 from random import randint
 
 from odoo import api, fields, models, tools, SUPERUSER_ID
-from odoo.exceptions import AccessError, UserError
+from odoo.exceptions import AccessError, ValidationError
 from odoo.tools import Query
 from odoo.tools.translate import _
 
@@ -91,7 +91,8 @@ class RecruitmentStage(models.Model):
     legend_normal = fields.Char(
         'Grey Kanban Label', default=lambda self: _('In Progress'), translate=True, required=True)
     is_warning_visible = fields.Boolean(compute='_compute_is_warning_visible')
-
+    minimum_cgpa = fields.Float(string="Minimum CGPA", help="Minimum CGPA required for this stage")
+    minimum_experience = fields.Float(string="Minimum Experience (Years)", help="Minimum years of experience required for this stage")
     @api.model
     def default_get(self, fields):
         if self._context and self._context.get('default_job_id') and not self._context.get('hr_recruitment_stage_mono', False):
@@ -197,11 +198,15 @@ class Applicant(models.Model):
         string='Interviewers', index=True, tracking=True,
         domain="[('share', '=', False), ('company_ids', 'in', company_id)]")
     linkedin_profile = fields.Char('LinkedIn Profile')
+
     application_status = fields.Selection([
         ('ongoing', 'Ongoing'),
         ('hired', 'Hired'),
         ('refused', 'Refused'),
     ], compute="_compute_application_status")
+    ceo_approved = fields.Boolean(string='CEO Approved', default=False)
+    #cgpa = fields.Float(string="CGPA")
+    #experience = fields.Float(string="Experience (Years)")
 
     @api.onchange('job_id')
     def _onchange_job_id(self):
@@ -484,7 +489,7 @@ class Applicant(models.Model):
 
         if not self.partner_id:
             if not self.partner_name:
-                raise UserError(_('You must define a Contact Name for this applicant.'))
+                raise ValidationError(_('You must define a Contact Name for this applicant.'))
             self.partner_id = self.env['res.partner'].create({
                 'is_company': False,
                 'type': 'private',
@@ -675,7 +680,7 @@ class Applicant(models.Model):
             contact_name = self.partner_id.display_name
         else:
             if not self.partner_name:
-                raise UserError(_('You must define a Contact Name for this applicant.'))
+                raise ValidationError(_('You must define a Contact Name for this applicant.'))
             new_partner_id = self.env['res.partner'].create({
                 'is_company': False,
                 'type': 'private',
@@ -753,6 +758,265 @@ class Applicant(models.Model):
                 'default_applicant_ids': self.ids,
             }
         }
+#this class is added for external recruitment 
+class HrRecruitmentStage(models.Model):
+    _inherit = 'hr.recruitment.stage'
+
+    minimum_cgpa = fields.Float(string="Minimum CGPA", help="Minimum CGPA required")
+    minimum_experience = fields.Float(string="Minimum Experience", help="Minimum years of experience ")
+
+#this class is added for external recruitment 
+class HrApplicant(models.Model):
+    _inherit = 'hr.applicant'
+
+    approve_reason = fields.Text(string="Approve Reason", readonly=True)
+    refuse_reason = fields.Text(string="Refuse Reason", readonly=True)
+    CEO_APPROVAL_STATUS = [
+        ('approve', 'Approve'),
+        ('refuse', 'Refuse'),
+        ('pending', 'Pending'),
+    ]
+    
+    # Change ceo_approved to ceo_approval_status (selection field)
+    ceo_approval_status = fields.Selection(
+        selection=CEO_APPROVAL_STATUS, 
+        string='CEO Approval', 
+        default='pending',
+    )
+    
+    
+    first_interview_result = fields.Float(
+        string="Exam Result",
+        help="Score or rating from the first interview."
+    )
+    second_interview_result = fields.Float(
+        string="Interview Result",
+        help="Score or rating from the second interview."
+    )
+    is_first_interview_stage = fields.Boolean(
+        string="Is Exam Stage",
+        compute="_compute_stage_flags",
+        store=True
+    )
+    is_second_interview_stage = fields.Boolean(
+        string="Is Interview Stage",
+        compute="_compute_stage_flags",
+        store=True
+    )
+     # Boolean field to check if the stage is restricted
+    is_restricted_stage = fields.Boolean(
+        string="Is Restricted Stage",
+        compute="_compute_is_restricted_stage",
+        store=False
+    )
+    minutes = fields.Many2many(
+        'ir.attachment', 
+        string='Minutes', 
+        help="Attach meeting minutes or related documents."
+    )
+    def action_download_minutes(self):
+        # temporary used,will be removed later...
+        pass
+    is_hired_stage = fields.Boolean(string="Is Hired Stage", default=False )# this field is temporary
+    
+    # Boolean field to check if the user is part of the Committee group
+    is_committee_user = fields.Boolean(
+        string="Is Committee User",
+        compute="_compute_is_committee_user",
+        store=False
+    )
+
+    @api.depends('stage_id')
+    def _compute_is_restricted_stage(self):
+        """Check if the current stage is restricted."""
+        restricted_stages = ['First Interview', 'Second Interview']
+        for applicant in self:
+            applicant.is_restricted_stage = applicant.stage_id.name in restricted_stages
+
+    @api.model
+    def _compute_is_committee_user(self):
+        """Check if the current user belongs to the Committee group."""
+        committee_group = self.env.ref('hr_recruitment.group_hr_recruitment_committee')
+        for applicant in self:
+            applicant.is_committee_user = self.env.user in committee_group.users
+    
+    @api.depends('stage_id')
+    def _compute_stage_flags(self):
+        """
+        Compute flags for current stage to control visibility of fields.
+        """
+        for applicant in self:
+            stage_name = applicant.stage_id.name  # stage name
+            applicant.is_first_interview_stage = stage_name in ['Exam', 'Hired stage', 'Interview','First Interview']
+            applicant.is_second_interview_stage = stage_name in ['Interview', 'Hired stage', 'Second Interview']
+            applicant.is_hired_stage = stage_name == 'Hired stage'
+    cgpa = fields.Float(string="CGPA" , store=True)
+    experience = fields.Float(string="Experience" , store=True)
+    def get_cgpa_filter_domain(self, min_cgpa):
+        return [('cgpa', '>=', min_cgpa)]
+    
+    @api.model
+    def filter_applicants(self):
+        # Get the 'Initial Qualification' stage
+        initial_stage = self.env['hr.recruitment.stage'].search([('name', '=', 'Initial Qualification')], limit=1)
+        if not initial_stage:
+            return
+
+        # Apply filtering criteria
+        applicants = self.search([('stage_id', '=', initial_stage.id)])
+        for applicant in applicants:
+            if (applicant.cgpa < initial_stage.minimum_cgpa or 
+                applicant.experience < initial_stage.minimum_experience):
+                # Optionally move disqualified applicants to a 'Rejected' stage
+                rejected_stage = self.env['hr.recruitment.stage'].search([('name', '=', 'Rejected')], limit=1)
+                if rejected_stage:
+                    applicant.stage_id = rejected_stage.id
+    @api.model
+    def filter_applicants(self):
+        # Get the 'Initial Qualification' stage
+        initial_stage = self.env['hr.recruitment.stage'].search([('name', '=', 'Initial Qualification')], limit=1)
+        if not initial_stage:
+            return
+
+        # Apply filtering criteria
+        applicants = self.search([('stage_id', '=', initial_stage.id)])
+        for applicant in applicants:
+            if (applicant.cgpa < initial_stage.minimum_cgpa or 
+                applicant.experience < initial_stage.minimum_experience):
+                # Optionally move disqualified applicants to a 'Rejected' stage
+                rejected_stage = self.env['hr.recruitment.stage'].search([('name', '=', 'Rejected')], limit=1)
+                if rejected_stage:
+                    applicant.stage_id = rejected_stage.id
+    def write(self, vals):
+        res = super(HrApplicant, self).write(vals)
+        if 'stage_id' in vals:
+            initial_stage = self.env['hr.recruitment.stage'].search([('name', '=', 'Initial Qualification')], limit=1)
+            if vals['stage_id'] == initial_stage.id:
+                self.filter_applicants()
+        return res
+    @api.model
+    def create(self, vals):
+        # Ensure the applicant is created with ceo_approval_status set to 'pending'
+        if 'ceo_approval_status' not in vals:
+            vals['ceo_approval_status'] = 'pending'
+        
+        # Check if the stage is First or Second Interview and restrict access to Committee group
+        if 'stage_id' in vals:
+            stage = self.env['hr.recruitment.stage'].browse(vals['stage_id'])
+            if stage.name in ['First Interview', 'Second Interview']:
+                if not self.env.user.has_group('hr_recruitment.group_hr_recruitment_committee'):
+                    raise ValidationError(_("You do not have permission to access this stage."))
+        
+        return super(HrApplicant, self).create(vals)
+
+
+    def write(self, vals):
+        """
+        Override the write method to enforce CEO approval when transitioning
+        from the 'Second Interview' stage to the 'Contract Signed' stage,
+        and restrict access to First and Second Interview stages to Committee users only.
+        """
+        if 'stage_id' in vals:
+            # Fetch the new stage object based on the provided stage_id
+            new_stage = self.env['hr.recruitment.stage'].browse(vals['stage_id'])
+            
+            for applicant in self:
+                # Check if the current stage is 'Interview' and new stage is 'Hired stage'
+                if (applicant.stage_id.name == 'Interview' and 
+                    new_stage.name == 'Hired stage' and 
+                    applicant.ceo_approval_status != 'approve'):
+                    raise ValidationError("CEO approval is required before moving to the 'Hired stage'")
+                
+                # Restrict modification of First and Second Interview stages to Committee users
+                if new_stage.name in ['Exam', 'Interview']:
+                    if not self.env.user.has_group('hr_recruitment.group_hr_recruitment_committee'):
+                        raise ValidationError(_("Only Committee member can do that."))
+
+        # Proceed with the original write method after the checks
+        return super(HrApplicant, self).write(vals)
+
+
+
+    def action_ceo_approve(self):
+        """
+        Open the wizard to input the approve reason.
+        """
+        ceo_group = self.env.ref('hr_recruitment.group_ceo')
+        if not ceo_group or self.env.user not in ceo_group.users:
+            raise AccessError(_("You do not have the rights to approve this applicant."))
+
+        return {
+            'name': _('Approve Reason'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'applicant.get.approve.reason',
+            'view_mode': 'form',
+            'view_id': self.env.ref('hr_recruitment.applicant_get_approve_reason_view_form').id,
+            'target': 'new',
+            'context': {'default_applicant_ids': [(6, 0, self.ids)]},
+        }
+    
+    def action_ceo_refuse(self):
+        """
+        Open the wizard to input the refuse reason.
+        """
+        ceo_group = self.env.ref('hr_recruitment.group_ceo')
+        if not ceo_group or self.env.user not in ceo_group.users:
+            raise AccessError(_("You do not have the rights to refuse this applicant."))
+
+        return {
+            'name': _('Refuse Reason'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'applicant.refuse.reason.wizard', 
+            'view_mode': 'form',
+            'view_id': self.env.ref('hr_recruitment.applicant_get_refuse_reason_view_form').id,
+            'target': 'new',
+            'context': {'default_applicant_ids': [(6, 0, self.ids)]},
+        }
+
+#this class is added for external recruitment 
+class ApplicantGetApproveReason(models.TransientModel):
+    _name = "applicant.get.approve.reason"
+    _description = "Approve Reason for Applicants"
+    
+    approve_reason = fields.Text(string="Approve Reason", required=True)
+    
+    applicant_ids = fields.Many2many(
+        'hr.applicant', string="Applicants", readonly=True
+    )
+    
+
+    def action_approve_reason_apply(self):
+        """Apply the approval reason and mark applicants as approved."""
+        for wizard in self:
+            for applicant in wizard.applicant_ids:
+                if applicant.ceo_approval_status == 'approve':
+                    raise ValidationError(_("This applicant has already been approved."))
+                applicant.ceo_approval_status = 'approve'
+                applicant.approve_reason = wizard.approve_reason
+
+        return {'type': 'ir.actions.act_window_close'}
+    #this class is added for external recruitment 
+class ApplicantGetRefuseReason(models.TransientModel):
+    _name = "applicant.refuse.reason.wizard"
+    _description = "Refuse Reason for Applicants"
+
+    refuse_reason = fields.Text(string="Refuse Reason", required=True)
+    applicant_ids = fields.Many2many('hr.applicant', string="Applicants", readonly=True)
+
+    def action_refuse_reason_apply(self):
+        """
+        Apply the refusal reason and mark applicants as refused without changing their stage.
+        """
+        for record in self:
+            for applicant in record.applicant_ids:
+                # Set the refusal reason and update the CEO approval status
+                applicant.write({
+                    'refuse_reason': record.refuse_reason,
+                    'ceo_approval_status': 'refuse',
+                })
+
+        # Close the wizard after applying the reason
+        return {'type': 'ir.actions.act_window_close'}
 
 
 class ApplicantCategory(models.Model):

@@ -83,9 +83,35 @@
             <header>
                 <button string="Create Employee" name="create_employee_from_applicant" type="object" data-hotkey="v" groups="hr_recruitment.group_hr_recruitment_user"
                         class="o_create_employee" attrs="{'invisible': ['|', '|', ('emp_id', '!=', False), ('active', '=', False), ('date_closed', '=', False)]}"/>
-                <button string="Refuse" name="archive_applicant" type="object" attrs="{'invisible': [('active', '=', False)]}" data-hotkey="x"/>
+                <button string="Refuse" invisible ="1" name="archive_applicant" type="object" attrs="{'invisible': [('active', '=', False)]}" data-hotkey="x"/>
+               
+
                 <button string="Restore" name="toggle_active" type="object" attrs="{'invisible': [('active', '=', True)]}" data-hotkey="z"/>
                 <field name="stage_id" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}" attrs="{'invisible': [('active', '=', False),('emp_id', '=', False)]}"/>
+                
+                <xpath expr="//field@name='ceo_approval_status']" position="after">
+                <!-- CEO Approval Status Field -->
+                <!-- CEO Approval and Refusal Buttons -->
+                
+            <div>
+                <button name="action_ceo_approve" 
+                        string="Approve" 
+                        type="object" 
+                        class="btn-success me-2"
+                        icon="fa-check"
+                        groups="hr_recruitment.group_ceo"
+                        />
+                        
+                <button name="action_ceo_refuse" 
+                        string="Refuse" 
+                        type="object" 
+                        class="btn-primary"
+                        icon="fa-times"
+                        groups="hr_recruitment.group_ceo"/>
+            </div>
+            
+           
+                </xpath>
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
@@ -158,8 +184,12 @@
                     <group string="Job">
                         <field name="job_id"/>
                         <field name="department_id"/>
+                         <field name="cgpa"/>                    
+                        <field name="experience"/>                       
                         <field name="company_id" groups="base.group_multi_company" invisible="1" options='{"no_open":True}' />
                     </group>
+                   
+                       
                     <group string="Contract" name="recruitment_contract">
                         <label for="salary_expected"/>
                         <div class="o_row">
@@ -176,11 +206,13 @@
                         <field name="availability"/>
                     </group>
                 </group>
-                <notebook>
+                
+                <!-- <notebook>
                     <page string="Application Summary">
                         <field name="description" placeholder="Motivations..."/>
+
                     </page>
-                </notebook>
+                </notebook> -->
             </sheet>
             <div class="o_attachment_preview" groups="hr_recruitment.group_applicant_cv_display"/>
             <div class="oe_chatter">
@@ -191,6 +223,37 @@
           </form>
         </field>
     </record>
+    
+       <record id="view_hr_applicant_form_inherit" model="ir.ui.view">
+    <field name="name">hr.applicant.form.inherit</field>
+    <field name="model">hr.applicant</field>
+    <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//sheet" position="inside">
+             <!-- Hidden fields required for attrs logic -->
+            <field name="is_first_interview_stage" invisible="1"/>
+            <field name="is_second_interview_stage" invisible="1"/>
+            <field name="is_hired_stage" invisible="1"/>
+            
+            <group string="Results">
+                <!-- Field visible in  Hired stage or Exam stage -->
+                <field name="first_interview_result" 
+                    attrs="{'invisible': [('is_first_interview_stage', '=', False), ('is_hired_stage', '=', False)]}" />
+                
+                <!-- Field visible in Interview, Hired stage  -->
+                <field name="second_interview_result" 
+                    attrs="{'invisible': [('is_second_interview_stage', '=', False), ('is_hired_stage', '=', False)]}" />
+            </group>
+            <!-- New group for Interview Minutes -->
+            <group string="Minutes" groups="hr_recruitment.group_hr_recruitment_committee,hr_recruitment.group_ceo">
+                <!-- Many2many field for attaching documents (minutes) -->
+                <field name="minutes" widget="many2many_binary"  attrs="{'invisible': [ 
+                                             ('is_second_interview_stage', '=', False), 
+                                             ('is_hired_stage', '=', False)]}" /> 
+            </group>
+        </xpath>
+    </field>
+</record>
 
     <record id="hr_applicant_view_form_interviewer" model="ir.ui.view">
         <field name="model">hr.applicant</field>
@@ -324,6 +387,14 @@
                 </group>
             </form>
         </field>
+        <!-- <field name="arch" type="xml">
+        <xpath expr="//group[@name='personal_info']" position="after">
+            <group string="Qualification">
+                <field name="cgpa"/>
+                <field name="experience"/>
+            </group>
+        </xpath>
+    </field> -->
     </record>
 
     <!-- Hr Applicant Kanban View -->
@@ -356,6 +427,16 @@
                             <div class="ribbon ribbon-top-right pe-none" attrs="{'invisible': [('date_closed', '=', False)]}">
                                 <span class="bg-success">Hired</span>
                             </div>
+                                <field name="ceo_approval_status" invisible="1"/>
+                           
+                                <div class="ribbon ribbon-top-right pe-none" attrs="{'invisible': [('ceo_approval_status', '!=', 'approve')]}">
+                                    <span class="bg-success">Approved</span>
+                                </div>
+                               <div class="ribbon ribbon-top-right pe-none" attrs="{'invisible': [('ceo_approval_status', '!=', 'refuse')]}">
+                                <span class="bg-danger">Refused</span>
+                            </div>
+
+                            
                             <span class="badge rounded-pill text-bg-danger float-end me-4" attrs="{'invisible': ['|', ('active', '=', True), ('refuse_reason_id', '=', False)]}">Refused</span>
                             <div class="o_dropdown_kanban dropdown">
                                 <a class="dropdown-toggle o-no-caret btn" role="button" data-bs-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu" data-bs-display="static">
@@ -476,6 +557,11 @@
         <field name="view_mode">form</field>
         <field name="context">{'form_view_initial_mode': 'edit', 'default_job_id': active_id}</field>
     </record>
+
+   
+
+
+
 
     <!-- Jobs -->
     <record id="view_job_filter_recruitment" model="ir.ui.view">
@@ -706,7 +792,7 @@
 
     <menuitem id="menu_hr_recruitment_configuration" name="Configuration" parent="menu_hr_recruitment_root"
         groups="group_hr_recruitment_user" sequence="100"/>
-
+    
     <!-- ALL JOBS REQUESTS -->
     <menuitem id="menu_hr_recruitment_config_jobs" name="Job Positions" parent="menu_hr_recruitment_configuration" sequence="10" />
 
@@ -768,7 +854,18 @@
             </tree>
         </field>
     </record>
-
+    
+    <!-- <record id="action_filter_applicants" model="ir.cron">
+    <field name="name">Filter Applicants</field>
+    <field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+    <field name="state">code</field>
+    <field name="code">
+        model.filter_applicants(min_cgpa=2.0, min_experience=0)
+    </field>
+    <field name="interval_number">1</field>
+    <field name="interval_type">days</field>
+    </record> -->
+   
     <!-- Stage Tree View -->
     <record model="ir.ui.view" id="hr_recruitment_stage_tree">
         <field name="name">hr.recruitment.stage.tree</field>
@@ -813,6 +910,7 @@
         <field name="name">hr.recruitment.stage.form</field>
         <field name="model">hr.recruitment.stage</field>
         <field name="arch" type="xml">
+        
             <form string="Stage">
             <sheet>
                 <group name="stage_definition" string="Stage Definition">
@@ -1047,6 +1145,37 @@
             </xpath>
         </field>
     </record>
+     <!-- Custom filter in to predefined filters -->
+    <record id="view_hr_applicant_filter_inherit_dynamic" model="ir.ui.view">
+        <field name="name">Applicant Custom Filters Dynamic</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_search_bis"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='stage']" position="after">
+                <!-- Custom CGPA filters -->
+                <filter name="cgpa_2_5" string="CGPA >= 2.5" domain="[('cgpa', '>=', 2.5)]"/>
+                <filter name="cgpa_3_0" string="CGPA >= 3.0" domain="[('cgpa', '>=', 3.0)]"/>
+                
+                <!-- Custom Experience filters -->
+                <filter name="experience_0" string="Experience >= 0" domain="[('experience', '>=', 0)]"/>
+                <filter name="experience_3_0" string="Experience >= 3.0" domain="[('experience', '>=', 3.0)]"/>
+
+                 <!-- Predefined filter for First Interview Result -->
+                <filter name="first_interview_passed" 
+                        string="Exam Result >= 40" 
+                        domain="[('first_interview_result', '>=', 40)]"/>
+                
+                <!-- Predefined filter for Second Interview Result -->
+                <filter name="second_interview_passed" 
+                        string="Interview Result >= 20" 
+                        domain="[('second_interview_result', '>=', 20)]"/>
+            </xpath>
+        </field>
+    </record>
+   
+
+
+
 
     <record id="hr_employee_action_from_department" model="ir.actions.act_window">
         <field name="name">Newly Hired Employees</field>
