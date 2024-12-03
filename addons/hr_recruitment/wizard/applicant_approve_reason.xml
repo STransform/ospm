@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<odoo>
+    <!-- Form view for entering the approve reason -->
+    <record id="applicant_get_approve_reason_view_form" model="ir.ui.view">
+        <field name="name">applicant.get.approve.reason.form</field>
+        <field name="model">applicant.get.approve.reason</field>
+        <field name="arch" type="xml">
+            <form string="Approve Reason">
+                <group col="1">
+                    <field name="approve_reason" placeholder="Provide the reason for approval..." widget="text"/>
+                    <field name="applicant_ids" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="action_approve_reason_apply" 
+                            string="Approve" 
+                            type="object" 
+                            class="btn-primary" 
+                            data-hotkey="q"/>
+                    <button string="Cancel" 
+                            class="btn-secondary" 
+                            special="cancel" 
+                            data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="view_hr_applicant_tree_with_reason" model="ir.ui.view">
+        <field name="name">hr.applicant.tree.with.reason</field>
+        <field name="model">hr.applicant</field>
+        <field name="arch" type="xml">
+            <tree string="Applicants with Approval Reason">
+                <field name="name"/>
+                <field name="stage_id"/>
+                <field name="approve_reason"/>
+                <field name="ceo_approval_status"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_approved_applicants" model="ir.actions.act_window">
+        <field name="name">Approved Applicants</field>
+        <field name="res_model">hr.applicant</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_hr_applicant_tree_with_reason"/>
+        <field name="domain">[('ceo_approval_status', '=', 'approve')]</field>
+    </record>
+    <menuitem id="menu_approved_applicants" 
+              name="Approved Applicants" 
+              parent="hr_recruitment.menu_hr_recruitment_root" 
+              action="action_approved_applicants" 
+              sequence="10"/>
+    <!-- Action to open the approve reason form -->
+    <record id="applicant_get_approve_reason_action" model="ir.actions.act_window">
+        <field name="name">Approve Reason</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">applicant.get.approve.reason</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="hr_recruitment.applicant_get_approve_reason_view_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

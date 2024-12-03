@@ -20,7 +20,7 @@ class Job(models.Model):
     no_of_employee = fields.Integer(compute='_compute_employees', string="Current Number of Employees", store=True,
         help='Number of employees currently occupying this job position.')
     no_of_recruitment = fields.Integer(string='Target', copy=False,
-        help='Number of new employees you expect to recruit.', default=1)
+        help='Number of new employees you expect to recruit.', default=0)
     no_of_hired_employee = fields.Integer(string='Hired Employees', copy=False,
         help='Number of hired employees for this job position during recruitment phase.')
     employee_ids = fields.One2many('hr.employee', 'job_id', string='Employees', groups='base.group_user')
