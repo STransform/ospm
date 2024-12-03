@@ -29,6 +29,7 @@ class HrSalaryIncrement(models.Model):
         related="employee_id.contract_id.pay_grade_id",
         readonly=True,
     )
+    performance_id = fields.Many2many("hr.performance.evaluation", string="Performance")
     increment_id = fields.Many2one(
         "hr.pay.grade.increment",
         string="Increment",
@@ -48,9 +49,9 @@ class HrSalaryIncrement(models.Model):
 
     def actionSubmitt(self):
         self.state = "submitted"
-        
+
     def actionApprove(self):
         self.state = "approved"
-        
+
     def actionReject(self):
         self.state = "rejected"

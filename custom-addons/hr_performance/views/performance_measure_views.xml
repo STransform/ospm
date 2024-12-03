@@ -32,6 +32,8 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,closed" />
                 </header>
                 <sheet>
+                    <widget name="web_ribbon" title="Closed" bg_color="bg-danger"
+                        attrs="{'invisible':[('state','!=','closed')]}" />
                     <group col="2">
                         <group>
                             <field name="name" placeholder="2024 1 - 6 month evaulation" />
