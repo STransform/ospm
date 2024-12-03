@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<record id="termination_request_rule_creator" model="ir.rule">
+    <field name="name">Termination: Created by User</field>
+    <field name="model_id" ref="model_termination_request"/>
+    <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+</record>
+
+<record id="termination_request_rule_director" model="ir.rule">
+    <field name="name">Termination Request: Director</field>
+    <field name="model_id" ref="model_termination_request"/>
+    <field name="domain_force">[]</field>
+    <field name="groups" eval="[(4, ref('hr_termination.group_hr_training_department_director'))]"/>
+</record>
+
+<record id="rule_termination_request_by_manager" model="ir.rule">
+    <field name="name">Termination Request: Only Manager Access</field>
+    <field name="model_id" ref="model_termination_request"/>
+    <field name="domain_force">[('manager_id.user_id', '=', user.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+</record>
+
+
+
+</odoo>
+
+

@@ -1,0 +1,9 @@
+<odoo>
+    <!-- Root Menu Item -->
+    <menuitem id="termination_menu_root" name="Termination"/>
+
+    <!-- Terminatiosn Submenu -->
+    <menuitem id="termination_request_parent" name="Terminations" parent="termination_menu_root" />
+    <menuitem id="termination_requests" parent="termination_request_parent" name="Terminination Requests" action="employee_termination_action"/>
+
+</odoo>

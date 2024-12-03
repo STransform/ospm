@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--Action of employee.promotion model-->
+    <record id="employee_termination_action" model="ir.actions.act_window">
+        <field name="name">Termination</field>
+        <field name="res_model">termination.request</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <!--Form view employee.promotion model-->
+    <record id='employee_termination_view_form' model='ir.ui.view'>
+        <field name="name">employee.promotion.view.form</field>
+        <field name="model">termination.request</field>
+        <field name="arch" type="xml">
+            <form string="Termination">
+                <sheet>
+    
+                    <div class="oe_title">
+                        <h1>
+                            <field class="text-break" name="name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="department_id"/>
+                             <field name="manager_id"/>
+                            <field name="termination_date"/>
+                            <field name="reason"/>
+                        </group>
+                    </group>
+                    <!-- <notebook>
+                        <page name="description" string="Description">
+                            <field name="description"/>
+                        </page>
+                    </notebook> -->
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!--Tree view employee.promotion model-->
+    <record id="employee_termination_view_tree" model="ir.ui.view">
+        <field name="name">employee.termination.view.tree</field>
+        <field name="model">termination.request</field>
+        <field name="arch" type="xml">
+            <tree string="termination_fields">
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="termination_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    
+</odoo>
