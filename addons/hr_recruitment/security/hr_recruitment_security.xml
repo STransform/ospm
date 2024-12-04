@@ -104,7 +104,7 @@
         <field name="name">Applicant Refuse Reason Wizard Access</field>
         <field name="model_id" ref="model_applicant_refuse_reason_wizard"/>
         <field name="domain_force">[('id', '!=', False)]</field> <!-- This rule allows all records for the model -->
-        <field name="groups" eval="[(4, ref('hr_recruitment.group_hr_recuitment_ceo'))]"/>
+        <field name="groups" eval="[(4, ref('hr_recruitment.group_hr_recruitment_ceo'))]"/>
     </record>
 <record id="access_applicant_get_approve_reason" model="ir.model.access">
     <field name="name">access.applicant.get.approve.reason</field>
