@@ -19,4 +19,9 @@
         <field name="category_id" ref="category_recruitment_request"/>
     </record>
 
+    <record id="group_hr_recruitment_committee" model="res.groups">
+        <field name="name">Reruitment committee</field>
+        <field name="category_id" ref="category_recruitment_request"/>
+    </record>
+
 </odoo>
