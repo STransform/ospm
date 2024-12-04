@@ -19,6 +19,11 @@ class HrSalaryIncrement(models.Model):
         readonly=True,
         store=True,
     )
+    pay_grade_id = fields.Many2one(
+        "hr.pay.grade",
+        string="Pay Grade",
+        related="employee_id.contract_id.pay_grade_id",
+    )
     current_wage = fields.Float(
         string="Current Wage",
         related="employee_id.contract_id.wage",
@@ -32,7 +37,7 @@ class HrSalaryIncrement(models.Model):
     next_increment_level_id = fields.Many2one(
         "hr.pay.grade.increment",
         string="Next Increment Level",
-        # domain="[('pay_grade_id', '=', contract_id.pay_grade_id)]",
+        domain="[('pay_grade_id', '=', pay_grade_id)]",
         required=True,
         help="Select the next increment level for the employee.",
     )
