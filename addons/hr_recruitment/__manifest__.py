@@ -15,6 +15,7 @@
         'attachment_indexation',
         'web_tour',
         'digest',
+        'hr_recruitment_request'
     ],
     'data': [
         'security/hr_recruitment_security.xml',
