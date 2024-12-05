@@ -23,6 +23,8 @@ class HrSalaryIncrement(models.Model):
         "hr.pay.grade",
         string="Pay Grade",
         related="employee_id.contract_id.pay_grade_id",
+        readonly=True,
+        store=True,
     )
     current_wage = fields.Float(
         string="Current Wage",
@@ -33,39 +35,44 @@ class HrSalaryIncrement(models.Model):
         "hr.pay.grade.increment",
         string="Current Increment Level",
         related="employee_id.contract_id.increment_level_id",
+        readonly=True,
     )
     suggested_increment_level_id = fields.Many2one(
         "hr.pay.grade.increment",
         string="Suggested Increment Level",
         domain="[('pay_grade_id', '=', pay_grade_id)]",
         readonly=True,
-        help="System-suggested increment level based on performance evaluation.",
+        compute="_compute_suggested_increment_level",
+        store=True,
     )
     next_increment_level_id = fields.Many2one(
         "hr.pay.grade.increment",
         string="Next Increment Level",
         domain="[('pay_grade_id', '=', pay_grade_id)]",
         required=True,
-        help="Final increment level selected by HR.",
     )
     new_wage = fields.Float(
         string="New Wage",
         compute="_compute_new_wage",
         store=True,
         readonly=True,
-        help="Proposed salary after the increment.",
     )
     average_score = fields.Float(
         string="Average Performance Score",
         readonly=True,
         compute="_compute_average_score",
-        help="The average performance score of the last two evaluations within 6 months.",
     )
-    is_valid_increment = fields.Boolean(
-        string="Is Valid Increment?",
-        compute="_compute_is_valid_increment",
+    is_eligible = fields.Boolean(
+        string="Eligible for Increment?",
+        compute="_compute_is_eligible",
         store=True,
-        help="Indicates if the increment respects pay grade constraints.",
+        help="Indicates if the employee is eligible for a salary increment.",
+    )
+    employee_name = fields.Char(
+        string="Employee Name", related="employee_id.name", readonly=True
+    )
+    job_title = fields.Char(
+        string="Job Title", related="employee_id.job_id.name", readonly=True
     )
     state = fields.Selection(
         [
@@ -85,12 +92,14 @@ class HrSalaryIncrement(models.Model):
         """Compute the proposed new wage based on the selected increment level."""
         for record in self:
             record.new_wage = (
-                record.next_increment_level_id.salary if record.next_increment_level_id else 0.0
+                record.next_increment_level_id.salary
+                if record.next_increment_level_id
+                else 0.0
             )
 
     @api.depends("employee_id")
     def _compute_average_score(self):
-        """Compute the average score of the last two performance evaluations within 6 months."""
+        """Calculate the average score of the last two performance evaluations."""
         for record in self:
             evaluations = self.env["hr.performance.evaluation"].search(
                 [
@@ -110,39 +119,36 @@ class HrSalaryIncrement(models.Model):
                 total_score / max(len(evaluations), 1) if evaluations else 0.0
             )
 
-    @api.depends("new_wage", "employee_id.contract_id")
-    def _compute_is_valid_increment(self):
-        """Validate if the proposed increment respects pay grade constraints."""
+    @api.depends("pay_grade_id", "average_score", "current_increment_level_id")
+    def _compute_is_eligible(self):
+        """Determine if the employee is eligible for a salary increment."""
         for record in self:
-            if record.employee_id.contract_id.pay_grade_id:
-                grade = record.employee_id.contract_id.pay_grade_id
-                record.is_valid_increment = (
-                    grade.base_salary <= record.new_wage <= grade.ceiling_salary
-                )
-            else:
-                record.is_valid_increment = False
+            if not record.pay_grade_id:
+                record.is_eligible = False
+                continue
 
-    @api.onchange("employee_id")
-    def _onchange_employee_id(self):
-        """Populate the suggested increment level when the employee is selected."""
+            current_step = (
+                int(record.current_increment_level_id.increment)
+                if record.current_increment_level_id
+                else 0
+            )
+
+            # Eligibility conditions: not at ceiling and average score >= 75
+            record.is_eligible = current_step < 9 and record.average_score >= 75
+
+    @api.depends("current_increment_level_id", "average_score", "pay_grade_id")
+    def _compute_suggested_increment_level(self):
+        """Compute the suggested increment level based on performance."""
         for record in self:
-            if not record.employee_id:
+            if not record.pay_grade_id or record.average_score < 75:
                 record.suggested_increment_level_id = False
-                record.next_increment_level_id = False
-                return
+                continue
 
-            # Compute the average score
-            record._compute_average_score()
-
-            # Determine the current step or check for base salary
-            if not record.current_increment_level_id:
-                print("Employee is on base salary.")
-                current_step = 0  # Indicates base salary
-            else:
-                current_step = int(record.current_increment_level_id.increment)
-            print("Current Step =================>", current_step)
-
-            # Determine the step change based on performance score
+            current_step = (
+                int(record.current_increment_level_id.increment)
+                if record.current_increment_level_id
+                else 0
+            )
             step_change = 0
             if 75 <= record.average_score < 85:
                 step_change = 1
@@ -151,88 +157,75 @@ class HrSalaryIncrement(models.Model):
             elif record.average_score >= 95:
                 step_change = 3
 
-            # Calculate the suggested step and handle ceiling logic
-            suggested_step = current_step + step_change
-            print("Suggested Step Before Ceiling Check =================>", suggested_step)
-
-            if suggested_step > 9:  # Cap at maximum step
-                print("Suggested Step exceeds maximum increment level. Setting to ceiling salary.")
-                record.suggested_increment_level_id = False
-                record.next_increment_level_id = False
-                record.new_wage = record.pay_grade_id.ceiling_salary  # Set to ceiling
-                return
-
-            # Convert suggested step to string for comparison
-            suggested_step_str = str(suggested_step)
-
-            # Debugging the pay_grade_id
-            print("Pay Grade ID =================>", record.pay_grade_id.id)
-
-            # Find the corresponding increment level
+            suggested_step = min(current_step + step_change, 9)
             suggested_increment = self.env["hr.pay.grade.increment"].search(
                 [
                     ("pay_grade_id", "=", record.pay_grade_id.id),
-                    ("increment", "=", suggested_step_str),
+                    ("increment", "=", str(suggested_step)),
                 ],
                 limit=1,
             )
-            print("Suggested Increment =================>", suggested_increment)
+            record.suggested_increment_level_id = suggested_increment
+            record.next_increment_level_id = suggested_increment
 
-            if suggested_increment:
-                record.suggested_increment_level_id = suggested_increment
-                record.next_increment_level_id = suggested_increment  # Pre-fill the next increment level
-                record.new_wage = suggested_increment.salary
-            else:
-                # Handle case where no increment matches and set to ceiling salary
-                print(
-                    f"No matching increment level found for Step {suggested_step_str} in Pay Grade ID {record.pay_grade_id.id}."
-                )
-                record.suggested_increment_level_id = False
-                record.next_increment_level_id = False
-                record.new_wage = record.pay_grade_id.ceiling_salary  # Set to ceiling
-
+    @api.onchange("employee_id")
+    def _onchange_employee_id(self):
+        """Update average score and eligibility when employee is selected."""
+        for record in self:
+            record._compute_average_score()
+            record._compute_is_eligible()
+            record._compute_suggested_increment_level()
 
     def action_submit(self):
-        """Submit the increment request for approval."""
+        """Submit the salary increment request."""
         for record in self:
-            if record.average_score < 75:
+            if not record.is_eligible:
                 raise ValidationError(
-                    "The employee's average performance score is below the required threshold."
+                    "The employee is not eligible for a salary increment."
                 )
             record.state = "submitted"
 
     def action_approve(self):
-        """Approve the increment request and update the employee's contract."""
+        """Approve the salary increment request."""
         for record in self:
             contract = record.employee_id.contract_id
             if not contract:
                 raise ValidationError("The employee does not have an active contract.")
             if not record.next_increment_level_id:
                 raise ValidationError("No increment level selected for approval.")
-            if not record.is_valid_increment:
-                raise ValidationError(
-                    "The proposed increment exceeds the allowable limits for the pay grade."
-                )
 
-            # Update contract with the selected increment level
-            contract.write(
-                {
-                    "increment_level_id": record.next_increment_level_id.id,
-                    "wage": record.new_wage,
-                }
-            )
+            # Determine if the increment brings the salary to the ceiling
+            if record.new_wage >= record.pay_grade_id.ceiling_salary:
+                contract.write(
+                    {
+                        "increment_level_id": False,  # No further increments; ceiling reached
+                        "wage": record.pay_grade_id.ceiling_salary,
+                    }
+                )
+                record.remarks = f"Increment approved: Salary set to ceiling ({record.pay_grade_id.ceiling_salary})."
+            elif not record.current_increment_level_id:
+                # Base salary scenario
+                contract.write(
+                    {
+                        "increment_level_id": record.next_increment_level_id.id,
+                        "wage": record.next_increment_level_id.salary,
+                    }
+                )
+                record.remarks = f"Increment approved: Updated to Increment {record.next_increment_level_id.increment} with wage {record.new_wage}."
+            else:
+                # Regular increment update
+                contract.write(
+                    {
+                        "increment_level_id": record.next_increment_level_id.id,
+                        "wage": record.new_wage,
+                    }
+                )
+                record.remarks = f"Increment approved to {record.next_increment_level_id.increment} with wage {record.new_wage}."
 
             record.state = "approved"
-            record.remarks = (
-                f"Increment approved: Updated to Increment {record.next_increment_level_id.increment} "
-                f"with wage {record.new_wage}."
-            )
 
     def action_reject(self):
-        """Reject the increment request."""
+        """Reject the salary increment request."""
         for record in self:
             record.state = "rejected"
             record.remarks = "Increment request has been rejected."
-            record.message_post(
-                body=f"Increment request for {record.employee_id.name} was rejected."
-            )
