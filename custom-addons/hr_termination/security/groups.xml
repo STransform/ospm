@@ -9,18 +9,13 @@
         <field name="category_id" ref="category_termination"/>
     </record>
 
-    <record id="group_hr_training_hr_officer" model="res.groups">
-        <field name="name">HR Director</field>
-        <field name="category_id" ref="category_termination"/>
-    </record>
-
     <record id="group_hr_training_dceo" model="res.groups">
         <field name="name">DCEO</field>
         <field name="category_id" ref="category_termination"/>
     </record>
 
     <record id="group_hr_training_department_director" model="res.groups">
-        <field name="name">Department Director</field>
+        <field name="name">Director</field>
         <field name="category_id" ref="category_termination"/>
     </record>
 </odoo>

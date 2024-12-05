@@ -14,6 +14,20 @@
     <field name="groups" eval="[(4, ref('hr_termination.group_hr_training_department_director'))]"/>
 </record>
 
+<record id="termination_request_rule_dceo" model="ir.rule">
+    <field name="name">Termination Request: DCEO</field>
+    <field name="model_id" ref="model_termination_request"/>
+    <field name="domain_force">[]</field>
+    <field name="groups" eval="[(4, ref('hr_termination.group_hr_training_dceo'))]"/>
+</record>
+
+<record id="termination_request_rule_ceo" model="ir.rule">
+    <field name="name">Termination Request: CEO</field>
+    <field name="model_id" ref="model_termination_request"/>
+    <field name="domain_force">[]</field>
+    <field name="groups" eval="[(4, ref('hr_termination.group_hr_training_ceo'))]"/>
+</record>
+
 <record id="rule_termination_request_by_manager" model="ir.rule">
     <field name="name">Termination Request: Only Manager Access</field>
     <field name="model_id" ref="model_termination_request"/>

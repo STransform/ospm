@@ -44,6 +44,41 @@ class TerminationRequest(models.Model):
         selection=[('approved', 'Approved'), ('refused', 'Refused')],
         store=True,
     )
+    combined_state = fields.Selection(
+        string='Combined State',
+        selection=[('draft', "Draft"),('processing', 'processing'),('approved', 'Approved'), ('refused', 'Refused')],
+        default='draft',
+        compute = '_compute_combined_state',
+        store=True,
+    )
+
+    is_manager = fields.Boolean(
+        string='Is Manager',
+        compute='_compute_is_manager',
+        store=False
+    )
+
+
+    @api.depends('state_by_service', 'state_by_director', 'state_by_dceo', 'state_by_ceo')
+    def _compute_combined_state(self):
+        for record in self:
+            if 'refused' in [record.state_by_service, record.state_by_director, record.state_by_dceo, record.state_by_ceo]:
+                record.combined_state = 'refused'
+            elif all(state == 'approved' for state in [record.state_by_service, record.state_by_director, record.state_by_dceo, record.state_by_ceo]):
+                record.combined_state = 'approved'
+            elif 'approved' in [record.state_by_service, record.state_by_director, record.state_by_dceo]:
+                record.combined_state = 'processing'
+            else:
+                record.combined_state = 'draft'
+
+
+
+    @api.depends('manager_id')
+    def _compute_is_manager(self):
+        for record in self:
+            record.is_manager = record.manager_id.user_id.id == self.env.uid
+
+
 
     @api.model
     def create(self, vals):
@@ -88,9 +123,18 @@ class TerminationRequest(models.Model):
     def action_by_ceo_request_approval(self):
         for record in self:
             record.state_by_ceo = 'approved'
+
+            if record.employee_id:
+                # Set the employee to archived (depending on your model's definition for archived state)
+                record.employee_id.write({'active': False})
     
     def action_by_ceo_refuse_request(self):
         for record in self:
             record.state_by_ceo = 'refused'
+
+
+    def action_request_termination(self):
+        for record in self:
+            record.combined_state = 'processing'
 
 
