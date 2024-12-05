@@ -9,6 +9,7 @@
     'depends': ['base', 'hr','hr_pay_grade', 'mail', 'hr_contract', 'hr_performance'],
     'data': [
         "security/ir.model.access.csv",
+        "data/cron_job.xml",
         "views/hr_salary_increment_view.xml",
         "views/menu.xml",
     ],
