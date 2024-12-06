@@ -68,6 +68,12 @@ class HrSalaryIncrement(models.Model):
         store=True,
         help="Indicates if the employee is eligible for a salary increment.",
     )
+    employee_name = fields.Char(
+        string="Employee Name", related="employee_id.name", readonly=True
+    )
+    job_title = fields.Char(
+        string="Job Title", related="employee_id.job_id.name", readonly=True
+    )
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -85,10 +91,11 @@ class HrSalaryIncrement(models.Model):
     def _compute_new_wage(self):
         """Compute the proposed new wage based on the selected increment level."""
         for record in self:
-            if record.next_increment_level_id:
-                record.new_wage = record.next_increment_level_id.salary
-            else:
-                record.new_wage = 0.0
+            record.new_wage = (
+                record.next_increment_level_id.salary
+                if record.next_increment_level_id
+                else 0.0
+            )
 
     @api.depends("employee_id")
     def _compute_average_score(self):
@@ -98,7 +105,11 @@ class HrSalaryIncrement(models.Model):
                 [
                     ("employee_id", "=", record.employee_id.id),
                     ("evaluation_status", "=", "completed"),
-                    ("create_date", ">=", fields.Date.today() - relativedelta(months=6)),
+                    (
+                        "create_date",
+                        ">=",
+                        fields.Date.today() - relativedelta(months=6),
+                    ),
                 ],
                 order="create_date desc",
                 limit=2,
@@ -121,6 +132,8 @@ class HrSalaryIncrement(models.Model):
                 if record.current_increment_level_id
                 else 0
             )
+
+            # Eligibility conditions: not at ceiling and average score >= 75
             record.is_eligible = current_step < 9 and record.average_score >= 75
 
     @api.depends("current_increment_level_id", "average_score", "pay_grade_id")
@@ -136,28 +149,40 @@ class HrSalaryIncrement(models.Model):
                 if record.current_increment_level_id
                 else 0
             )
-            step_change = (
-                1 if 75 <= record.average_score < 85
-                else 2 if 85 <= record.average_score < 95
-                else 3 if record.average_score >= 95
-                else 0
-            )
+            step_change = 0
+            if 75 <= record.average_score < 85:
+                step_change = 1
+            elif 85 <= record.average_score < 95:
+                step_change = 2
+            elif record.average_score >= 95:
+                step_change = 3
+
             suggested_step = min(current_step + step_change, 9)
-            record.suggested_increment_level_id = self.env[
-                "hr.pay.grade.increment"
-            ].search(
+            suggested_increment = self.env["hr.pay.grade.increment"].search(
                 [
                     ("pay_grade_id", "=", record.pay_grade_id.id),
                     ("increment", "=", str(suggested_step)),
                 ],
                 limit=1,
             )
+            record.suggested_increment_level_id = suggested_increment
+            record.next_increment_level_id = suggested_increment
+
+    @api.onchange("employee_id")
+    def _onchange_employee_id(self):
+        """Update average score and eligibility when employee is selected."""
+        for record in self:
+            record._compute_average_score()
+            record._compute_is_eligible()
+            record._compute_suggested_increment_level()
 
     def action_submit(self):
         """Submit the salary increment request."""
         for record in self:
             if not record.is_eligible:
-                raise ValidationError("The employee is not eligible for a salary increment.")
+                raise ValidationError(
+                    "The employee is not eligible for a salary increment."
+                )
             record.state = "submitted"
 
     def action_approve(self):
@@ -169,17 +194,34 @@ class HrSalaryIncrement(models.Model):
             if not record.next_increment_level_id:
                 raise ValidationError("No increment level selected for approval.")
 
-            # Update the contract based on the selected increment level
-            contract.write(
-                {
-                    "increment_level_id": record.next_increment_level_id.id,
-                    "wage": record.new_wage,
-                }
-            )
-            record.remarks = (
-                f"Increment approved: Updated to Increment {record.next_increment_level_id.increment} "
-                f"with wage {record.new_wage}."
-            )
+            # Determine if the increment brings the salary to the ceiling
+            if record.new_wage >= record.pay_grade_id.ceiling_salary:
+                contract.write(
+                    {
+                        "increment_level_id": False,  # No further increments; ceiling reached
+                        "wage": record.pay_grade_id.ceiling_salary,
+                    }
+                )
+                record.remarks = f"Increment approved: Salary set to ceiling ({record.pay_grade_id.ceiling_salary})."
+            elif not record.current_increment_level_id:
+                # Base salary scenario
+                contract.write(
+                    {
+                        "increment_level_id": record.next_increment_level_id.id,
+                        "wage": record.next_increment_level_id.salary,
+                    }
+                )
+                record.remarks = f"Increment approved: Updated to Increment {record.next_increment_level_id.increment} with wage {record.new_wage}."
+            else:
+                # Regular increment update
+                contract.write(
+                    {
+                        "increment_level_id": record.next_increment_level_id.id,
+                        "wage": record.new_wage,
+                    }
+                )
+                record.remarks = f"Increment approved to {record.next_increment_level_id.increment} with wage {record.new_wage}."
+
             record.state = "approved"
 
     def action_reject(self):

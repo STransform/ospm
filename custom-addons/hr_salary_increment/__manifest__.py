@@ -7,11 +7,13 @@
     'website': 'https://otech.et',
     'category': 'Human Resource',
     'depends': ['base', 'hr','hr_pay_grade', 'mail', 'hr_contract', 'hr_performance'],
-    'data': [
+    "data": [
+        "security/ir.model.access.xml",
         "security/ir.model.access.csv",
-        "data/cron_job.xml",
         "views/hr_salary_increment_view.xml",
+        "views/hr_employee_view.xml",
         "views/menu.xml",
+        "views/hr_salary_increment_batch_line_views.xml"
     ],
     'application': True,
     'installable': True,
