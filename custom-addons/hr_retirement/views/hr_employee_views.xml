@@ -1,0 +1,51 @@
+<odoo>
+    <!-- Tree View for Employees Near Retirement -->
+    <record id="view_hr_employee_near_retirement_tree" model="ir.ui.view">
+        <field name="name">hr.employee.near.retirement.tree</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <tree string="Employees Near Retirement">
+                <field name="name"/>
+                <field name="job_id"/>
+                <field name="department"/>
+                <field name="birthday"/>
+                <field name="retirement_date"/>
+            </tree>
+        </field>
+    </record>
+
+   
+    <record id="view_hr_employee_kanban_near_retirement" model="ir.ui.view">
+        <field name="name">hr.employee.kanban.near_retirement</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
+        <field name="arch" type="xml">
+            <!-- Locate the Kanban card -->
+            <xpath expr="//div[contains(@class, 'oe_kanban_bottom_right')]" position="inside">
+                <!-- Ensure the field is loaded -->
+                <field name="near_retirement" invisible="1"/>
+                <field name="has_birthday" invisible="1"/>
+                <field name="is_retired" invisible="1"/>
+                <div class="kanban-ribbon-done m-2" attrs="{'invisible': [('near_retirement', '=', False)]}">
+                    <p>Near Retirement</p>
+                </div>
+                <div class="kanban-ribbon-danger m-2" attrs="{'invisible': ['|',('near_retirement', '=', True),('has_birthday','=',True)]}">
+                    <p>Add Birthday</p>
+                </div>
+                <div class="kanban-ribbon-done m-2" attrs="{'invisible': [('is_retired', '=', False)]}">
+                    <p>Retired</p>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+
+   
+    <!-- Action for Employees Near Retirement -->
+    <record id="action_hr_employee_near_retirement" model="ir.actions.act_window">
+        <field name="name">Employees Near Retirement</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('near_retirement', '=', True)]</field>
+    </record>
+</odoo>

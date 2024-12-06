@@ -1,0 +1,7 @@
+<odoo>
+    <record id="default_hr_retirement_settings" model="hr.retirement.settings">
+        <field name="max_service_years">30</field>
+        <field name="retirement_age">60</field>
+        <field name="retirement_threshold_months">12</field>
+    </record>
+</odoo>

@@ -1,0 +1,63 @@
+<odoo>
+
+    <!-- Tree View -->
+    <record id="view_hr_early_retirement_request_tree" model="ir.ui.view">
+        <field name="name">hr.early.retirement.request.tree</field>
+        <field name="model">hr.early.retirement.request</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_name"/>
+                <field name="department"/>
+                <field name="proposed_retirement_date"/>
+                <field name="request_date"/>
+                <field name="state"/>
+                <field name="comment" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_hr_early_retirement_request_form" model="ir.ui.view">
+        <field name="name">hr.early.retirement.request.form</field>
+        <field name="model">hr.early.retirement.request</field>
+        <field name="arch" type="xml">
+            <form string="Early Retirement Request">
+                <sheet>
+                    <header class="mb-2">
+                        <button string="Submit" name="action_submit" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
+                        <button string="Approve" name="action_approve" type="object" class="oe_highlight" groups="planning.group_ceo" attrs="{'invisible':[('state','!=','submitted')]}"/>
+                        <button string="Reject" name="action_reject" type="object" class="oe_highlight" groups="planning.group_ceo" attrs="{'invisible':[('state','!=','submitted')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected"/>
+                    </header>
+                    <group>
+                        <field name="user_can_comment" invisible="1"/>
+                    </group>
+                    <sheet class="p-2">
+                        <group>
+                            <field name="employee_id" invisible="1" />
+                            <field name="employee_name" readonly="1"/>
+                            <field name="department" readonly="1"/>
+                            <field name="proposed_retirement_date" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="request_date" readonly="1"/>
+                            <field name="reason" widget="text" required="1" attrs="{'readonly':[('state','!=','draft')]}" placeholder="Enter your Reason for Retirement"/>
+                            <field name="state" readonly="1"/>
+                            <field name="comment" attrs="{'readonly':[('user_can_comment','=', False)]}"/>
+                        </group>
+                    </sheet>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="hr_early_retirement_request_action" model="ir.actions.act_window">
+        <field name="name">Early Retirement Requests</field>
+        <field name="res_model">hr.early.retirement.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+             <p class="o_view_nocontent_smiling_face">
+                Submit and track requests for early retirement.
+            </p>
+        </field>
+    </record>
+</odoo>
