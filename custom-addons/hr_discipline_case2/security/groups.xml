@@ -1,0 +1,23 @@
+<odoo>
+<record id="category_discipline_case" model="ir.module.category">
+            <field name="name">Discipline case</field>
+        </record>
+
+    <!-- HR Group: HR Personnel who can review, resolve or escalate cases -->
+    <record id="group_hr_manager" model="res.groups">
+        <field name="name">HR Manager</field>
+        <field name="category_id" ref="category_discipline_case"/>
+    </record>
+
+    <!-- Discipline Committee Group: Committee members can review and investigate cases -->
+    <record id="group_discipline_committee" model="res.groups">
+        <field name="name">Discipline Committee</field>
+         <field name="category_id" ref="category_discipline_case"/>
+    </record>
+
+    <!-- CEO Group: CEO can approve/reject the final decisions -->
+    <record id="group_ceo" model="res.groups">
+        <field name="name">CEO</field>
+         <field name="category_id" ref="category_discipline_case"/>
+    </record>
+</odoo>
