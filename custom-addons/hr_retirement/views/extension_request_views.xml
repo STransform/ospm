@@ -7,11 +7,10 @@
         <field name="model">hr.retirement.extension.request</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="employee_name"/>
+                <field name="employee_id"/>
                 <field name="current_retirement_date"/>
                 <field name="proposed_new_retirement_date"/>
                 <field name="extension_period_months"/>
-                <field name="state"/>
             </tree>
         </field>
     </record>
@@ -24,10 +23,36 @@
             <form string="Retirement Extension Request">
                 <sheet>
                     <header class="mb-2">
-                        <button string="Submit" name="action_submit" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
-                        <button string="Approve" name="action_approve" type="object" class="oe_highlight" groups="planning.group_ceo" attrs="{'invisible':[('state','!=','submitted')]}"/>
-                        <button string="Reject" name="action_reject" type="object" class="oe_highlight" groups="planning.group_ceo" attrs="{'invisible':[('state','!=','submitted')]}"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected"/>
+                        <button string="Submit" 
+                                name="action_submit" 
+                                type="object" class="oe_highlight" 
+                                attrs="{'invisible':[('state','!=','draft')]}"
+                                confirm="Are you sure you want to submit this request?"
+                        />
+                        <button string="Accept Offer" 
+                                name="action_approve" 
+                                type="object" 
+                                class="oe_highlight" 
+                                attrs="{'invisible':['|',('state','!=','submitted'),('user_can_comment','=',False)]}"
+                                confirm="Are you sure you want to Accept this Offer?"
+                        />
+                        <button string="Reject Offer" 
+                                name="action_reject" 
+                                type="object" 
+                                class="oe_highlight" 
+                                attrs="{'invisible':['|',('state','!=','submitted'),('user_can_comment','=',False)]}"
+                                confirm="Are you sure you want to Accept this Offer?"
+                        />
+                        <field name="state" 
+                               widget="statusbar" 
+                               statusbar_visible="draft,submitted,approved,rejected" 
+                               attrs="{'invisible':[('user_can_comment','=',True)]}"
+                        />
+                        <field name="employee_state" 
+                               widget="statusbar"
+                               statusbar_visible="pending,approved,rejected"
+                               attrs="{'invisible':[('user_can_comment','=',False)]}"
+                        />
                     </header>
                     <group>
                         <field name="employee_id" invisible="1"/>
@@ -35,15 +60,15 @@
                     </group>
                     <sheet>
                         <group>
-                            <field name="employee_name" readonly="1"/>
+                            <field name="employee_id" attrs="{'readonly':[('state','!=','draft')]}"  options="{'no_create': True, 'no_open': True}}"/>
+                            <field name="employee_department" readonly="1" />
                             <field name="current_retirement_date" readonly="1"/>
                             <field name="proposed_new_retirement_date" readonly="1"/>
                             <field name="extension_period_months" required="1"/>
                             <field name="extension_reason" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
                             <field name="request_date" readonly="1"/>
                             <field name="state" readonly="1"/>
-                            <field name="comment"  attrs="{'readonly':[('user_can_comment','=',False)]}"/>
-                            <field name="attachment_ids" widget="many2many_binary"  attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="comment" attrs="{'readonly':['|',('user_can_comment','=', False),('state','!=','submitted')]}"/>
                         </group>
                     </sheet>
                 </sheet>

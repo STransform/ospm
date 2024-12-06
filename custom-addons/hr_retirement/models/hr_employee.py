@@ -1,5 +1,6 @@
-from odoo import models, fields, api, SUPERUSER_ID
+from odoo import models, fields, api, SUPERUSER_ID,_
 from datetime import date
+from odoo.exceptions import ValidationError
 from dateutil.relativedelta import relativedelta
 
 class HrEmployee(models.Model):
@@ -18,7 +19,6 @@ class HrEmployee(models.Model):
         retirement_age_limit = self.env['hr.retirement.settings'].sudo().search([], limit=1).retirement_age
         retirement_threshold = self.env['hr.retirement.settings'].sudo().search([], limit=1).retirement_threshold_months
         for employee in self:
-            print("==================> Employee", employee.name, employee.retirement_extended,employee.is_retired,employee.near_retirement)
             if employee.is_retired:
                 employee.near_retirement = False
                 employee.retirement_date = None
@@ -45,12 +45,13 @@ class HrEmployee(models.Model):
 
     def update_near_retirement(self):
         """Update the near retirement status for all employees."""
-        print("++++++++=======================>>>",SUPERUSER_ID)
         employees = self.search([])
         employees._compute_near_retirement()  # Re-compute the near retirement status for all employees
 
     @api.onchange('birthday')
     def _onchange_birthday(self):
+        if self.birthday >= date.today():
+            raise ValidationError(_("Birthday cannot be in the future."))
         """Update the retirement date when the birthday is changed."""
         retirement_age_limit = self.env['hr.retirement.settings'].sudo().search([], limit=1).retirement_age
         if self.birthday:
