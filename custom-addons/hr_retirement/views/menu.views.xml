@@ -1,0 +1,42 @@
+<odoo>
+    <menuitem
+        id="retirement_root_menu"
+        name="Retirement"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_hr_retirement_settings"
+        name="Retirement Settings"
+        parent="hr.menu_human_resources_configuration"
+        action="action_hr_retirement_settings"
+    />
+    <menuitem
+        id="model_name_menu"
+        name="Near Retirement"
+        action="action_hr_employee_near_retirement"
+        parent="retirement_root_menu"
+        sequence="10"
+        groups="planning.group_hr_office"
+    />
+    <menuitem
+        id="hr_early_retirement_request_menu"
+        name="Early Retirement"
+        action="hr_early_retirement_request_action"
+        parent="retirement_root_menu"
+        sequence="11"
+    />
+    <menuitem
+        id="hr_retirement_request_menu"
+        name="Retirement Request"
+        action="hr_retirement_request_action"
+        parent="retirement_root_menu"
+        sequence="12"
+    />
+    <menuitem
+        id="hr_retirement_extension_requests_menu"
+        name="Extend Retirement"
+        action="hr_retirement_extension_requests_action"
+        parent="retirement_root_menu"
+        sequence="13"
+    />
+</odoo>

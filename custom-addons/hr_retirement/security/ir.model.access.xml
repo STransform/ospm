@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- record rule for accessing retirement setting -->
+    <record id="rule_hr_retirement_setting" model="ir.rule">
+        <field name="name">HR Retirement Setting Access</field>
+        <field name="model_id" ref="model_hr_retirement_settings"/>
+        <field name="groups" eval="[(4, ref('planning.group_hr_office'))]"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <!-- record rule for accessing hr_employee  -->
+    <!-- <record id="rule_hr_employee" model="ir.rule">
+        <field name="name">HR Employee Access</field>
+        <field name="model_id" ref="model_hr_employee"/>
+        <field name="groups" eval="[(4, ref('planning.group_hr_office'))]"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="1"/>
+    </record> -->
+
+    <!-- record rule for accessing retirement request for creator -->
+    <record id="rule_hr_retirement_request_creator" model="ir.rule">
+        <field name="name">HR Retirement Request Creator Access</field>
+        <field name="model_id" ref="model_hr_retirement_request"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('create_uid','=',user.id)]</field>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>   
+
+    <!-- record rule for accessing Early retirement for creator -->
+    <record id="rule_hr_early_retirement_creator" model="ir.rule">
+        <field name="name">HR Early Retirement Creator Access</field>
+        <field name="model_id" ref="model_hr_early_retirement_request"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('create_uid','=',user.id)]</field>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="0"/>
+    </record> 
+
+    <!-- record rule for accessing extend retirement requesr for creator -->
+    <record id="rule_hr_extend_retirement_request_creator" model="ir.rule">
+        <field name="name">HR Extend Retirement Request Creator Access</field>
+        <field name="model_id" ref="model_hr_retirement_extension_request"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('create_uid','=',user.id)]</field>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="0"/>
+    </record> 
+
+
+    <!-- record rule for accessing retirement request for CEO -->
+    <record id="rule_hr_retirement_request_ceo" model="ir.rule">
+        <field name="name">HR Retirement Request CEO Access</field>
+        <field name="model_id" ref="model_hr_retirement_request"/>
+        <field name="groups" eval="[(4, ref('planning.group_ceo'))]"/>
+        <field name="domain_force">[('state','=','submitted')]</field>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>   
+
+    <!-- record rule for accessing Early retirement for CEO -->
+    <record id="rule_hr_early_retirement_ceo" model="ir.rule">
+        <field name="name">HR Early Retirement CEO Access</field>
+        <field name="model_id" ref="model_hr_early_retirement_request"/>
+        <field name="groups" eval="[(4, ref('planning.group_ceo'))]"/>
+        <field name="domain_force">[('state','=','submitted')]</field>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record> 
+
+    <!-- record rule for accessing extend retirement requesr for CEO -->
+    <record id="rule_hr_extend_retirement_request_ceo" model="ir.rule">
+        <field name="name">HR Extend Retirement Request CEO Access</field>
+        <field name="model_id" ref="model_hr_retirement_extension_request"/>
+        <field name="groups" eval="[(4, ref('planning.group_ceo'))]"/>
+        <field name="domain_force">[('state','=','submitted')]</field>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record> 
+
+ 
+</odoo>
