@@ -14,22 +14,22 @@
             <form string="Termination">
                 <header>
                     <!-- Approval by Department service director -->
-                    <button name="action_request_termination" string="Request Termination" type="object" class="btn-primary"  attrs="{'invisible': [('combined_state', 'in', ['processing', 'approved'])]}"/>
-                    <button name="action_by_service_request_approval" type="object" string="Approve" attrs="{'invisible': ['|', ('is_manager', '=', False), ('state_by_service', 'in', ['approved', 'refused'])]}" />
-                    <button name="action_by_service_refuse_request" type="object" string="Refuse" attrs="{'invisible': ['|', ('is_manager', '=', False), ('state_by_service', 'in', ['approved', 'refused'])]}" />
+                    <button name="action_request_termination" string="Request Termination" type="object" class="btn-primary"  attrs="{'invisible': [('combined_state', 'in', ['processing', 'approved'])]}" confirm="Are you sure! Do you wish to proceed ?"/>
+                    <button name="action_by_service_request_approval" type="object" string="Approve" attrs="{'invisible': ['|', ('is_manager', '=', False), ('state_by_service', 'in', ['approved', 'refused'])]}"  confirm="Are you sure! Do you wish to proceed ?"/>
+                    <button name="action_by_service_refuse_request" type="object" string="Refuse" attrs="{'invisible': ['|', ('is_manager', '=', False), ('state_by_service', 'in', ['approved', 'refused'])]}" confirm="Are you sure! Do you wish to proceed ?"/>
 
 
                     <!-- Approval by HR director -->
-                    <button name="action_by_director_request_approval" type="object" string="Accept" groups="hr_termination.group_hr_training_department_director" attrs="{'invisible': ['|', ('state_by_director', 'in', ['approved', 'refused']),  ('state_by_service', '!=', 'approved')]}"/>
-                    <button name="action_by_director_refuse_request" type="object" string="Refuse" groups="hr_termination.group_hr_training_department_director" attrs="{'invisible': ['|', ('state_by_director', 'in', ['approved', 'refused']),  ('state_by_service', '!=', 'approved')]}"/>
+                    <button name="action_by_director_request_approval" type="object" string="Accept" groups="hr_termination.group_hr_training_department_director" attrs="{'invisible': ['|', ('state_by_director', 'in', ['approved', 'refused']),  ('state_by_service', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
+                    <button name="action_by_director_refuse_request" type="object" string="Refuse" groups="hr_termination.group_hr_training_department_director" attrs="{'invisible': ['|', ('state_by_director', 'in', ['approved', 'refused']),  ('state_by_service', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
 
                     <!-- Approval by HR DCEO -->
-                    <button name="action_by_dceo_request_approval" type="object" string="Accept" groups="hr_termination.group_hr_training_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']),  ('state_by_director', '!=', 'approved')]}"/>
-                    <button name="action_by_dceo_refuse_request" type="object" string="Refuse" groups="hr_termination.group_hr_training_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']),  ('state_by_director', '!=', 'approved')]}"/>
+                    <button name="action_by_dceo_request_approval" type="object" string="Accept" groups="hr_termination.group_hr_training_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']),  ('state_by_director', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
+                    <button name="action_by_dceo_refuse_request" type="object" string="Refuse" groups="hr_termination.group_hr_training_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']),  ('state_by_director', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
 
                     <!-- Approval by CEO -->
-                    <button name="action_by_ceo_request_approval" type="object" string="Accept" groups="hr_termination.group_hr_training_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}"/>
-                    <button name="action_by_ceo_refuse_request" type="object" string="Refuse" groups="hr_termination.group_hr_training_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}"/>
+                    <button name="action_by_ceo_request_approval" type="object" string="Accept" groups="hr_termination.group_hr_training_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
+                    <button name="action_by_ceo_refuse_request" type="object" string="Refuse" groups="hr_termination.group_hr_training_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
 
 
                     <field name="combined_state" widget="statusbar" statusbar_visible="draft,processing,approved,refused"/>
@@ -75,13 +75,13 @@
         <field name="name">termination.request.kanban</field>
         <field name="model">termination.request</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="combined_state" quick_create="false" class="o_kanban_view">
+            <kanban default_group_by="combined_state" quick_create="false" class="o_kanban_view" default_order="create_date desc">
                 <field name="combined_state" />
                 <field name="employee_id" />
                 <field name="manager_id" />
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_card shadow-sm rounded p-3 bg-light text-dark" t-attf-class="oe_kanban_global_click">
+                        <div class="oe_kanban_card shadow-lg rounded p-3 bg-light text-dark" t-attf-class="oe_kanban_global_click">
                             <!-- Header with Title -->
                             <div class="card-header bg-warning text-white text-center rounded-top" attrs="{'invisible': [('combined_state', 'in', ['approved', 'refused', 'draft'])]}">
                                 <strong>
@@ -122,23 +122,23 @@
                                         <field name="manager_id" />
                                     </span>
                                 </div>
+
+                                <div class="mb-2">
+                                    <span class="font-weight-bold">Request Date: </span>
+                                    <span class="text-success">
+                                        <field name="create_date" widget="date" />
+                                    </span>
+                                </div>
+
                             </div>
 
-                            <!-- Footer -->
-                            <div t-if="record.combined_state.raw_value" class="card-footer text-center bg-secondary text-white rounded-bottom">
-                                <span>Status: </span>
-                                <span t-attf-class="badge badge-warning">
-                                    <field name="combined_state" />
-                                </span>
-                            </div>
+
                         </div>
                     </t>
                 </templates>
             </kanban>
         </field>
     </record>
-
-
 
     <!--Tree view employee.promotion model-->
     <record id="employee_termination_view_tree" model="ir.ui.view">
@@ -150,6 +150,7 @@
                 <field name="department_id"/>
                 <field name="termination_date"/>
                 <field name="combined_state"/>
+                <field name="create_date" widget="date" />
             </tree>
         </field>
     </record>
