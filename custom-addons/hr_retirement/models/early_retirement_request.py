@@ -18,6 +18,18 @@ class EarlyRetirementRequest(models.Model):
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
     ], string="Status", default='draft', readonly=True)
+
+    ceo_state = fields.Selection([
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ], string="CEO Status", default='pending', readonly=True)
+
+    attachment_ids = fields.Many2many(
+        'ir.attachment', string='Attachments',
+        help="Attach documents related to this training session.",
+    )
+
     comment = fields.Text(string="Comment")
     user_can_comment = fields.Boolean(string="Can Comment", compute="_compute_user_can_comment", store=False)
 
@@ -39,12 +51,14 @@ class EarlyRetirementRequest(models.Model):
     def action_approve(self):
         """Approve the early retirement request and deactivate employee access."""
         self.state = 'approved'
+        self.ceo_state = 'approved'
         self.employee_id.retirement_date = self.proposed_retirement_date
         self.employee_id.retirement_extended = True
 
     def action_reject(self):
         """Reject the early retirement request."""
         self.state = 'rejected'
+        self.ceo_state = 'approved'
 
 
     @api.model

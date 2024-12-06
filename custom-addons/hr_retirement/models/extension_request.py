@@ -1,16 +1,18 @@
 from odoo import models, fields, api
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
+from datetime import date
 
 class HrRetirementExtensionRequest(models.Model):
     _name = 'hr.retirement.extension.request'
     _description = 'Retirement Extension Request'
 
-    employee_id = fields.Many2one('hr.employee', string="Employee", required=True, default=lambda self: self.env.user.employee_id)
-    employee_name = fields.Char(string="Employee", related='employee_id.name', readonly=True)
+    employee_id = fields.Many2one('hr.employee', string="Employee", required=True)
+    employee_department = fields.Char(string="Department", compute='_compute_employee_information', readonly=True)
+    user_id = fields.Many2one('res.users', string="Requested By", readonly=True)
     extension_reason = fields.Text(string="Extension Reason", required=True)
     extension_period_months = fields.Integer(string="Extension Period (Months)", required=True)
-    current_retirement_date = fields.Date(string="Current Retirement Date", required=True, related='employee_id.retirement_date')
+    current_retirement_date = fields.Date(string="Current Retirement Date", required=True, compute='_compute_employee_information')
     proposed_new_retirement_date = fields.Date(string="Proposed New Retirement Date", compute="_compute_new_retirement_date", store=True)
     request_date = fields.Date(string="Request Submission Date", default=fields.Date.today, readonly=True)
     state = fields.Selection([
@@ -20,19 +22,32 @@ class HrRetirementExtensionRequest(models.Model):
         ('rejected', 'Rejected'),
     ], string="Status", default='draft', readonly=True)
     
-    attachment_ids = fields.Many2many(
-        'ir.attachment', string='Attachments',
-        help="Attach documents related to this training session.",
-    )
+    employee_state = fields.Selection([
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ], string="Employee Status", default='pending', readonly=True)
+
     comment = fields.Text(string="Comment")
     user_can_comment = fields.Boolean(string="Can Comment", compute="_compute_user_can_comment", store=False)
 
+    # @api.model
+    # def create(self, vals):
+    #     if self.employee_id and not self.employee_id.near_retirement:
+    #         raise ValidationError("The employee is not allowed for the Extending the retirment period.")
 
-
-    @api.onchange('employee_id')
-    def is_valid_employee(self):
-        if not self.employee_id.near_retirement:
-            raise ValidationError("You are not allowed applying for the Extending you retirment period.")
+    @api.depends('employee_id')
+    def _compute_employee_information(self):
+        for record in self:
+            if not record._origin and record.employee_id and not self.employee_id.near_retirement:
+                raise ValidationError("The employee is not allowed for the Extending the retirment period.")
+            if record.employee_id:
+                record.employee_department = record.employee_id.department_id.name
+                record.current_retirement_date = record.employee_id.retirement_date
+                record.user_id = record.employee_id.user_id.id
+            else:
+                record.employee_department = False
+                record.current_retirement_date = False
 
     @api.depends('extension_period_months')
     def _compute_new_retirement_date(self):
@@ -43,7 +58,7 @@ class HrRetirementExtensionRequest(models.Model):
     @api.model
     def _compute_user_can_comment(self):
         for record in self:
-            record.user_can_comment = self.env.user.has_group("planning.group_ceo")
+            record.user_can_comment = self.env.user.id == record.employee_id.user_id.id
     
     
     def action_submit(self):
@@ -53,13 +68,20 @@ class HrRetirementExtensionRequest(models.Model):
 
     def action_approve(self):
         """Approve the extension request and update the employee's retirement date."""
+        retirement_threshold = self.env['hr.retirement.settings'].sudo().search([], limit=1).retirement_threshold_months
+        near_retirement = date.today() >= self.proposed_new_retirement_date - relativedelta(months=retirement_threshold)
         self.state = 'approved'
-        self.employee_id.retirement_date = self.proposed_new_retirement_date
-        self.employee_id.retirement_extended = True
-
+        self.employee_state = 'approved'
+        self.sudo().employee_id.write({
+            'retirement_extended': True,
+            'retirement_date': self.proposed_new_retirement_date,
+            'near_retirement' : near_retirement
+        })
+        print("============================>>",self.employee_id.near_retirement,near_retirement,self.employee_id.retirement_date,)
     def action_reject(self):
         """Reject the extension request."""
         self.state = 'rejected'
+        self.employee_state = 'rejected'
 
     @api.constrains('extension_period_months')
     def _check_extension_period(self):

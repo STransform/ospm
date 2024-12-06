@@ -24,10 +24,38 @@
             <form string="Retirement Request">
                 <sheet>
                     <header class="mb-2">
-                        <button string="Submit" name="action_submit" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
-                        <button string="Approve" name="action_approve" type="object" class="oe_highlight" groups="planning.group_ceo" attrs="{'invisible':[('state','!=','submitted')]}"/>
-                        <button string="Reject" name="action_reject" type="object" class="oe_highlight" groups="planning.group_ceo" attrs="{'invisible':[('state','!=','submitted')]}"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected"/>
+                        <button string="Submit" 
+                                name="action_submit" 
+                                type="object" class="oe_highlight" 
+                                attrs="{'invisible':[('state','!=','draft')]}"
+                                confirm="Are you sure you want to submit this request?"
+                        />
+                        <button string="Approve" 
+                                name="action_approve" 
+                                type="object" 
+                                class="oe_highlight" 
+                                groups="planning.group_ceo" 
+                                attrs="{'invisible':[('state','!=','submitted')]}"
+                                confirm="Are you sure you want to approve this request?"
+                        />
+                        <button string="Reject" 
+                                name="action_reject" 
+                                type="object" 
+                                class="oe_highlight" 
+                                groups="planning.group_ceo" 
+                                attrs="{'invisible':[('state','!=','submitted')]}"
+                                confirm="Are you sure you want to reject this request?"
+                        />
+                        <field name="state" 
+                               widget="statusbar" 
+                               statusbar_visible="draft,submitted,approved,rejected" 
+                               attrs="{'invisible':[('user_can_comment','=',True)]}"
+                        />
+                        <field name="ceo_state" 
+                               widget="statusbar"
+                               statusbar_visible="pending,approved,rejected"
+                               attrs="{'invisible':[('user_can_comment','=',False)]}"
+                        />
                     </header>
                     <group>
                         <field name="user_can_comment" invisible="1"/>
@@ -38,10 +66,8 @@
                             <field name="department" readonly="1"/>
                             <field name="proposed_retirement_date" readonly="1"/>
                             <field name="request_date" readonly="1"/>
-                        </group>
-                        <group>
                             <field name="state" readonly="1"/>
-                            <field name="comment" attrs="{'readonly':[('user_can_comment','=', False)]}"/>
+                            <field name="comment" attrs="{'readonly':['|',('user_can_comment','=', False),('state','!=','submitted')]}"/>
                         </group>
                     </sheet>       
                 </sheet>

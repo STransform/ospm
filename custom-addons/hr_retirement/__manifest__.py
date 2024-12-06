@@ -10,6 +10,7 @@
     'depends': ['hr','base','planning'],
     'data': [
         'security/ir.model.access.csv',
+        'security/ir.model.access.xml',
         'data/hr_retirement_settings_data.xml',
         'data/cron_job.xml',
         'views/hr_retirement_settings_views.xml',
