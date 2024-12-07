@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- action for bonus managment -->
+    <record id="action_bonus_managment" model="ir.actions.act_window">
+        <field name="name">Bonus Managment</field>
+        <field name="res_model">hr.bonus.managment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- tree view for bonus managment -->
+    <record id="hr_bonus_managment_view_tree" model="ir.ui.view">
+        <field name="name">hr_bonus_managment.view.tree</field>
+        <field name="model">hr.bonus.managment</field>
+        <field name="arch" type="xml">
+            <tree string="">
+                <field name="name" />
+                <field name="months" />
+                <field name="performance" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- form view for bonus managment -->
+    <record id="hr_bonus_managment_view_form" model="ir.ui.view">
+        <field name="name">hr_bonus_managment.view.form</field>
+        <field name="model">hr.bonus.managment</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="months" />
+                        <field name="performance" />
+                    </group>
+                    <notebook>
+                        <page string="Bonus Mnagment Line">
+                            <field name="bonus_managment_line">
+                                <tree editable="bottom">
+                                    <field name="employee_id" />
+                                    <field name="is_eligible" widget="boolean_toggle" />
+                                    <field name="bonus_amount" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>
