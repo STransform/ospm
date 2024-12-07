@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Main Menu -->
+    <menuitem
+        id="hr_bonus_managment_menu"
+        name="Bonus Managment"
+        parent="hr.menu_hr_root"
+        sequence="20" />
+
+    <!-- sub menu for bonus Request -->
+    <menuitem
+        id="hr_bonus_managment_menu_request"
+        name="Bonus Request"
+        parent="hr_bonus_managment_menu"
+        action="action_bonus_managment"
+        sequence="1" />
+
+</odoo>
