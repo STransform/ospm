@@ -14,13 +14,15 @@
             <form string="Termination">
                 <header>
                     <!-- Approval by Department service director -->
-                    <button name="action_request_termination" string="Request Termination" type="object" class="btn-primary"  attrs="{'invisible': [('combined_state', 'in', ['processing', 'approved'])]}" confirm="Are you sure! Do you wish to proceed ?"/>
-                    <button name="action_by_service_request_approval" type="object" string="Approve" attrs="{'invisible': ['|', ('is_manager', '=', False), ('state_by_service', 'in', ['approved', 'refused'])]}"  confirm="Are you sure! Do you wish to proceed ?"/>
+                    <button name="action_request_termination" string="Request Termination" type="object" class="btn-primary" attrs="{'invisible': ['|',  ('is_creator', '=', False), ('combined_state', 'in', ['processing', 'approved'])]}" confirm="Are you sure! Do you wish to proceed?" />
+
+
+                    <button name="action_by_service_request_approval" type="object" string="Approve" attrs="{'invisible': ['|', ('is_manager', '=', False), ('state_by_service', 'in', ['approved', 'refused'])]}" confirm="Are you sure! Do you wish to proceed ?"/>
                     <button name="action_by_service_refuse_request" type="object" string="Refuse" attrs="{'invisible': ['|', ('is_manager', '=', False), ('state_by_service', 'in', ['approved', 'refused'])]}" confirm="Are you sure! Do you wish to proceed ?"/>
 
 
                     <!-- Approval by HR director -->
-                    <button name="action_by_director_request_approval" type="object" string="Accept" groups="hr_termination.group_hr_training_department_director" attrs="{'invisible': ['|', ('state_by_director', 'in', ['approved', 'refused']),  ('state_by_service', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
+                    <button name="action_by_director_request_approval" type="object" string="Accept" groups="hr_termination.group_hr_training_department_director" attrs="{'invisible': ['|',  ('state_by_director', 'in', ['approved', 'refused']),  ('state_by_service', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
                     <button name="action_by_director_refuse_request" type="object" string="Refuse" groups="hr_termination.group_hr_training_department_director" attrs="{'invisible': ['|', ('state_by_director', 'in', ['approved', 'refused']),  ('state_by_service', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
 
                     <!-- Approval by HR DCEO -->
@@ -45,22 +47,17 @@
                             <field name="employee_id"/>
                             <field name="department_id"/>
                             <field name="manager_id"/>
-                            <field name="termination_date"/>
-                            <field name="reason"/>
+                            <field name="termination_date" attrs="{'readonly': [('is_creator', '=', False), ('id', '!=', False)]}" />
+                            <field name="reason" placeholder="Enter your reason precisely" attrs="{'readonly': [('is_creator', '=', False), ('id', '!=', False)]}" />
                             <field name="combined_state" invisible="1"/>
                             <field name="is_manager" invisible="1"/>
                             <field name="state_by_service" invisible="1"/>
                             <field name="state_by_director" invisible="1"/>
                             <field name="state_by_dceo" invisible="1"/>
                             <field name="state_by_ceo" invisible="1"/>
-
+                            <field name="is_creator" invisible="1"/>
                         </group>
                     </group>
-                    <!-- <notebook>
-                        <page name="description" string="Description">
-                            <field name="description"/>
-                        </page>
-                    </notebook> -->
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>
@@ -107,7 +104,7 @@
                                 </strong>
                             </div>
 
-                      
+
                             <!-- Content Section -->
                             <div class="card-body">
                                 <div class="mb-2">

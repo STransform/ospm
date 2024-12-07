@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from datetime import date, timedelta
 
 class TerminationRequest(models.Model):
     _name = 'termination.request'
@@ -26,22 +27,22 @@ class TerminationRequest(models.Model):
     job_id = fields.Many2one('hr.job', string='Job Position', related='employee_id.job_id', store=True)
     state_by_service = fields.Selection(
         string='State by Manager',
-        selection=[('approved', 'Approved'), ('refused', 'Refused')],
+        selection=[ ('resubmitted', 'Resubmitted'), ('approved', 'Approved'), ('refused', 'Refused')],
         store=True,
     )
     state_by_director = fields.Selection(
         string='State by Director',
-        selection=[('approved', 'Approved'), ('refused', 'Refused')],
+        selection=[('resubmitted', 'Resubmitted'), ('approved', 'Approved'), ('refused', 'Refused')],
         store=True,
     )
     state_by_dceo = fields.Selection(
         string='State by DCEO',
-        selection=[('approved', 'Approved'), ('refused', 'Refused')],
+        selection=[('resubmitted', 'Resubmitted'), ('approved', 'Approved'), ('refused', 'Refused')],
         store=True,
     )
     state_by_ceo = fields.Selection(
         string='State by CEO',
-        selection=[('approved', 'Approved'), ('refused', 'Refused')],
+        selection=[('resubmitted', 'Resubmitted'), ('approved', 'Approved'), ('refused', 'Refused')],
         store=True,
     )
     combined_state = fields.Selection(
@@ -57,6 +58,21 @@ class TerminationRequest(models.Model):
         compute='_compute_is_manager',
         store=False
     )
+    is_creator = fields.Boolean(string="Is Creator", compute="_compute_is_creator", store=False)
+
+    # termination date cannot be earlier than the current date
+    @api.constrains('termination_date')
+    def _check_end_date(self):
+        for record in self:
+            if record.termination_date and record.termination_date <= fields.Date.today():
+                raise UserError("Termination Date cannot be earlier and the same than the current date.")
+
+
+
+    @api.depends('create_uid')
+    def _compute_is_creator(self):
+        for record in self:
+            record.is_creator = record.create_uid.id == self.env.user.id
 
 
     @api.depends('state_by_service', 'state_by_director', 'state_by_dceo', 'state_by_ceo')
@@ -67,6 +83,8 @@ class TerminationRequest(models.Model):
             elif all(state == 'approved' for state in [record.state_by_service, record.state_by_director, record.state_by_dceo, record.state_by_ceo]):
                 record.combined_state = 'approved'
             elif 'approved' in [record.state_by_service, record.state_by_director, record.state_by_dceo]:
+                record.combined_state = 'processing'
+            elif 'resubmitted' in [record.state_by_service, record.state_by_director, record.state_by_dceo, record.state_by_dceo]:
                 record.combined_state = 'processing'
             else:
                 record.combined_state = 'draft'
@@ -107,10 +125,12 @@ class TerminationRequest(models.Model):
     def action_by_director_request_approval(self):
         for record in self:
             record.state_by_director = 'approved'
+
     
     def action_by_director_refuse_request(self):
         for record in self:
             record.state_by_director = 'refused'
+
     
     def action_by_dceo_request_approval(self):
         for record in self:
@@ -135,6 +155,10 @@ class TerminationRequest(models.Model):
 
     def action_request_termination(self):
         for record in self:
+            record.state_by_service = 'resubmitted'
+            record.state_by_director = 'resubmitted'
+            record.state_by_dceo = 'resubmitted'
+            record.state_by_ceo = 'resubmitted'
             record.combined_state = 'processing'
 
 

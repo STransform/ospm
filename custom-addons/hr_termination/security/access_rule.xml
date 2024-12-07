@@ -35,6 +35,18 @@
     <field name="groups" eval="[(4, ref('base.group_user'))]"/>
 </record>
 
+<record id="termination_request_draft_rule" model="ir.rule">
+    <field name="name">Draft Termination Request Rule</field>
+    <field name="model_id" ref="model_termination_request" />
+    <field name="domain_force">[('combined_state', '!=', 'draft'), ('create_uid', '=', user.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]" />
+    <field name="perm_read" eval="True" />
+    <field name="perm_write" eval="True" />
+    <field name="perm_create" eval="True" />
+    <field name="perm_unlink" eval="True" />
+</record>
+
+
 
 
 </odoo>
