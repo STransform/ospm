@@ -1,0 +1,171 @@
+<odoo>
+    <record id="view_discipline_case_form" model="ir.ui.view">
+        <field name="name">discipline.case.form</field>
+        <field name="model">employee.discipline.case</field>
+        <field name="arch" type="xml">
+            <form string="Discipline Case">
+                <div class="d-flex justify-content-center align-items-center my-5">
+                    <div class="card w-75 shadow-lg rounded">
+                        <div class="card-header text-center bg-primary text-white">
+                            <h3 class="fw-bold text-white">Discipline Case</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <!-- Row 1 -->
+                                <div class="col-md-6">
+                                    <label for="case_status" class="form-label fw-bold">Case Status</label>
+                                    <field name="case_status" readonly="1" class="form-control" id="case_status" style="color:green;"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label fw-bold">Case Reference</label>
+                                    <field name="name" placeholder="Enter Case Reference" class="form-control" id="name"/>
+                                </div>
+
+                                <!-- Row 2 -->
+                                <div class="col-md-6">
+                                    <label for="case_description" class="form-label fw-bold">Case Description</label>
+                                    <field name="case_description" placeholder="Describe the case" class="form-control" id="case_description"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="accused_employee_id" class="form-label fw-bold">Accused Employee</label>
+                                    <field name="accused_employee_id" placeholder="Select Accused Employee" class="form-control" id="accused_employee_id"/>
+                                </div>
+
+                                <!-- Row 3 -->
+                                <div class="col-md-6">
+                                    <label for="discipline_type" class="form-label fw-bold">Type of Discipline</label>
+                                    <field name="discipline_type" placeholder="Select Discipline Type" class="form-control" id="discipline_type"/>
+                                </div>
+                                <div class="col-md-6" groups="hr_discipline_case2.group_hr_manager">
+                                    <label for="hr_decision" class="form-label fw-bold">HR Decision</label>
+                                    <field name="hr_decision" class="form-control" id="hr_decision"/>
+                                </div>
+
+                                <!-- Row 4 -->
+                                <div class="col-md-6" groups="hr_discipline_case2.group_discipline_committee">
+                                    <label for="committee_decision" class="form-label fw-bold">Committee Decision</label>
+                                    <field name="committee_decision" widget="statusbar" statusbar_visible="escalate_to_ceo,reviewed" options="{'clickable': True}" class="form-control" id="committee_decision"/>
+                                </div>
+                                <div class="col-md-6" groups="hr_discipline_case2.group_discipline_committee">
+                                    <label for="witness_by_accused" class="form-label fw-bold">Witness</label>
+                                    <field name="witness_by_accused" class="form-control"/>
+                                </div>
+
+                                <!-- Row 5 -->
+                                <div class="col-md-6" groups="hr_discipline_case2.group_discipline_committee">
+                                    <button name="action_escalate_to_ceo" 
+                                            type="object" 
+                                            string="Escalate to CEO again" 
+                                            class="btn btn-primary btn-sm w-100"
+                                            attrs="{'invisible': [('committee_decision', '!=', 'reviewed')]}"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="penalty_type" class="form-label fw-bold">Penalty Type</label>
+                                    <field name="penalty_type" 
+                                           placeholder="Select Penalty Type" 
+                                           class="form-control" 
+                                           id="penalty_type"
+                                           groups="hr_discipline_case2.group_discipline_committee,hr_discipline_case2.group_ceo"/>
+                                </div>
+
+                                <!-- Row 6 -->
+                                <div class="col-md-6" groups="hr_discipline_case2.group_ceo">
+                                    <label for="ceo_decision" class="form-label fw-bold">CEO Decision</label>
+                                    <field name="ceo_decision" widget="statusbar" statusbar_visible="approved,rejected" options="{'clickable': True}" class="form-control" id="ceo_decision"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="documents" class="form-label fw-bold">Attachments</label>
+                                    <field name="documents" widget="many2many_binary" class="form-control" id="documents"/>
+                                </div>
+
+                                <!-- Row 7 -->
+                                <div class="col-md-6" groups="hr_discipline_case2.group_ceo">
+                                    <label for="reason_for_revision" class="form-label fw-bold">Reason for Revision</label>
+                                    <field name="reason_for_revision" class="form-control" id="reason_for_revision" readonly="0"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="accused_response" class="form-label fw-bold">Accused Response</label>
+                                    <field name="accused_response" 
+                                           placeholder="Accused response" 
+                                           class="form-control" 
+                                           id="accused_response"
+                                           groups="hr_discipline_case2.group_hr_manager,hr_discipline_case2.group_discipline_committee,hr_discipline_case2.group_ceo"/>
+                                </div>
+                              
+                            </div>
+                             <!-- Save Button at the Bottom -->
+                            <div class="d-flex justify-content-center mt-4">
+                                <button string="Save" type="object" class="btn btn-primary btn-lg px-5 py-2 shadow-sm rounded-pill" name="action_save_discipline_case" />
+                            </div>
+                        </div>
+                    
+                    </div>
+                </div>
+            </form>
+        </field>
+    </record>
+   <record id="view_discipline_case_kanban" model="ir.ui.view">
+        <field name="name">discipline.case.kanban</field>
+        <field name="model">employee.discipline.case</field>
+        <field name="arch" type="xml">
+            <kanban string="Discipline Cases">
+                <field name="case_status"/>
+                <field name="name"/>
+                <field name="accused_employee_id"/>
+                <field name="discipline_type"/>
+                <field name="case_description"/>
+                <field name="committee_decision"/>  
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card">
+                            <div class="oe_kanban_details">
+                                <strong><field name="name"/></strong>
+                                <div>Employee: <field name="accused_employee_id"/></div>
+                                <div>Status: <field name="case_status"/></div>
+                                <div>Discipline Type: <field name="discipline_type"/></div>
+                                <div>Committee Decision: <field name="committee_decision"/></div> 
+                                <div class="mt-2">
+                                    <button name="action_escalate_to_ceo" 
+                                            type="object" 
+                                            string="Escalate to CEO" 
+                                            class="btn btn-primary btn-sm"
+                                            attrs="{'invisible': [('committee_decision', '!=', 'reviewed')]}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+        <record id="view_discipline_case_list" model="ir.ui.view">
+        <field name="name">discipline.case.list</field>
+        <field name="model">employee.discipline.case</field>
+        <field name="arch" type="xml">
+            <tree string="Discipline Cases">
+                <field name="name"/>
+                <field name="accused_employee_id"/>
+                <field name="case_status"/>
+                <field name="discipline_type"/>
+                <field name="case_description"/>
+                <field name="committee_decision"/>
+                <field name="ceo_decision"/>
+                <button name="action_escalate_to_ceo" 
+                        type="object" 
+                        string="Escalate to CEO" 
+                        attrs="{'invisible': [('committee_decision', '!=', 'reviewed')]}"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Action to open the list of Discipline Cases -->
+    <record id="action_discipline_case" model="ir.actions.act_window">
+        <field name="name">Discipline Cases</field>
+        <field name="res_model">employee.discipline.case</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Menu Item for Discipline Cases -->
+    <menuitem id="menu_employee_discipline_case" name="Discipline Cases"
+              parent="hr.menu_hr_root" action="action_discipline_case"/>
+</odoo>

@@ -47,11 +47,11 @@
         <field name="perm_unlink" eval="0"/>
     </record> 
 
-    <!-- record rule for accessing extend retirement requesr for creator -->
+    <!-- record rule for accessing extend retirement requesr for Hr Office -->
     <record id="rule_hr_extend_retirement_request_creator" model="ir.rule">
         <field name="name">HR Extend Retirement Request Creator Access</field>
         <field name="model_id" ref="model_hr_retirement_extension_request"/>
-        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="groups" eval="[(4, ref('planning.group_hr_office'))]"/>
         <field name="domain_force">[('create_uid','=',user.id)]</field>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
@@ -65,7 +65,7 @@
         <field name="name">HR Retirement Request CEO Access</field>
         <field name="model_id" ref="model_hr_retirement_request"/>
         <field name="groups" eval="[(4, ref('planning.group_ceo'))]"/>
-        <field name="domain_force">[('state','=','submitted')]</field>
+        <field name="domain_force">[('state','in',['submitted','approved','rejected'])]</field>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
         <field name="perm_create" eval="0"/>
@@ -77,19 +77,19 @@
         <field name="name">HR Early Retirement CEO Access</field>
         <field name="model_id" ref="model_hr_early_retirement_request"/>
         <field name="groups" eval="[(4, ref('planning.group_ceo'))]"/>
-        <field name="domain_force">[('state','=','submitted')]</field>
+        <field name="domain_force">[('state','in',['submitted','approved','rejected'])]</field>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
         <field name="perm_create" eval="0"/>
         <field name="perm_unlink" eval="0"/>
     </record> 
 
-    <!-- record rule for accessing extend retirement requesr for CEO -->
-    <record id="rule_hr_extend_retirement_request_ceo" model="ir.rule">
-        <field name="name">HR Extend Retirement Request CEO Access</field>
+    <!-- record rule for accessing extend retirement requesr for Requested Employee -->
+    <record id="rule_hr_extend_retirement_request_employee" model="ir.rule">
+        <field name="name">HR Extend Retirement Request Employee Access</field>
         <field name="model_id" ref="model_hr_retirement_extension_request"/>
-        <field name="groups" eval="[(4, ref('planning.group_ceo'))]"/>
-        <field name="domain_force">[('state','=','submitted')]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('user_id','=',user.id),('state','in',['submitted','approved','rejected'])]</field>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
         <field name="perm_create" eval="0"/>

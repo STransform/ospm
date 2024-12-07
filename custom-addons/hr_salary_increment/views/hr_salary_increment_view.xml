@@ -1,0 +1,85 @@
+<odoo>
+
+    <!-- Action for Batch Increment -->
+    <record id="action_hr_salary_increment_batch" model="ir.actions.act_window">
+        <field name="name">Salary Increment Batches</field>
+        <field name="res_model">hr.salary.increment.batch</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Tree View for Batch -->
+    <record id="view_hr_salary_increment_batch_tree" model="ir.ui.view">
+        <field name="name">hr.salary.increment.batch.tree</field>
+        <field name="model">hr.salary.increment.batch</field>
+        <field name="arch" type="xml">
+            <tree string="Salary Increment Batches">
+                <field name="name" />
+                <field name="start_date" />
+                <field name="end_date" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View for Batch -->
+    <record id="view_hr_salary_increment_batch_form" model="ir.ui.view">
+        <field name="name">hr.salary.increment.batch.form</field>
+        <field name="model">hr.salary.increment.batch</field>
+        <field name="arch" type="xml">
+            <form string="Salary Increment Batch">
+                <header>
+                    <button name="action_populate_batch" type="object" string="Filter Employees"
+                        class="btn-primary"
+                        attrs="{'invisible': [('show_filter_button', '=', True)]}"
+                        groups="hr_salary_increment.group_hr_officer" />
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary"
+                        states="draft" groups="hr_salary_increment.group_hr_officer" />
+                    <button name="action_approve" type="object" string="Approve" class="btn-success"
+                        states="submitted" groups="hr_salary_increment.group_hr_director" />
+                    <button name="action_reject" type="object" string="Reject" class="btn-danger"
+                        states="submitted" groups="hr_salary_increment.group_hr_director" />
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,submitted,approved,rejected" />
+                </header>
+                <sheet>
+                    <group col="3">
+                        <group>
+                            <field name="name" />
+                            <field name="show_filter_button" invisible="1" />
+                        </group>
+                        <group>
+                            <field name="start_date"
+                                attrs="{'readonly': [('state', '!=', 'draft')]}" />
+                        </group>
+                        <group>
+                            <field name="end_date" attrs="{'readonly': [('state', '!=', 'draft')]}" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Increment Lines">
+                            <field name="increment_line_ids">
+                                <tree editable="bottom">
+                                    <field name="employee_id" />
+                                    <field name="current_increment_level_id" />
+                                    <field name="current_is_base" widget="boolean_toggle" />
+                                    <field name="average_performance_score" />
+                                    <field name="ceiling_reached" widget="boolean_toggle" />
+                                    <field name="current_wage" />
+                                    <field name="steps" />
+                                    <field name="next_increment_is_ceiling" widget="boolean_toggle" />
+                                    <field name="next_increment_level_id" />
+                                    <field name="new_wage" />
+                                    <field name="is_eligible" widget="boolean_toggle" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group>
+                        <field name="remarks" widget="text" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

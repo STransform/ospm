@@ -62,10 +62,21 @@
         <field name="inherit_id" ref="hr_contract.hr_contract_view_form" />
         <field name="arch" type="xml">
             <field name="contract_type_id" position="before">
+                <!-- Pay Grade Field -->
                 <field name="pay_grade_id" string="Pay Grade"
                     options="{'no_open': True, 'no_create': True}" />
+
+                <!-- Base Salary Checkbox -->
+                <field name="is_base" string="Base Salary" />
+
+                <!-- Ceiling Salary Checkbox -->
+                <field name="is_ceiling" string="Ceiling Salary" />
+
+                <!-- Increment Level Field -->
                 <field name="increment_level_id" string="Increment Level"
-                    options="{'no_open': True, 'no_create': True}" />
+                    domain="[('pay_grade_id', '=', pay_grade_id)]"
+                    attrs="{'invisible': [('is_base_or_ceil', '=', True)]}" />
+                <field name="is_base_or_ceil" invisible="1" />
             </field>
         </field>
     </record>

@@ -16,6 +16,14 @@ class HrRetirementRequest(models.Model):
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
     ], string="Status", default='draft', readonly=True)
+
+    ceo_state = fields.Selection([
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ], string="CEO Status", default='pending', readonly=True)
+
+
     comment = fields.Text(string="Comment")
     user_can_comment = fields.Boolean(string="Can Comment", compute="_compute_user_can_comment", store=False)
 
@@ -40,10 +48,12 @@ class HrRetirementRequest(models.Model):
     def action_approve(self):
         """Approve the retirement request and deactivate employee access."""
         self.state = 'approved'
+        self.ceo_state = 'approved'
 
     def action_reject(self):
         """Reject the retirement request."""
         self.state = 'rejected'
+        self.ceo_state = 'approved'
     
 
     def update_retired_employee(self):

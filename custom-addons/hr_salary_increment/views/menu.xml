@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem
+        id="hr_salary_increment_menu"
+        name="Salary Increment"
+        parent="hr.menu_hr_root"
+        sequence="20" />
+
+    <!-- Submenu for Batch Processing -->
+    <menuitem
+        id="batch_salary_increment_menu"
+        name="Batch Salary Increment"
+        parent="hr_salary_increment_menu"
+        sequence="2" />
+
+
+    <!-- Bind Action to Batch Menu -->
+    <menuitem
+        id="batch_salary_increment_list_menu_request"
+        name="Salary Increment"
+        parent="batch_salary_increment_menu"
+        action="action_hr_salary_increment_batch"
+        sequence="1" />
+    
+    <!-- <menuitem
+        id="batch_salary_increment_list_menu_approve"
+        name="Approve Salary Increment"
+        parent="batch_salary_increment_menu"
+        action="action_hr_salary_increment_batch"
+        sequence="2" /> -->
+</odoo>
