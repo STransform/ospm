@@ -5,3 +5,4 @@ from . import hr_salary_increment_batch
 from . import hr_salary_increment_batch_line
 from . import increment_history
 from . import hr_employee
+from . import hr_salary_increment_rejection_reason

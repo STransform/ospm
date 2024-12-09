@@ -31,7 +31,7 @@ class HrSalaryIncrementBatch(models.Model):
         string="Increment Lines",
         readonly=True,
     )
-    remarks = fields.Text(string="Remarks", help="Batch-level remarks.")
+    rejection_reason = fields.Text(string="Rejection Reason", help="Reason.")
 
     @api.depends("start_date", "end_date")
     def _compute_name(self):
@@ -235,4 +235,11 @@ class HrSalaryIncrementBatch(models.Model):
 
     def action_reject(self):
         """Reject the batch."""
-        self.state = "rejected"
+        return {
+            "name": "Reject Incrment Batch",
+            "type": "ir.actions.act_window",
+            "res_model": "hr.salary.increment.batch.rejection.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_rejection_reason": self.rejection_reason},
+        }
