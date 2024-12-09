@@ -8,6 +8,7 @@
     "category": "Human Resource",
     "depends": ["base", "mail", "hr", "hr_performance", "hr_pay_grade"],
     "data": [
+        "security/ir.model.access.xml",
         "security/ir.model.access.csv",
         "views/hr_bonus_managment_view.xml",
         "views/hr_employee_view.xml",

@@ -95,6 +95,7 @@ class HrSalaryIncrementBatch(models.Model):
             raise ValidationError(("No employees with active contracts to process."))
 
         batch_lines = []
+        self.increment_line_ids = None
         for employee in employees:
             contract = employee.contract_id
 

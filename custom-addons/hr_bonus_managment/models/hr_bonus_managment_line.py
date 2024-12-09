@@ -15,3 +15,4 @@ class HrBonusManagmentLine(models.Model):
     current_wage = fields.Float(string="Current Wage per Month", required=True)
     bonus_amount = fields.Float(string="Bonus Amount", readonly=True)
     is_eligible = fields.Boolean(string="Eligible for Bonus", readonly=True)
+    performance = fields.Float(string="Performance Score", readonly=True)

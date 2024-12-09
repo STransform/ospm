@@ -12,11 +12,12 @@ class HrSalaryIncrementBatch(models.Model):
         string="Bonus Name", compute="_compute_name", required=True, tracking=True
     )
     show_filter_button = fields.Boolean(
-        string="Show Filter Button", default=False, tracking=True
+        string="Show Filter Button",
+        default=False,
     )
     months = fields.Selection(
         [("1", "1"), ("2", "2"), ("3", "3"), ("4", "4"), ("5", "5"), ("6", "6")],
-        string="For How much Month",
+        string="How much Month",
         required=True,
         tracking=True,
     )
@@ -50,8 +51,9 @@ class HrSalaryIncrementBatch(models.Model):
         default="draft",
         tracking=True,
     )
-    remarks = fields.Text(string="Remarks", help="Batch-level remarks.")
+    rejection_reason = fields.Text(string="Rejection Reason", help="Reason.")
 
+    # Comment Validation
     @api.depends("months")
     def _compute_name(self):
         for record in self:
@@ -69,6 +71,7 @@ class HrSalaryIncrementBatch(models.Model):
             raise ValidationError(("No employees with active contracts to process."))
 
         batch_lines = []
+        self.bonus_managment_line = None
         for employee in employees:
             contract = employee.contract_id
 
@@ -101,6 +104,7 @@ class HrSalaryIncrementBatch(models.Model):
                         "employee_id": employee.id,
                         "current_wage": contract.wage,
                         "bonus_amount": bonus_amount,
+                        "performance": average_score,
                         "is_eligible": is_eligible,
                     },
                 )
@@ -136,4 +140,11 @@ class HrSalaryIncrementBatch(models.Model):
 
     def action_reject(self):
         """Reject the batch."""
-        self.state = "rejected"
+        return {
+            "name": "Reject Bonus Batch",
+            "type": "ir.actions.act_window",
+            "res_model": "hr.bonus.rejection.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_rejection_reason": self.rejection_reason},
+        }

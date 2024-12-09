@@ -29,30 +29,38 @@
         <field name="arch" type="xml">
             <form string="Bonus Managment batch line">
                 <header>
-                    <button name="action_populate_batch" type="object" string="Filter Employees"
-                        class="btn-primary"
-                        attrs="{'invisible': [('show_filter_button', '=', True)]}"
+                    <button name="action_populate_batch" type="object"
+                        string="Filter Employees"
+                        class="btn-primary" attrs="{'invisible': [('state', '!=', 'draft')]}"
                     />
                     <button name="action_submit" type="object" string="Submit" class="btn-primary"
-                        states="draft" />
+                        states="draft"
+                        confirm="Are you sure you want to process this? Plaese double check it" />
                     <button name="action_approve" type="object" string="Approve" class="btn-success"
-                        states="submitted" />
+                        states="submitted"
+                        confirm="Are you sure you want to process this? Plaese double check it" />
                     <button name="action_reject" type="object" string="Reject" class="btn-danger"
-                        states="submitted" />
+                        states="submitted"
+                    />
                     <field name="state" widget="statusbar"
                         statusbar_visible="draft,submitted,approved,rejected" />
                 </header>
                 <sheet>
+                    <widget name="web_ribbon" title="Approved" bg_color="bg-success"
+                        attrs="{'invisible':[('state','!=','approved')]}" />
+                    <widget name="web_ribbon" title="Rejected" bg_color="bg-danger"
+                        attrs="{'invisible':[('state','!=','rejected')]}" />
                     <group col="3">
                         <group>
                             <field name="show_filter_button" invisible="1" />
                             <field name="name" />
                         </group>
                         <group>
-                            <field name="months" />
+                            <field name="months" attrs="{'readonly': [('state', '!=', 'draft')]}" />
                         </group>
                         <group>
-                            <field name="performance" />
+                            <field name="performance"
+                                attrs="{'readonly': [('state', '!=', 'draft')]}" />
                         </group>
                     </group>
                     <notebook>
@@ -61,13 +69,39 @@
                                 <tree editable="bottom">
                                     <field name="employee_id" />
                                     <field name="current_wage" />
+                                    <field name="performance" />
                                     <field name="bonus_amount" />
                                     <field name="is_eligible" widget="boolean_toggle" />
                                 </tree>
                             </field>
                         </page>
                     </notebook>
+                    <group>
+                        <field name="rejection_reason" readonly="1"
+                            attrs="{'invisible': [('state', '!=', 'rejected')]}" />
+                    </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- rejection confirmation view -->
+    <record id="view_hr_bonus_rejection_wizard_form" model="ir.ui.view">
+        <field name="name">hr.bonus.rejection.wizard.form</field>
+        <field name="model">hr.bonus.rejection.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reject Bonus Batch">
+                <group>
+                    <field name="rejection_reason" />
+                </group>
+                <footer>
+                    <button string="Confirm" type="object" name="confirm_rejection"
+                        class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
             </form>
         </field>
     </record>

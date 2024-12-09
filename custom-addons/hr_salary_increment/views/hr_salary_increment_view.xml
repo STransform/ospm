@@ -30,7 +30,7 @@
                 <header>
                     <button name="action_populate_batch" type="object" string="Filter Employees"
                         class="btn-primary"
-                        attrs="{'invisible': [('show_filter_button', '=', True)]}"
+                        states="draft"
                         groups="hr_salary_increment.group_hr_officer" />
                     <button name="action_submit" type="object" string="Submit" class="btn-primary"
                         states="draft" groups="hr_salary_increment.group_hr_officer" />
