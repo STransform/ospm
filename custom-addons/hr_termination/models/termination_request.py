@@ -160,5 +160,3 @@ class TerminationRequest(models.Model):
             record.state_by_dceo = 'resubmitted'
             record.state_by_ceo = 'resubmitted'
             record.combined_state = 'processing'
-
-
