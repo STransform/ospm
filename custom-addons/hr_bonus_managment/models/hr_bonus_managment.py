@@ -14,7 +14,12 @@ class HrSalaryIncrementBatch(models.Model):
     show_filter_button = fields.Boolean(
         string="Show Filter Button", default=False, tracking=True
     )
-    months = fields.Integer(string="For How much Month", required=True, tracking=True)
+    months = fields.Selection(
+        [("1", "1"), ("2", "2"), ("3", "3"), ("4", "4"), ("5", "5"), ("6", "6")],
+        string="For How much Month",
+        required=True,
+        tracking=True,
+    )
     performance = fields.Selection(
         [
             ("75", ">= 75"),
@@ -23,8 +28,8 @@ class HrSalaryIncrementBatch(models.Model):
             ("90", ">= 90"),
             ("95", ">= 95"),
         ],
-        default="75",
         string="Performance criteria",
+        required=True,
         tracking=True,
     )
     bonus_managment_line = fields.One2many(
@@ -46,9 +51,8 @@ class HrSalaryIncrementBatch(models.Model):
         tracking=True,
     )
     remarks = fields.Text(string="Remarks", help="Batch-level remarks.")
-    
-    
-    @api.depends('months')
+
+    @api.depends("months")
     def _compute_name(self):
         for record in self:
             record.name = (

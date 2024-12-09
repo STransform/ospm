@@ -29,10 +29,16 @@
         <field name="arch" type="xml">
             <form string="">
                 <sheet>
-                    <group>
-                        <field name="name" />
-                        <field name="months" />
-                        <field name="performance" />
+                    <group col="3">
+                        <group>
+                            <field name="name" />
+                        </group>
+                        <group>
+                            <field name="months" />
+                        </group>
+                        <group>
+                            <field name="performance" />
+                        </group>
                     </group>
                     <notebook>
                         <page string="Bonus Mnagment Line">
