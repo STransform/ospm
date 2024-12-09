@@ -74,7 +74,7 @@ class HrSalaryIncrementBatch(models.Model):
                     salary_increment.start_date
                     <= self.start_date
                     <= salary_increment.end_date
-                ):
+                ) and salary_increment.state != "rejected":
                     raise ValidationError(
                         f"Salary Increment Request cannot be duplicated! exist in {salary_increment.name}"
                     )
@@ -82,7 +82,7 @@ class HrSalaryIncrementBatch(models.Model):
                     salary_increment.start_date
                     <= self.end_date
                     <= salary_increment.end_date
-                ):
+                ) and salary_increment.state != "rejected":
                     raise ValidationError(
                         f"Salary Increment Request cannot be duplicated! exist in {salary_increment.name}"
                     )
@@ -202,18 +202,22 @@ class HrSalaryIncrementBatch(models.Model):
 
             # store  increment history
             self.env["hr.salary.increment.history"].create(
-            {
-                "employee_id": line.employee_id.id,
-                "increment_date": fields.Datetime.now(),
-                "approved_by": self.env.user.id,
-                "from_increment_name": line.current_increment_level_id.display_name
-                if line.current_increment_level_id
-                else "Base",
-                "to_increment_name": line.next_increment_level_id.display_name
-                if not line.next_increment_is_ceiling
-                else "Ceiling",
-            }
-        )
+                {
+                    "employee_id": line.employee_id.id,
+                    "increment_date": fields.Datetime.now(),
+                    "approved_by": self.env.user.id,
+                    "from_increment_name": (
+                        line.current_increment_level_id.display_name
+                        if line.current_increment_level_id
+                        else "Base"
+                    ),
+                    "to_increment_name": (
+                        line.next_increment_level_id.display_name
+                        if not line.next_increment_is_ceiling
+                        else "Ceiling"
+                    ),
+                }
+            )
             contract.write(
                 {
                     "is_base": False,

@@ -53,6 +53,21 @@ class HrSalaryIncrementBatch(models.Model):
     )
     rejection_reason = fields.Text(string="Rejection Reason", help="Reason.")
 
+    def diff_month(self, date1, date2):
+        return (date2.year - date1.year) * 12 + date2.month - date1.month
+
+    # uniqueness Validation
+    # @api.onchange("name")
+    # def _check_overlap(self):
+    #     if self.name:
+    #         bonus_list = self.env["hr.bonus.managment"].search([])
+    #         for bonus in bonus_list:
+    #             difference = self.diff_month(bonus.write_date, fields.Date.today())
+    #             if bonus.state != "rejected" and difference < 12:
+    #                 raise ValidationError(
+    #                     f"Bonus Request cannot be duplicated within one year! exist in {bonus.name} is already approved"
+    #                 )
+
     # Comment Validation
     @api.depends("months")
     def _compute_name(self):
