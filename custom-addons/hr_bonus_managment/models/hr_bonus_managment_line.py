@@ -12,5 +12,6 @@ class HrBonusManagmentLine(models.Model):
         "hr.bonus.managment", string="Bonus", ondelete="cascade"
     )
     employee_id = fields.Many2one("hr.employee", string="Employee", required=True)
+    current_wage = fields.Float(string="Current Wage per Month", required=True)
     bonus_amount = fields.Float(string="Bonus Amount", readonly=True)
     is_eligible = fields.Boolean(string="Eligible for Bonus", readonly=True)

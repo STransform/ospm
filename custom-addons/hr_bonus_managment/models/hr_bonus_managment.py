@@ -61,151 +61,79 @@ class HrSalaryIncrementBatch(models.Model):
                 else f"Bonus for {fields.Datetime.today().year} "
             )
 
-    # def action_populate_batch(self):
-    #     """Populate batch with all employees and their increment details."""
-    #     employees = self.env["hr.employee"].search([("contract_id", "!=", False)])
+    def action_populate_batch(self):
+        """Populate batch with all employees and their bonus details."""
+        employees = self.env["hr.employee"].search([("contract_id", "!=", False)])
 
-    #     if not employees:
-    #         raise ValidationError(("No employees with active contracts to process."))
+        if not employees:
+            raise ValidationError(("No employees with active contracts to process."))
 
-    #     batch_lines = []
-    #     for employee in employees:
-    #         contract = employee.contract_id
+        batch_lines = []
+        for employee in employees:
+            contract = employee.contract_id
 
-    #         # Initialize default values
-    #         steps = 0
-    #         average_score = 0
-    #         is_eligible = False
-    #         suggested_increment = None
-    #         new_wage = contract.wage if contract else 0.0
-    #         if (
-    #             contract
-    #             and contract.increment_level_id
-    #             or contract
-    #             and contract.is_base
-    #             or contract
-    #             and contract.is_ceiling
-    #         ):
-    #             # Calculate average score
-    #             evaluations = self.env["hr.performance.evaluation"].search(
-    #                 [
-    #                     ("employee_id", "=", employee.id),
-    #                     ("evaluation_status", "=", "completed"),
-    #                 ],
-    #                 order="create_date desc",
-    #                 limit=2,
-    #             )
-    #             total_score = sum(evaluations.mapped("total_score"))
-    #             average_score = (
-    #                 total_score / max(len(evaluations), 1) if evaluations else 0.0
-    #             )
+            is_eligible = False
+            bonus_amount = 0
+            if contract:
+                # Calculate average score
+                evaluations = self.env["hr.performance.evaluation"].search(
+                    [
+                        ("employee_id", "=", employee.id),
+                        ("evaluation_status", "=", "completed"),
+                    ],
+                    order="create_date desc",
+                    limit=2,
+                )
+                total_score = sum(evaluations.mapped("total_score"))
+                average_score = (
+                    total_score / max(len(evaluations), 1) if evaluations else 0.0
+                )
+                if average_score >= int(self.performance):
+                    is_eligible = True
+                    bonus_amount = contract.wage * int(self.months)
 
-    #             # Check eligibility
-    #             current_step = int(contract.increment_level_id.increment or 0)
-    #             if average_score >= 75 and current_step < 9 and not contract.is_ceiling:
-    #                 is_eligible = True
-    #                 step_change = (
-    #                     1
-    #                     if 75 <= average_score < 85
-    #                     else 2 if 85 <= average_score < 95 else 3
-    #                 )
-    #                 steps = step_change
-    #                 suggested_step = min(current_step + step_change, 9)
+            # Add the employee to the batch line
+            batch_lines.append(
+                (
+                    0,
+                    0,
+                    {
+                        "employee_id": employee.id,
+                        "current_wage": contract.wage,
+                        "bonus_amount": bonus_amount,
+                        "is_eligible": is_eligible,
+                    },
+                )
+            )
+        self.show_filter_button = True
+        self.bonus_managment_line = batch_lines
 
-    #                 suggested_increment = self.env["hr.pay.grade.increment"].search(
-    #                     [
-    #                         ("pay_grade_id", "=", contract.pay_grade_id.id),
-    #                         ("increment", "=", str(suggested_step)),
-    #                     ],
-    #                     limit=1,
-    #                 )
-    #                 new_wage = (
-    #                     suggested_increment.salary
-    #                     if suggested_increment
-    #                     else contract.wage
-    #                 )
+    def action_submit(self):
+        """Submit the batch for approval."""
+        if not self.bonus_managment_line:
+            raise ValidationError(("The batch must contain at least one employee."))
+        self.state = "submitted"
 
-    #         # Add the employee to the batch line
-    #         batch_lines.append(
-    #             (
-    #                 0,
-    #                 0,
-    #                 {
-    #                     "employee_id": employee.id,
-    #                     "current_is_base": True if contract.is_base else False,
-    #                     "current_increment_level_id": (
-    #                         contract.increment_level_id
-    #                         if contract.increment_level_id
-    #                         else False
-    #                     ),
-    #                     "average_performance_score": average_score,
-    #                     "ceiling_reached": True if contract.is_ceiling else False,
-    #                     "current_wage": contract.wage if contract else 0.0,
-    #                     "steps": steps,
-    #                     "new_wage": (
-    #                         contract.pay_grade_id.ceiling_salary
-    #                         if is_eligible and not suggested_increment
-    #                         else new_wage
-    #                     ),
-    #                     "next_increment_level_id": (
-    #                         suggested_increment.id if suggested_increment else False
-    #                     ),
-    #                     "next_increment_is_ceiling": (
-    #                         True if is_eligible and not suggested_increment else False
-    #                     ),
-    #                     "is_eligible": is_eligible,
-    #                 },
-    #             )
-    #         )
-    #     self.show_filter_button = True
-    #     self.increment_line_ids = batch_lines
+    def action_approve(self):
+        """Approve the batch and apply Bonus for eligible employees."""
+        for line in self.bonus_managment_line.filtered(lambda l: l.is_eligible):
+            contract = line.employee_id.contract_id
+            if not contract:
+                continue
 
-    # def action_submit(self):
-    #     """Submit the batch for approval."""
-    #     if not self.increment_line_ids:
-    #         raise ValidationError(("The batch must contain at least one employee."))
-    #     self.state = "submitted"
+            # store  bonus history
+            self.env["hr.bonus.history"].create(
+                {
+                    "reference": self.id,
+                    "employee_id": line.employee_id.id,
+                    "bonus_approved_date": fields.Datetime.now(),
+                    "approved_by": self.env.user.id,
+                    "bonus_amount": line.bonus_amount,
+                }
+            )
 
-    # def action_approve(self):
-    #     """Approve the batch and apply increments for eligible employees."""
-    #     for line in self.increment_line_ids.filtered(lambda l: l.is_eligible):
-    #         contract = line.employee_id.contract_id
-    #         if not contract:
-    #             continue
+        self.state = "approved"
 
-    #         # store  increment history
-    #         self.env["hr.salary.increment.history"].create(
-    #             {
-    #                 "employee_id": line.employee_id.id,
-    #                 "increment_date": fields.Datetime.now(),
-    #                 "approved_by": self.env.user.id,
-    #                 "from_increment_name": (
-    #                     line.current_increment_level_id.display_name
-    #                     if line.current_increment_level_id
-    #                     else "Base"
-    #                 ),
-    #                 "to_increment_name": (
-    #                     line.next_increment_level_id.display_name
-    #                     if not line.next_increment_is_ceiling
-    #                     else "Ceiling"
-    #                 ),
-    #             }
-    #         )
-    #         contract.write(
-    #             {
-    #                 "is_base": False,
-    #                 "is_ceiling": True if line.next_increment_is_ceiling else False,
-    #                 "increment_level_id": (
-    #                     line.next_increment_level_id.id
-    #                     if not line.next_increment_is_ceiling
-    #                     else False
-    #                 ),
-    #                 "wage": line.new_wage,
-    #             }
-    #         )
-
-    #     self.state = "approved"
-
-    # def action_reject(self):
-    #     """Reject the batch."""
-    #     self.state = "rejected"
+    def action_reject(self):
+        """Reject the batch."""
+        self.state = "rejected"
