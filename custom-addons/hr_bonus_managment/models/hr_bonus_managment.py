@@ -11,11 +11,19 @@ class HrSalaryIncrementBatch(models.Model):
     name = fields.Char(
         string="Bonus Name", compute="_compute_name", required=True, tracking=True
     )
-    show_filter_button = fields.Boolean(string="Show Filter Button", default=False)
-    months = fields.Integer(string="For How much Month", readonly=True)
+    show_filter_button = fields.Boolean(
+        string="Show Filter Button", default=False, tracking=True
+    )
+    months = fields.Integer(string="For How much Month", required=True, tracking=True)
     performance = fields.Selection(
-        [(75, ">= 75"), (80, ">= 80"), (85, ">= 85"), (90, ">= 90"), (95, ">= 95")],
-        default=">= 75",
+        [
+            ("75", ">= 75"),
+            ("80", ">= 80"),
+            ("85", ">= 85"),
+            ("90", ">= 90"),
+            ("95", ">= 95"),
+        ],
+        default="75",
         string="Performance criteria",
         tracking=True,
     )
@@ -24,6 +32,7 @@ class HrSalaryIncrementBatch(models.Model):
         "bonus_id",
         string="Bonus Managment Line",
         readonly=True,
+        tracking=True,
     )
     state = fields.Selection(
         [
@@ -37,10 +46,16 @@ class HrSalaryIncrementBatch(models.Model):
         tracking=True,
     )
     remarks = fields.Text(string="Remarks", help="Batch-level remarks.")
-
+    
+    
+    @api.depends('months')
     def _compute_name(self):
         for record in self:
-            record.name = f"Bonus for {fields.Datetime.today().year} "
+            record.name = (
+                f"Bonus for {fields.Datetime.today().year} "
+                if not record.name
+                else f"Bonus for {fields.Datetime.today().year} "
+            )
 
     # def action_populate_batch(self):
     #     """Populate batch with all employees and their increment details."""

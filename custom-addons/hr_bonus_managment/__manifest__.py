@@ -8,6 +8,8 @@
     "category": "Human Resource",
     "depends": ["base", "mail", "hr", "hr_performance"],
     "data": [
+        "security/ir.model.access.csv",
+        "views/hr_bonus_managment_view.xml",
         "views/menu.xml",
         ],
     "application": True,
