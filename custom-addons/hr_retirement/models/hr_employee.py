@@ -50,7 +50,7 @@ class HrEmployee(models.Model):
 
     @api.onchange('birthday')
     def _onchange_birthday(self):
-        if self.birthday >= date.today():
+        if self.birthday and self.birthday >= date.today():
             raise ValidationError(_("Birthday cannot be in the future."))
         """Update the retirement date when the birthday is changed."""
         retirement_age_limit = self.env['hr.retirement.settings'].sudo().search([], limit=1).retirement_age
