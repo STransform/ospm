@@ -46,6 +46,24 @@ class EmployeeComplaint(models.Model):
         ('unique_case_reference', 'unique(name)', 'The Case Reference must be unique.')
     ]
     
+    is_creator = fields.Boolean(string="Is Creator", compute="_compute_is_creator", store=False)
+    is_ceo = fields.Boolean(string="Is CEO", compute="_compute_is_ceo", store=False)
+    is_legal_service = fields.Boolean(string="Is Legal Service", compute="_compute_is_legal_service", store=False)
+
+
+    @api.model
+    def _compute_is_creator(self):
+        if self.employee_id:
+            self.is_creator = self.employee_id.user_id.id == self.env.user.id
+    
+    @api.model
+    def _compute_is_ceo(self):
+        self.is_ceo = self.env.user.has_group("complaint_handling.group_ceo")
+
+    @api.model
+    def _compute_is_legal_service(self):
+        self.is_legal_service = self.env.user.has_group("complaint_handling.group_legal_servicedepartment")
+
     # for default logged in user user,so that initiator is automatically populated from logged in user...
     @api.model
     def _get_default_employee(self):
