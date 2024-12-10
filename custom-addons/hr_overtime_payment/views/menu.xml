@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<menuitem
+    id="hr_overtime_rate"
+    name="Overtime Rate Types"
+    action="hr_overtime_type_action"
+    parent="hr.menu_human_resources_configuration"
+    sequence="10"/>
+
+</odoo>
