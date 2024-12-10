@@ -34,6 +34,8 @@
                 <sheet>
                     <widget name="web_ribbon" title="Closed" bg_color="bg-danger"
                         attrs="{'invisible':[('state','!=','closed')]}" />
+                    <widget name="web_ribbon" title="Active" bg_color="bg-success"
+                        attrs="{'invisible':[('state','!=','active')]}" />
                     <group col="2">
                         <group>
                             <field name="name" placeholder="2024 1 - 6 month evaulation" />
