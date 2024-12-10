@@ -6,7 +6,21 @@ import { useService } from "@web/core/utils/hooks";
 const { Component, onWillStart, useState  } = owl;
 
 
-// Creating a new class as an extension of Component
+function getRelativeTime(date) {
+    const now = new Date();
+    const past = new Date(date);
+    const diffInMilliseconds = now - past;
+
+    const seconds = Math.floor(diffInMilliseconds / 1000);
+    const minutes = Math.floor(diffInMilliseconds / (1000 * 60));
+    const hours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
+    const days = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24));
+
+    if (seconds < 60) return `${seconds} seconds ago`;
+    if (minutes < 60) return `${minutes} minutes ago`;
+    if (hours < 24) return `${hours} hours ago`;
+    return `${days} days ago`;
+}
 
 export class Notification extends Component {
 
@@ -19,14 +33,12 @@ export class Notification extends Component {
             showDropdown: false
         });
 
-        console.log("before================", this.state.notifications)
         this.orm = useService("orm");
         this.userService = useService("user"); 
+
         onWillStart(async () => {
             await this.fetchNotifications();
         });
-
-        console.log("after================", this.state.notifications)
 
         this.onClickNotification = this.onClickNotification.bind(this);
     };
@@ -45,9 +57,13 @@ export class Notification extends Component {
             const notifications = await this.orm.searchRead(
                 "custom.notification",
                 [["user_id", "=", currentUserId], ["is_read", "=", false]],
-                ["id", "title", "message"]
+                ["id", "title", "message",'create_date']
             );
-            this.state.notifications = notifications;
+
+            this.state.notifications = notifications.map((notification) => ({
+                ...notification,
+                relativeTime: getRelativeTime(notification.create_date),
+            }));
             this.state.unreadCount = notifications.length;
         } catch (error) {
             console.error("Failed to fetch notifications:", error);
@@ -67,6 +83,8 @@ export class Notification extends Component {
         }
     }
 
+
+    
     onClickNotification(notification) {
         this.markAsRead(notification.id);
         // Optionally perform additional actions
