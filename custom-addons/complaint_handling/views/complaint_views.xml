@@ -9,6 +9,11 @@
                 <field name="state" widget="statusbar" statusbar_visible="draft,submitted,legal_reviewed,ceo_reviewed"/>
             </header>
             <!-- <field name="state" widget="statusbar" statusbar_visible="draft,submitted,legal_reviewed,ceo_reviewed" /> -->
+            <group>
+                <field name="is_creator" invisible="1"/>
+                <field name="is_ceo" invisible="1"/>
+                <field name="is_legal_service" invisible="1"/>
+            </group>
             <div class="d-flex justify-content-center align-items-center my-5">
                 <div class="card w-75 shadow-lg rounded">
                     <div class="card-header text-center bg-primary text-white">
@@ -42,7 +47,7 @@
                            
                             <div class="col-md-6">
                                 <label for="state" class="form-label fw-bold">State</label>
-                                <field name="state" widget="selection" class="form-control" id="state"/>
+                                <field name="state" widget="selection"  readonly="1" class="form-control" id="state"/>
                                 <!-- Legal Service Department Button -->
                                 <button name="action_legal_review"
                                         type="object"
@@ -52,19 +57,19 @@
                                         groups="complaint_handling.group_legal_servicedepartment"/>
 
                                 <!-- Accept / Reject Legal Review for Initiator -->
-                                <!-- <button name="action_accept_legal_review"
+                                <button name="action_accept_legal_review"
                                         type="object"
                                         string="Accept Legal Review"
                                         class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
-                                        attrs="{'invisible': [('state', '!=', 'legal_reviewed')]}"
-                                        groups="base.group_user"/>
+                                        attrs="{'invisible': ['|',('is_creator','=',False),('state', '!=', 'legal_reviewed')]}"
+                                        />
 
                                 <button name="action_reject_legal_review"
                                         type="object"
                                         string="Reject Legal Review"
                                         class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill"
-                                        attrs="{'invisible': [('state', '!=', 'legal_reviewed')]}"
-                                         groups="base.group_user"/> -->
+                                        attrs="{'invisible': ['|',('is_creator','=',False),('state', '!=', 'legal_reviewed')]}"
+                                        />
                                 
                                 <!-- CEO Review Buttons -->
                                 <button name="action_ceo_review" 
@@ -74,21 +79,19 @@
                                         attrs="{'invisible': [('state', '!=', 'reject_legal_review')]}" 
                                         groups="complaint_handling.group_ceo"/>
 
-                                <!-- <button name="action_accept_ceo_review" 
+                                <button name="action_accept_ceo_review" 
                                         type="object" 
                                         string="Accept CEO Review" 
                                         class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" 
-                                        attrs="{'invisible': [('state', '!=', 'ceo_reviewed')]}" 
-                                        groups="base.group_user" 
-                                        groups_exclude="complaint_handling.group_ceo"/>
+                                        attrs="{'invisible': ['|',('is_creator','=',False),('state', '!=', 'ceo_reviewed')]}"
+                                        />
 
                                 <button name="action_reject_ceo_review" 
                                         type="object" 
                                         string="Reject CEO Review" 
                                         class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill" 
-                                        attrs="{'invisible': [('state', '!=', 'ceo_reviewed')]}" 
-                                        groups="base.group_user" 
-                                        groups_exclude="complaint_handling.group_ceo"/> -->
+                                        attrs="{'invisible': ['|',('is_creator','=',False),('state', '!=', 'ceo_reviewed')]}"
+                                        />
 
 
 
