@@ -21,6 +21,8 @@
         </script>
         <t t-out="head or ''"/>
     </head>
+    <!-- style for making the body background color -->
+
     <body t-att-class="body_classname">
         <t t-out="0"/>
     </body>
