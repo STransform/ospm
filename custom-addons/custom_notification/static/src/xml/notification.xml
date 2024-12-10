@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="Notification" owl="1">
+        <div class="NavbarMenuContainer">
+            <div class="o_NavbarMenu dropdown">
+                <a class="o_NavbarMenu_toggler dropdown-toggle o-no-caret o-dropdown--narrow" href="#" title="Notifications" role="button" aria-haspopup="true" t-on-click="onClickNavbarMenu">
+                    <i class="o_NavbarMenu_icon fa fa-lg fa-bell" role="img" aria-label="NavbarMenu" />
+                    <t t-if="state.unreadCount">
+                        <span class="badge" t-esc="state.unreadCount"/>
+                    </t>
+                </a>
+
+                <!-- Show dropdown only if showDropdown is true -->
+                
+                <t t-if="state.showDropdown">
+                    <div class="o_MessagingMenu_dropdownMenu o-dropdown-menu dropdown-menu-end d-flex flex-column mt-0 py-0 bg-view overflow-auto pt-2"  role="menu">
+                        <t t-if="state.notifications.length">
+                            <t t-foreach="state.notifications" t-as="notification" t-key="notification.id">
+                                <div class="dropdown-item d-flex align-items-start p-3 border-bottom" t-on-click="() => onClickNotification(notification)">
+                                    <div class="me-3">
+                                        <i class="fa fa-bell text-primary" role="img" aria-label="Notification Icon"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <strong class="d-block text-truncate mb-1" t-esc="notification.title" />
+                                        <p class="text-muted small mb-0" t-esc="notification.message" />
+                                    </div>
+                                    <div class="text-muted small ms-2">
+                                        <t t-esc="notification.relativeTime" />
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <div class="dropdown-item">
+                                <p>No new notifications</p>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

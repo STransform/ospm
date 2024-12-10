@@ -1,0 +1,8 @@
+<odoo>
+    <template id="assets_backend" name="Notification Assets" inherit_id="web.assets_backend_legacy_lazy">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/custom_notification/static/src/js/navbarMenu.js"></script>
+            <link rel="stylesheet" href="/custom_notification/static/src/css/navbarMenu.css"/>
+        </xpath>
+    </template>
+</odoo>
