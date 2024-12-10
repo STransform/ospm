@@ -33,6 +33,16 @@ class EarlyRetirementRequest(models.Model):
     comment = fields.Text(string="Comment")
     user_can_comment = fields.Boolean(string="Can Comment", compute="_compute_user_can_comment", store=False)
 
+    # add notification function 
+    @api.model
+    def send_notification(self, message, user):
+        self.env['custom.notification'].create({
+            'title': 'Early Retirement Request',
+            'message': message,
+            'user_id': user.id,
+        })
+
+        # user.notify_info(message, title='Early Retirement Request')
 
     # validation for proposed_retirement_daTruete 
     @api.onchange('proposed_retirement_date')
@@ -42,11 +52,17 @@ class EarlyRetirementRequest(models.Model):
     
     def action_submit(self):
         """Submit the early retirement request."""
+        ceo_users = []
+        for user in self.env['res.users'].search([]):
+            if user.has_group("planning.group_ceo"):
+               ceo_users.append(user) 
         for record in self:
             if record.proposed_retirement_date <= datetime.now().date():
                 raise ValidationError("Proposed retirement date cannot be in the past.")
             record.state = 'submitted'
             record.request_date = datetime.today()
+            for user in ceo_users:
+                self.send_notification(f"{record.employee_name} has requested for early retirement", user)
     
     def action_approve(self):
         """Approve the early retirement request and deactivate employee access."""
