@@ -59,7 +59,12 @@
                             <field name="name" />
                         </group>
                         <group>
-                            <field name="months" attrs="{'readonly': [('state', '!=', 'draft')]}" />
+                            <field name="is_fixed" widget="boolean_toggle"
+                                attrs="{'readonly': [('state', '!=', 'draft')]}" />
+                            <field name="fixed_amount"
+                                attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('is_fixed', '=', False)]}" />
+                            <field name="months"
+                                attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('is_fixed', '=', True)]}" />
                         </group>
                         <group>
                             <field name="performance"
