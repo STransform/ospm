@@ -1,4 +1,5 @@
 from odoo import api, models, fields
+from odoo.exceptions import ValidationError
 
 
 class HrOvertimeType(models.Model):
@@ -22,3 +23,15 @@ class HrOvertimeType(models.Model):
     _sql_constraints = [
         ("unique_rate_type", "UNIQUE(name)", "The overtime rate type must be unique.")
     ]
+    
+    @api.constrains("hourly_rate")
+    def _check_hourly_rate(self):
+        for record in self:
+            if record.hourly_rate <= 0:
+                raise ValidationError("The Hourly Rate should be positive number!")
+    
+    @api.constrains('name')
+    def _check_name_unique(self):
+        for record in self:
+            if self.search_count([('name', '=', record.name)]) > 1:
+                raise ValidationError(f"The rate type '{record.name}' already exists. Please provide a unique name.")

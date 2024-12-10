@@ -15,11 +15,13 @@
     "category": "Human Resource",
     "version": "0.1",
     # any module necessary for this one to work correctly
-    "depends": ["base", "hr", "mail"],
+    "depends": ["base", "hr", "mail", "hr_contract"],
     # always loaded
     "data": [
         "security/ir.model.access.csv",
         "views/hr_overtime_type_view.xml",
+        "views/hr_overtime_payment_view.xml",
+        "views/overtime_reject_reason_view.xml",
         "views/menu.xml",
         "views/views.xml",
         "views/templates.xml",
