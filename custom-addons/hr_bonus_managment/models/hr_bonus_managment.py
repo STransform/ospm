@@ -15,10 +15,11 @@ class HrSalaryIncrementBatch(models.Model):
         string="Show Filter Button",
         default=False,
     )
+    is_fixed = fields.Boolean(string="Is Fixed", required=True)
+    fixed_amount = fields.Float(string="Fixed Amount", tracking=True)
     months = fields.Selection(
         [("1", "1"), ("2", "2"), ("3", "3"), ("4", "4"), ("5", "5"), ("6", "6")],
         string="How much Month",
-        required=True,
         tracking=True,
     )
     performance = fields.Selection(
@@ -52,6 +53,8 @@ class HrSalaryIncrementBatch(models.Model):
         tracking=True,
     )
     rejection_reason = fields.Text(string="Rejection Reason", help="Reason.")
+
+    # is fixed
 
     def diff_month(self, date1, date2):
         return (date2.year - date1.year) * 12 + date2.month - date1.month
@@ -108,7 +111,11 @@ class HrSalaryIncrementBatch(models.Model):
                 )
                 if average_score >= int(self.performance):
                     is_eligible = True
-                    bonus_amount = contract.wage * int(self.months)
+                    bonus_amount = (
+                        self.fixed_amount
+                        if self.is_fixed
+                        else contract.wage * int(self.months)
+                    )
 
             # Add the employee to the batch line
             batch_lines.append(
