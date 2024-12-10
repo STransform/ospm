@@ -4,6 +4,7 @@ from odoo import api, models, fields
 class HrOvertimeType(models.Model):
     _name = "hr.overtime.rate"
     _description = "Overtime Rate Types"
+    _inherit = ["mail.thread"]
     _order = "create_date desc"
 
     name = fields.Selection(
@@ -13,7 +14,7 @@ class HrOvertimeType(models.Model):
             ("weekly_rest", "Weekly Rest Day"),
             ("public_holiday", "Public Holiday"),
         ],
-        string="Overtime Type",
+        string="Overtime Rate Type",
         required=True,
     )
     hourly_rate = fields.Float(string="Hourly Rate (%)", required=True, tracking=True)
