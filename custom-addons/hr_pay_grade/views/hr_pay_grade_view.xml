@@ -75,7 +75,7 @@
                 <!-- Increment Level Field -->
                 <field name="increment_level_id" string="Increment Level"
                     domain="[('pay_grade_id', '=', pay_grade_id)]"
-                    attrs="{'invisible': ['|',('is_base', '=', True),('is_ceiling', '=', True)]}" />
+                    attrs="{'invisible': ['|',('is_base', '=', True),('is_ceiling', '=', True)]}" options="{'no_create': True, 'no_create_edit':True}"/>
                 <field name="is_base_or_ceil" invisible="1" />
             </field>
         </field>
