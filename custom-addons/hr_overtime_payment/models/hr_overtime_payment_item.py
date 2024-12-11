@@ -4,6 +4,7 @@ class HrOvertimePaymentItem(models.Model):
     _name = "hr.overtime.payment.item"
     _description = "Overtime Payment Item"
     _order = "create_date desc"
+    _rec_name = "display_name"
     
     
     overtime_payment_id = fields.Many2one('hr.overtime.payment', string="Overtime Payment", ondelete="cascade")
@@ -19,7 +20,7 @@ class HrOvertimePaymentItem(models.Model):
         tracking=True,
     )
     hours = fields.Float(
-        string="Total worked hours",
+        string="Worked hours",
         required=True,
         tracking=True,
     )
@@ -27,6 +28,7 @@ class HrOvertimePaymentItem(models.Model):
     overtime_rate_id = fields.Many2one(
         "hr.overtime.rate",
         string="Overtime Rate type",
+        required=True,
         tracking=True,
     )
 

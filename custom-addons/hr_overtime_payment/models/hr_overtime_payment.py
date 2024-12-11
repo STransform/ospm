@@ -7,7 +7,7 @@ class HrOvertimePayment(models.Model):
     _description = "Overtime Payment"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "create_date desc"
-    _rec_name= "employee_id"
+    _rec_name = "employee_id"
 
     overtime_payment_item_ids = fields.One2many(
         "hr.overtime.payment.item",
@@ -30,6 +30,9 @@ class HrOvertimePayment(models.Model):
     contract_id = fields.Many2one(
         "hr.contract", string="Contract", related="employee_id.contract_id"
     )
+    wage = fields.Float(
+        string="Wage per Month", compute="_compute_wage", tracking=True, required=True
+    )
     currency_id = fields.Many2one("res.currency", related="contract_id.currency_id")
     state = fields.Selection(
         [
@@ -45,38 +48,41 @@ class HrOvertimePayment(models.Model):
 
     total_amount = fields.Float(
         string="Total Amount",
-        compute="_compute_amount",
+        compute="_compute_total_amount",
         store=True,
         tracking=True,
     )
 
-    # @api.depends("employee_id", "hours", "overtime_rate_id")
-    # def _compute_amount(self):
-    #     for record in self:
-    #         contract = record.employee_id.contract_id
-    #         if contract and contract.state == "open":
-    #             wage = contract.wage
-    #             salary_per_hour = wage / 240
-    #             rate = record.overtime_rate_id
-    #             if record.hours > 0:
-    #                 record.amount = salary_per_hour * (rate.hourly_rate/100) * record.hours
-    #             else:
-    #                 record.amount = 0.0
+    @api.depends("employee_id")
+    def _compute_wage(self):
+        for record in self:
+            if record.employee_id.contract_id.wage:
+                record.wage = record.employee_id.contract_id.wage
+            else:
+                record.wage = 0.0
+
+    # total amount calculation
+    @api.depends("overtime_payment_item_ids.amount")
+    def _compute_total_amount(self):
+        for record in self:
+            record.total_amount = sum(
+                item.amount for item in record.overtime_payment_item_ids
+            )
 
     def action_submit(self):
         self.state = "submitted"
 
     def action_approve(self):
-        # store  bonus history
-        # self.env["hr.bonus.history"].create(
-        #     {
-        #         "reference": self.id,
-        #         "employee_id": line.employee_id.id,
-        #         "bonus_approved_date": fields.Datetime.now(),
-        #         "approved_by": self.env.user.id,
-        #         "bonus_amount": line.bonus_amount,
-        #     }
-        # )
+        # store  Overtime Payment history
+        self.env["hr.overtime.payment.history"].create(
+            {
+                "reference": self.id,
+                "employee_id": self.employee_id,
+                "overtime_approved_date": fields.Datetime.now(),
+                "approved_by": self.env.user.id,
+                "overtime_amount": self.total_amount,
+            }
+        )
         self.state = "approved"
 
     def action_reject(self):
