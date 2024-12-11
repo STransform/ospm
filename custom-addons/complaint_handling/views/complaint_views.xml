@@ -1,0 +1,189 @@
+<odoo>
+  <record id="view_employee_complaint_form" model="ir.ui.view">
+    <field name="name">employee.complaint.form</field>
+    <field name="model">employee.complaint</field>
+    <field name="arch" type="xml">
+        <form string="Employee Complaint">
+             <header>
+                <!-- State Statusbar -->
+                <field name="state" widget="statusbar" statusbar_visible="draft,submitted,legal_reviewed,ceo_reviewed"/>
+            </header>
+            <!-- <field name="state" widget="statusbar" statusbar_visible="draft,submitted,legal_reviewed,ceo_reviewed" /> -->
+            <group>
+                <field name="is_creator" invisible="1"/>
+                <field name="is_ceo" invisible="1"/>
+                <field name="is_legal_service" invisible="1"/>
+            </group>
+            <div class="d-flex justify-content-center align-items-center my-5">
+                <div class="card w-75 shadow-lg rounded">
+                    <div class="card-header text-center bg-primary text-white">
+                        <h3 class="fw-bold text-white">Employee Complaint Form</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            
+                            <!-- Row 1 -->
+                            <div class="col-md-6">
+                                <label for="employee_id" class="form-label fw-bold">Employee</label>
+                                <field name="employee_id" readonly="1" class="form-control" id="employee_id"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="name" class="form-label fw-bold">Complaint Reference</label>
+                                <field name="name" class="form-control" id="name"/>
+                            </div>
+
+                            <!-- Row 2 -->
+                            <div class="col-md-6">
+                                <label for="issue_type" class="form-label fw-bold">Issue Type</label>
+                                <field name="issue_type" class="form-control" id="issue_type"/>
+                            </div>
+
+                            <!-- Row 3 -->
+                            <div class="col-md-6">
+                                <label for="description" class="form-label fw-bold">Description</label>
+                                <field name="description" class="form-control" id="description"/>
+                            </div>
+                            <!-- State Field -->
+                           
+                            <div class="col-md-6">
+                                <label for="state" class="form-label fw-bold">State</label>
+                                <field name="state" widget="selection"  readonly="1" class="form-control" id="state"/>
+                                <!-- Legal Service Department Button -->
+                                <button name="action_legal_review"
+                                        type="object"
+                                        string="Legal Reviewed"
+                                        class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
+                                        attrs="{'invisible': [('state', '!=', 'submitted')]}"
+                                        groups="complaint_handling.group_legal_servicedepartment"/>
+
+                                <!-- Accept / Reject Legal Review for Initiator -->
+                                <button name="action_accept_legal_review"
+                                        type="object"
+                                        string="Accept Legal Review"
+                                        class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
+                                        attrs="{'invisible': ['|',('is_creator','=',False),('state', '!=', 'legal_reviewed')]}"
+                                        />
+
+                                <button name="action_reject_legal_review"
+                                        type="object"
+                                        string="Reject Legal Review"
+                                        class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill"
+                                        attrs="{'invisible': ['|',('is_creator','=',False),('state', '!=', 'legal_reviewed')]}"
+                                        />
+                                
+                                <!-- CEO Review Buttons -->
+                                <button name="action_ceo_review" 
+                                        type="object" 
+                                        string="CEO Reviewed" 
+                                        class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" 
+                                        attrs="{'invisible': [('state', '!=', 'reject_legal_review')]}" 
+                                        groups="complaint_handling.group_ceo"/>
+
+                                <button name="action_accept_ceo_review" 
+                                        type="object" 
+                                        string="Accept CEO Review" 
+                                        class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" 
+                                        attrs="{'invisible': ['|',('is_creator','=',False),('state', '!=', 'ceo_reviewed')]}"
+                                        />
+
+                                <button name="action_reject_ceo_review" 
+                                        type="object" 
+                                        string="Reject CEO Review" 
+                                        class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill" 
+                                        attrs="{'invisible': ['|',('is_creator','=',False),('state', '!=', 'ceo_reviewed')]}"
+                                        />
+
+
+
+                            </div>
+                             <div class="col-md-6">
+                                <label for="documents" class="form-label fw-bold">Attachments</label>
+                                <field name="documents" widget="many2many_binary" class="form-control" id="documents"/>
+                            </div>
+                            <!-- New Row for Created Date -->
+                            <div class="col-md-6">
+                                <label for="created_on" class="form-label fw-bold">Created On</label>
+                                <field name="created_on" readonly="1" class="form-control" id="created_on"/>
+                            </div>
+
+
+                            <!-- Action Buttons -->
+                            <div class="col-md-12 d-flex justify-content-center mt-4">
+                                <button name="action_submit" 
+                                        type="object" 
+                                        string="Submit" 
+                                        class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
+                                        attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                               
+                            </div>
+                            
+                            
+
+                            <!-- Decision Tabs -->
+                            <div class="col-md-12">
+                                <notebook>
+                                    <page string="Decision by Legal Service Department" attrs="{'invisible':[('state','in',['draft','submitted'])]}">
+                                        <div class="row g-3">
+                                            <div class="col-md-12">
+                                                <!-- <label for="decision_by_legalservice" class="form-label fw-bold">Legal Service Decision</label> -->
+                                                <field name="decision_by_legalservice" class="form-control" id="decision_by_legalservice"/>
+                                            </div>
+                                        </div>
+                                    </page>
+                                    <page string="Decision by CEO" attrs="{'invisible':[('state','in',['draft','submitted','legal_reviewed','reject_legal_review','accept_legal_review'])]}">
+                                        <div class="row g-3">
+                                            <div class="col-md-12">
+                                                <!-- <label for="decision_by_ceo" class="form-label fw-bold">CEO Decision</label> -->
+                                                <field name="decision_by_ceo" class="form-control" id="decision_by_ceo"/>
+                                            </div>
+                                        </div>
+                                    </page>
+                                </notebook>
+                            </div>
+
+                                <!-- Action Buttons -->
+                    <div class="col-md-12 d-flex justify-content-center mt-4">
+                    
+                    </div>
+                              <!-- Action Buttons -->
+                            <div class="col-md-12 d-flex justify-content-center mt-4">
+                                <!-- Save Button -->
+                                <button name="action_save_complaint"
+                                        type="object"
+                                        string="Save"
+                                        class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
+                                        attrs="{'invisible': [('state', 'in', ['draft'])]}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </field>
+</record>
+
+
+    <record id="view_employee_complaint_tree" model="ir.ui.view">
+        <field name="name">employee.complaint.tree</field>
+        <field name="model">employee.complaint</field>
+        <field name="arch" type="xml">
+            <tree string="Employee Complaints">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="issue_type"/>
+                <field name="state"/>
+                <!-- <field name="documents" widget="many2many_binary"/> -->
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_employee_complaint" model="ir.actions.act_window">
+        <field name="name">Employee Complaints</field>
+        <field name="res_model">employee.complaint</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_employee_complaint_tree"/>
+    </record>
+
+    <menuitem id="menu_complaint_root" name="Employee's complaint" parent="hr.menu_hr_root" sequence="10"/>
+    <menuitem id="menu_complaint_management" name="Complaints" parent="menu_complaint_root" action="action_employee_complaint" sequence="20"/>
+</odoo>

@@ -1,0 +1,18 @@
+<odoo>
+
+    <!-- Rule for Legal Service Department: Allow access to all complaints, no matter the state -->
+     <record id="rule_employee_complaint_legal" model="ir.rule">
+        <field name="name">Complaint Access for Legal Service</field>
+        <field name="model_id" ref="model_employee_complaint"/>
+        <field name="domain_force">[]</field> 
+        <field name="groups" eval="[(4, ref('complaint_handling.group_legal_servicedepartment'))]"/>
+    </record> 
+
+   <!-- Rule for CEO: Allow access only to complaints in 'ceo_review', 'resolved', or 'court' states -->
+    <record id="rule_employee_complaint_ceo" model="ir.rule">
+        <field name="name">Complaint Access for CEO</field>
+        <field name="model_id" ref="model_employee_complaint"/>
+        <field name="domain_force">[('state', 'in', ['reject_legal_review', 'accept_ceo_review', 'reject_ceo_review','ceo_reviewed'])]</field> 
+        <field name="groups" eval="[(4, ref('complaint_handling.group_ceo'))]"/>
+    </record> 
+</odoo>
