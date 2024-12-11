@@ -7,6 +7,7 @@ class HrOvertimeType(models.Model):
     _description = "Overtime Rate Types"
     _inherit = ["mail.thread"]
     _order = "create_date desc"
+    _rec_name = "display_name"
 
     name = fields.Selection(
         [
@@ -18,6 +19,7 @@ class HrOvertimeType(models.Model):
         string="Overtime Rate Type",
         required=True,
     )
+    display_name = fields.Char(string="Display Name", compute="_compute_display_name")
     hourly_rate = fields.Float(string="Hourly Rate (%)", required=True, tracking=True)
 
     _sql_constraints = [
@@ -35,3 +37,9 @@ class HrOvertimeType(models.Model):
         for record in self:
             if self.search_count([('name', '=', record.name)]) > 1:
                 raise ValidationError(f"The rate type '{record.name}' already exists. Please provide a unique name.")
+
+    @api.depends('name')
+    def _compute_display_name(self):
+        selection_dict = dict(self._fields['name'].selection)
+        for record in self:
+            record.display_name = selection_dict.get(record.name, '')

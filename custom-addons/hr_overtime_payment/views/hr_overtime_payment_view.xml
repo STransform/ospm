@@ -38,7 +38,7 @@
                         attrs="{'invisible':[('state','!=','rejected')]}" />
                     <group col="2">
                         <group>
-                            <field name="employee_id" />
+                            <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             <field name="department_id" />
                         </group>
                         <group>
@@ -47,7 +47,7 @@
                         </group>
                     </group>
                     <group string="Overtime Details">
-                        <field name="overtime_payment_item_ids">
+                        <field name="overtime_payment_item_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
                             <tree editable="bottom">
                                 <field name="start_date" widget="date" />
                                 <field name="end_date" widget="date" />
