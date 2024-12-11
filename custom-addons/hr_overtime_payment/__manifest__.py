@@ -22,6 +22,7 @@
         "views/hr_overtime_type_view.xml",
         "views/hr_overtime_payment_view.xml",
         "views/overtime_reject_reason_view.xml",
+        "views/hr_employee_view.xml",
         "views/menu.xml",
         "views/views.xml",
         "views/templates.xml",

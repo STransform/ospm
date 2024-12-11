@@ -77,7 +77,7 @@ class HrOvertimePayment(models.Model):
         self.env["hr.overtime.payment.history"].create(
             {
                 "reference": self.id,
-                "employee_id": self.employee_id,
+                "employee_id": self.employee_id.id,
                 "overtime_approved_date": fields.Datetime.now(),
                 "approved_by": self.env.user.id,
                 "overtime_amount": self.total_amount,

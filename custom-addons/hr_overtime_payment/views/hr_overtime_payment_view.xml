@@ -51,9 +51,9 @@
                             <tree editable="bottom">
                                 <field name="start_date" widget="date" />
                                 <field name="end_date" widget="date" />
+                                <field name="hours" />
                                 <field name="overtime_rate_id" widget="selection"
                                     options="{'no_create': True, 'no_create_edit':True}" />
-                                <field name="hours" />
                                 <field name="amount" readonly="1" />
                             </tree>
                         </field>
