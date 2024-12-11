@@ -4,7 +4,15 @@
     <field name="model">employee.clearance</field>
     <field name="arch" type="xml">
       <form string="Clearance Request">
-        <field name="state" invisible="1"/>
+      
+        <group>
+          <field name="state" invisible="1"/>
+          <field name="is_department_approve" invisible="1"/>
+          <field name="is_property_approve" invisible="1"/>
+          <field name="is_finance_approve" invisible="1"/>
+          <field name="is_hr_approve" invisible="1"/>
+          <field name="user_in_group" invisible="1"/>
+        </group>
         <div class="d-flex justify-content-center align-items-center my-5">
           <div class="card w-75 shadow-lg rounded">
             <div class="card-header text-center bg-primary text-white">
@@ -16,7 +24,7 @@
                 <div class="col-md-6">
                   <label for="employee_id" class="form-label fw-bold">Employee</label>
                   <field name="employee_id" 
-                         readonly="0" 
+                         readonly="1" 
                          class="form-control" 
                          id="employee_id"
                          attrs="{'readonly': [('state', 'in', ['in_progress', 'approved', 'rejected'])]}"/>
@@ -28,6 +36,7 @@
                          class="form-control" 
                          id="department_id"
                          attrs="{'readonly': [('state', 'in', ['in_progress', 'approved', 'rejected'])]}"/>
+                          <!-- to make save button only visible at creation step -->
                 </div>
 
                 <!-- Row 2 -->
@@ -92,19 +101,21 @@
                 <div class="col-md-6 d-flex justify-content-center mt-4">
                   <button name="action_department_approve" 
                           type="object" 
-                          string="Approve Department" 
+                          string="Approve" 
                           class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
-                          groups="clearance_request.group_department_approval"
-                          states="draft"/>
+                           attrs="{'invisible': ['|',('is_department_approve','=',False),('state', '!=', 'draft')]}" 
+                          />
+                           <!-- to make Approve button only visible at this draft state or if is_department_approve is=True -->
+
                   <button name="action_reject_department" 
                           type="object" 
-                          string="Reject Department" 
+                          string="Reject" 
                           class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill"
-                          groups="clearance_request.group_department_approval"
-                          states="draft"/>
+                          attrs="{'invisible': ['|',('is_department_approve','=',False),('state', '!=', 'draft')]}"
+                          />
                   <button name="action_reapprove_department" 
                           type="object" 
-                          string="Reapprove Department" 
+                          string="Approve" 
                           class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
                           groups="clearance_request.group_department_approval"
                           attrs="{'invisible': [('department_approval', '!=', 'rejected')]}"/>
@@ -112,19 +123,19 @@
                 <div class="col-md-6 d-flex justify-content-center mt-4">
                   <button name="action_property_approve" 
                           type="object" 
-                          string="Approve Property" 
+                          string="Approve" 
                           class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
-                          groups="clearance_request.group_property_approval"
-                          states="in_progress"/>
+                          attrs="{'invisible': ['|',('is_property_approve','=',False),('state', '!=', 'in_progress')]}"
+                          />
                   <button name="action_reject_property" 
                           type="object" 
-                          string="Reject Property" 
+                          string="Reject" 
                           class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill"
-                          groups="clearance_request.group_property_approval"
-                          states="in_progress"/>
+                           attrs="{'invisible': ['|',('is_property_approve','=',False),('state', '!=', 'in_progress')]}"
+                           />
                   <button name="action_reapprove_property" 
                           type="object" 
-                          string="Reapprove Property" 
+                          string="Approve" 
                           class="btn btn-success btn-sm"
                           groups="clearance_request.group_property_approval"
                           attrs="{'invisible': [('property_approval', '!=', 'rejected')]}"/>
@@ -135,19 +146,19 @@
               <div class="col-md-6 d-flex justify-content-center mt-4">
                 <button name="action_finance_approve" 
                         type="object" 
-                        string="Approve Finance" 
+                        string="Approve" 
                         class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
-                        groups="clearance_request.group_finance_approval"
-                        states="in_progress"/>
+                        attrs="{'invisible': ['|',('is_finance_approve','=',False),('state', '!=', 'in_progress')]}"
+                        />
                 <button name="action_reject_finance" 
                         type="object" 
-                        string="Reject Finance" 
+                        string="Reject" 
                         class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill"
-                        groups="clearance_request.group_finance_approval"
-                        states="in_progress"/>
+                        attrs="{'invisible': ['|',('is_finance_approve','=',False),('state', '!=', 'in_progress')]}"
+                        />
                 <button name="action_reapprove_finance" 
                         type="object" 
-                        string="Reapprove Finance" 
+                        string="Approve Finance" 
                         class="btn btn-success btn-sm"
                         groups="clearance_request.group_finance_approval"
                         attrs="{'invisible': [('department_approval', '!=', 'rejected')]}"/>
@@ -157,14 +168,14 @@
                         type="object" 
                         string="Approve HR" 
                         class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
-                        groups="clearance_request.group_hr_approval"
-                        states="in_progress"/>
+                        attrs="{'invisible': ['|',('is_hr_approve','=',False),('state', '!=', 'in_progress')]}"
+                        />
                 <button name="action_reject_hr" 
                         type="object" 
                         string="Reject HR" 
                         class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill"
-                        groups="clearance_request.group_hr_approval"
-                        states="in_progress"/>
+                        attrs="{'invisible': ['|',('is_hr_approve','=',False),('state', '!=', 'in_progress')]}"
+                        />
                 <button name="action_reapprove_hr" 
                         type="object" 
                         string="Reapprove Hr" 
@@ -175,7 +186,10 @@
                 <button name="action_save_clearance" 
                             type="object" 
                             string="Save" 
-                            class="btn btn-primary btn-lg px-5 py-2 shadow-sm rounded-pill"/>
+                            class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
+                            attrs="{'invisible': ['|', 
+                              ('state', 'in', ['in_progress', 'approved', 'rejected']), 
+                              ('user_in_group', '=', True)]}"/>
                   
               </div>
              
