@@ -7,7 +7,7 @@ class Clearance(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'create_date desc'
     name = fields.Char(string="Clearance Request", required=True, tracking=True, default=lambda self: _('New'))
-    employee_id = fields.Many2one('hr.employee', string="Employee", required=True, tracking=True)
+    employee_id = fields.Many2one('hr.employee', string='Employee', required=True, tracking=True, default=lambda self: self._get_default_employee())
     department_id = fields.Many2one('hr.department', string="Department",store=True)
     position_id = fields.Many2one('hr.job', string="Position",  store=True)
 
@@ -25,6 +25,40 @@ class Clearance(models.Model):
         default='pending',
         tracking=True
     )
+     # to make the department approval button only visible at this state
+    is_department_approve = fields.Boolean(string="Is Department Approve", compute="_compute_is_department_approve", store=False)
+    is_property_approve = fields.Boolean(string="Is Property Approve", compute="_compute_is_property_approve", store=False)
+    is_finance_approve = fields.Boolean(string="Is Finance Approve", compute="_compute_is_finance_approve", store=False)
+    is_hr_approve = fields.Boolean(string="Is Hr Approve", compute="_compute_is_hr_approve", store=False)
+    show_save_button = fields.Boolean(
+        compute='_compute_show_save_button', string="Show Save Button"
+    )
+     # to make save button only visible at creation step,other that its invisible
+    user_id = fields.Many2one('res.users', string='User')
+    user_in_group = fields.Boolean(compute='_compute_user_in_group', store=False)
+    @api.depends('user_id')
+    def _compute_user_in_group(self):
+        group = self.env.ref('clearance_request.group_department_approval', raise_if_not_found=False)
+        if group:
+            self.user_in_group = self.env.user in group.users
+        else:
+            self.user_in_group = False
+     # to make save button only visible at creation step,other that its invisible
+     
+     # to make the department approval button only visible at this state
+    @api.model
+    def _compute_is_department_approve(self):
+        self.is_department_approve = self.env.user.has_group("clearance_request.group_department_approval")
+    @api.model
+    def _compute_is_property_approve(self):
+        self.is_property_approve = self.env.user.has_group("clearance_request.group_property_approval")
+    @api.model
+    def _compute_is_finance_approve(self):
+        self.is_finance_approve = self.env.user.has_group("clearance_request.group_finance_approval")
+    @api.model
+    def _compute_is_hr_approve(self):
+        self.is_hr_approve = self.env.user.has_group("clearance_request.group_hr_approval")
+    
     property_approval = fields.Selection(
         [('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')],
         string="Property Approval",
@@ -49,7 +83,14 @@ class Clearance(models.Model):
         default='draft',
         tracking=True
     )
-
+    @api.model
+    def _get_default_employee(self):
+        """This method will return the currently logged-in user's employee record."""
+        user = self.env.user
+        employee = self.env['hr.employee'].search([('user_id', '=', user.id)], limit=1)
+        if employee:
+            return employee.id
+        return False 
     @api.onchange('department_approval', 'property_approval', 'finance_approval')
     def _check_clearance_status(self):
         if (self.department_approval == 'approved' and
