@@ -8,7 +8,6 @@
     'data': [
         'security/groups.xml',
         'security/ir.model.access.csv',
-        'security/record_rules.xml',
         'views/discipline_case_views.xml',
     ],
     'installable': True,
