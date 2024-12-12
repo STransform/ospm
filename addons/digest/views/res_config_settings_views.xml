@@ -7,9 +7,11 @@
         <field name="arch" type="xml">
             <xpath expr="//div[@id='contacts_settings']" position="before">
                 <div id="statistics" >
-                    <h2>Statistics</h2>
-                    <div class='row mt16 o_settings_container' id='statistics_div'>
-                        <div class="col-12 col-lg-6 o_setting_box"
+                    <!-- <h2>Statistics</h2> -->
+                    <!-- <div class='row mt16 o_settings_container' id='statistics_div'> -->
+                    <div class='' id='statistics_div'>
+
+                        <!-- <div class="col-12 col-lg-6 o_setting_box"
                             title="New users are automatically added as recipient of the following digest email."
                             name="digest_email_setting_container">
                             <div class="o_setting_left_pane">
@@ -31,7 +33,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </xpath>
