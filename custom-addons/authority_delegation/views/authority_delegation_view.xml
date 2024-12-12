@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="authority_delegation_view_tree" model="ir.ui.view">
+        <field name="name">authority.delegation.view.tree</field>
+        <field name="model">authority.delegation</field>
+        <field name="arch" type="xml">
+            <tree string="">
+                <field name="delegator_id" />
+                <field name="delegatee_id" />
+                <field name="delegation_position" />
+                <field name="delegation_start_date" />
+                <field name="delegation_end_date" />
+                <field name="reason" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="authority_delegation_view_form" model="ir.ui.view">
+        <field name="name">authority.delegation.view.form</field>
+        <field name="model">authority.delegation</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <header class="mb-2">
+                        <button string="Submit" 
+                                name="action_submit" 
+                                type="object" class="oe_highlight" 
+                                attrs="{'invisible':[('status','!=','draft')]}"
+                                confirm="Are you sure you want to submit this request?"
+                        />
+                      
+                        <field name="status" 
+                               widget="statusbar" 
+                               statusbar_visible="draft,submitted,accepted_by_delegatee,rejected_by_delegatee,approved,rejected" 
+                        />
+                        
+                    </header>
+                    <group> 
+                        <field name="delegatee_user" invisible="1"/>
+                        <field name="delegator_user" invisible="1"/>
+                        <field name="is_delegatee" invisible="1"/>
+                        <field name="is_delegator" invisible="1"/>
+                        <field name="is_hr_director" invisible="1"/>
+
+                    </group> 
+                    <group> 
+                        <field name="delegator_id" readonly="1"/>
+                        <field name="delegatee_id" attrs="{'readonly':[('status','!=','draft')]}"/>
+                        <field name="delegation_position" readonly="1"/>
+                        <field name="delegation_start_date" attrs="{'readonly':[('status','!=','draft')]}" />
+                        <field name="delegation_end_date" attrs="{'readonly':[('status','!=','draft')]}" />
+                        <field name="status" readonly="1" />
+                        <field name="reason" attrs="{'readonly':[('status','!=','draft')]}" />
+                        <field name="attachment_ids" widget="many2many_binary" attrs="{'readonly':[('status','!=','draft')]}"/>
+                    </group>
+                    <notebook>
+                        <page name="delegatee_response" string="Delegatee Response" attrs="{'invisible':[('status','=','draft')]}">
+                            <group>
+                                <field name="delegatee_response" attrs="{'readonly':['|',('is_delegatee','=',False),('status','!=','submitted')]}"/>
+                            </group>
+                        </page>
+                        <page name="hr_response" string="HR Response" attrs="{'invisible':[('status','in',['draft','submitted','rejected_by_delegatee'])]}">
+                            <group>
+                                <field name="Hr_response" attrs="{'readonly':['|',('is_hr_director','=',False),('status','!=','accepted_by_delegatee')]}"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="authority_delegation_action" model="ir.actions.act_window">
+        <field name="name">Request Delegation</field>
+        <field name="res_model">authority.delegation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+             <p class="o_view_nocontent_smiling_face">
+                Add Your Delegation Request
+            </p>
+        </field>
+    </record>
+
+</odoo>
