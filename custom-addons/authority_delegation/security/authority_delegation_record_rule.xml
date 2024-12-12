@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="delegatee_access_authority_delegation" model="ir.rule">
+        <field name="name">Authority Delegation Access Delegatee Access</field>
+        <field name="model_id" ref="model_authority_delegation"/>
+        <field name="domain_force">[('delegatee_user', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="delegator_access_authority_delegation" model="ir.rule">
+        <field name="name">Authority Delegation Access Delegator Access</field>
+        <field name="model_id" ref="model_authority_delegation"/>
+        <field name="domain_force">[('delegator_user', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="hr_director_access_authority_delegation" model="ir.rule">
+        <field name="name">Authority Delegation Access HR Director Access</field>
+        <field name="model_id" ref="model_authority_delegation"/>
+        <field name="groups" eval="[(4, ref('user_group.group_hr_director'))]" />
+    </record>
+</odoo>
+
+
