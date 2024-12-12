@@ -8,7 +8,7 @@ const { Component, onWillStart, useState  } = owl;
 
 function getRelativeTime(date) {
     const now = new Date();
-    const past = new Date(date);
+    const past = new Date(date+"Z");
     const diffInMilliseconds = now - past;
 
     const seconds = Math.floor(diffInMilliseconds / 1000);

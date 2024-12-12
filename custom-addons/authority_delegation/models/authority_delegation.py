@@ -25,7 +25,7 @@ class AuthorityDeligation(models.Model):
         ],
         string="Status",
         default="draft",
-        track_visibility="onchange",
+        tracking=True,
     )
     delegatee_response = fields.Text(string="Delegatee Response")
     Hr_response = fields.Text(string="HR Response")

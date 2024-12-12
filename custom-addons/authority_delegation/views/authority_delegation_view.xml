@@ -47,14 +47,14 @@
                         <button string="Approve" 
                                 name="action_approve_delegation" 
                                 type="object" class="oe_highlight" 
-                                attrs="{'invisible':['|',('is_hr_director','=',False),('status','!=','accepted_by_delegatee')]"
+                                attrs="{'invisible':['|',('is_hr_director','=',False),('status','!=','accepted_by_delegatee')]}"
                                 confirm="Are you sure you want to Approve this request?"
                         />
 
                         <button string="Reject" 
                                 name="action_reject_delegation" 
                                 type="object" class="oe_highlight" 
-                                attrs="{'invisible':['|',('is_hr_director','=',False),('status','!=','accepted_by_delegatee')]"
+                                attrs="{'invisible':['|',('is_hr_director','=',False),('status','!=','accepted_by_delegatee')]}"
                                 confirm="Are you sure you want to Reject this request?"
                         />
 
