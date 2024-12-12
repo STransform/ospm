@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+        id="hr_overtime_rate"
+        name="Overtime Rate Types"
+        action="hr_overtime_type_action"
+        parent="hr.menu_human_resources_configuration"
+        sequence="10" />
+
+    <menuitem
+        id="hr_overtime_payment_root"
+        name="Overtime Payment"
+        parent="hr.menu_hr_root"
+        sequence="22" />
+
+    <menuitem
+        id="hr_overtime_root"
+        name="Overtime Payment Request"
+        action="hr_overtime_payment_action"
+        parent="hr_overtime_payment_root"
+        sequence="22" />
+
+</odoo>

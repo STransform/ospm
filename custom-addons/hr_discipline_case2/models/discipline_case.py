@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api,_
 from odoo.exceptions import  ValidationError
 class DisciplineCase(models.Model):
     _name = 'employee.discipline.case'
@@ -19,7 +19,7 @@ class DisciplineCase(models.Model):
         ('warning', 'Warning'),
         ('dismiss', 'Dismissal'),
         ('demotion', 'Demotion'),
-    ], string='Discipline Type', required=True, default='salary')
+    ], string='Penalty Type', required=True, default='salary')
 
     hr_decision = fields.Selection([('resolve', 'Resolved by HR'), 
                                     ('escalate_to_committee', 'Escalate to Committee')],
@@ -39,61 +39,118 @@ class DisciplineCase(models.Model):
     witness_by_accused = fields.Many2many('res.users', string='Witnesses by Accused', help="Witnesses selected by the committee for the case")
     reason_for_revision = fields.Text('Reason for Revision', help="Reason revision (only for CEO to fill)")
     
-    # New field for case status
-    case_status = fields.Char('Case Status', compute='_compute_case_status', store=True)
-    
-    @api.depends('hr_decision', 'committee_decision', 'ceo_decision')
-    def _compute_case_status(self):
-        """Compute the overall status of the discipline case."""
-        for record in self:
-            # Ensure that case_status is set to 'Pending' when no decisions have been made yet.
-            if not record.hr_decision and not record.committee_decision and not record.ceo_decision:
-                record.case_status = 'Pending'
-            elif record.hr_decision == 'resolve':
-                record.case_status = 'Resolved by HR'
-            elif record.ceo_decision == 'approved':
-                record.case_status = 'Approved by CEO'
-            elif record.ceo_decision == 'rejected':
-                record.case_status = 'Returned from CEO'
-            elif record.committee_decision == 'escalate_to_ceo':
-                record.case_status = 'Escalated to CEO'
-            elif record.committee_decision == 'reviewed':
-                record.case_status = 'Reviewed by Committee'
-            elif record.hr_decision == 'escalate_to_committee':
-                record.case_status = 'Escalated to Committee'
-            else:
-                record.case_status = 'Pending'
 
-    @api.onchange('hr_decision')
-    def _onchange_hr_decision(self):
-        """Set the case status to 'Resolved by HR' immediately when HR selects 'Resolved'."""
-        if self.hr_decision == 'resolve':
-            self.case_status = 'Resolved by HR'
+    state = fields.Selection([
+            ('draft', 'Draft'),
+            ('submitted', 'Submitted'),
+            ('resolved', 'Resolved by Hr'),
+            ('escalate_to_committee', 'Escalated to Committee'),
+            ('escalate_to_ceo', 'Escalated to ceo'),
+            ('reviewed', 'Reviewed'),
+            ('approve', 'Approved'),
+            ('reject', 'Returned')
+        ], default='draft', string='Status', tracking=True)
+
+    is_creator = fields.Boolean(string="Is Creator", compute="_compute_is_creator", store=False)
+    is_hr = fields.Boolean(string="Is Hr", compute="_compute_is_hr", store=False)
+    is_committee = fields.Boolean(string="Is Committee", compute="_compute_is_committee", store=False)
+    is_ceo = fields.Boolean(string="Is CEO", compute="_compute_is_ceo", store=False)
+
+  
     @api.model
-    def check_user_group(self):
-        return self.env.user.has_group('hr_discipline_case2.group_discipline_committee')
+    def _compute_is_creator(self):
+        if self.accuser_id:
+            self.is_creator = self.accuser_id.user_id.id == self.env.user.id
+    
+    @api.model
+    def _compute_is_hr(self):
+        self.is_hr = self.env.user.has_group("hr_discipline_case2.group_hr_manager")
 
-    def action_return_from_ceo(self):
-        """Set the state to 'Returned from CEO' when the case is returned by the CEO."""
-        for record in self:
-            if record.ceo_decision == 'rejected':
-                record.committee_decision = 'return_from_ceo'
-                record.case_status = 'Returned from CEO'
+    @api.model
+    def _compute_is_committee(self):
+        self.is_committee = self.env.user.has_group("hr_discipline_case2.group_discipline_committee")
+    @api.model
+    def _compute_is_ceo(self):
+        self.is_ceo = self.env.user.has_group("hr_discipline_case2.group_ceo")
+    approve_button_visible = fields.Boolean(compute='_compute_approve_button', store=True)
+
+    
+    def write(self, values):
+        if 'state' in values:
+            current_state = self.state
+            new_state = values['state']
+            user = self.env.user
+
+            # State transition rules
+            if current_state == 'draft' and new_state == 'submitted' and user.has_group('base.group_user'):
+                pass
+            elif current_state == 'submitted' and new_state == 'resolved' and user.has_group('hr_discipline_case2.group_hr_manager'):
+                pass
+            elif current_state == 'submitted' and new_state == 'escalate_to_committee' and user.has_group('hr_discipline_case2.group_hr_manager'):
+                pass
+            elif current_state == 'escalate_to_committee' and new_state == 'escalate_to_ceo' and user.has_group('hr_discipline_case2.group_discipline_committee'):
+                pass
+            elif current_state == 'escalate_to_ceo' and new_state == 'approve' and user.has_group('hr_discipline_case2.group_ceo'):
+                pass
+            elif current_state == 'escalate_to_ceo' and new_state == 'reject' and user.has_group('hr_discipline_case2.group_ceo'):
+                pass
+            elif current_state == 'reject' and new_state == 'reviewed' and user.has_group('hr_discipline_case2.group_discipline_committee'):
+                pass
+            elif current_state == 'reviewed' and new_state == 'approve' and user.has_group('hr_discipline_case2.group_ceo'):
+                pass
+            else:
+                raise ValidationError(_("You do not have the rights to perform this state transition or the transition is invalid."))
+
+        return super(DisciplineCase, self).write(values)
+    # Action Buttons
+    def _check_access(self, allowed_groups):
+        """Check if the current user belongs to one of the allowed groups."""
+        if not self.env.user.has_group(allowed_groups):
+            raise ValidationError(_("You do not have the access rights to perform this action."))
+
+    def action_submit(self):
+        self._check_access('base.group_user')  # Only users in base.group_user can submit
+        if self.state != 'draft':
+            raise ValidationError(_("Only cases in the 'Draft' state can be submitted."))
+        self.write({'state': 'submitted'})
+
+    def action_resolve(self):
+        self._check_access('hr_discipline_case2.group_hr_manager')  # Only HR can resolve
+        if self.state != 'submitted':
+            raise ValidationError(_("Only cases in the 'Submitted' state can be resolved."))
+        self.write({'state': 'resolved'})
+
+    def action_escalate_to_committee(self):
+        self._check_access('hr_discipline_case2.group_hr_manager')  # Only HR can escalate to committee
+        if self.state != 'submitted':
+            raise ValidationError(_("Only cases in the 'Submitted' state can be escalated to the committee."))
+        self.write({'state': 'escalate_to_committee'})
 
     def action_escalate_to_ceo(self):
-        """Escalate the case to the CEO from the committee."""
-        for record in self:
-            if record.committee_decision == 'reviewed':  # Ensure the case is reviewed
-                # Set the case to escalate to CEO
-                record.committee_decision = 'escalate_to_ceo'
-                record.case_status = 'Escalated to CEO'
-                
-                # When the case is escalated to CEO, also set it as 'Reviewed' for the CEO
-                record.ceo_decision = 'reviewed'
-                
-                # You may also want to assign the case to a CEO user if not already assigned
-                if not record.assigned_to_ceo:
-                    record.assigned_to_ceo = self.env.user.id
+        self._check_access('hr_discipline_case2.group_discipline_committee')  # Only committee can escalate to CEO
+        if self.state != 'escalate_to_committee':
+            raise ValidationError(_("Only cases in the 'Escalate to Committee' state can be escalated to the CEO."))
+        self.write({'state': 'escalate_to_ceo'})
+
+    def action_approve(self):
+        self._check_access('hr_discipline_case2.group_ceo')  # Only CEO can approve
+        if self.state != 'reviewed':
+            raise ValidationError(_("Only cases in the 'Escalate to CEO' state can be approved."))
+        self.write({'state': 'approve'})
+
+    def action_reject(self):
+        self._check_access('hr_discipline_case2.group_ceo')  # Only CEO can reject
+        if self.state != 'escalate_to_ceo':
+            raise ValidationError(_("Only cases in the 'Escalate to CEO' state can be rejected."))
+        self.write({'state': 'reject'})
+
+    def action_review(self):
+        self._check_access('hr_discipline_case2.group_discipline_committee')  # Only committee can review
+        if self.state != 'reject':
+            raise ValidationError(_("Only cases in the 'Rejected' state can be reviewed."))
+        self.write({'state': 'reviewed'})
+
+    
 # Add SQL constraint for unique name
     _sql_constraints = [
         ('unique_case_reference', 'unique(name)', 'The Case Reference must be unique.')

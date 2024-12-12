@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_overtime_payment_action" model="ir.actions.act_window">
+        <field name="name">Overtime Payment Request</field>
+        <field name="res_model">hr.overtime.payment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="view_overtime_payment_form" model="ir.ui.view">
+        <field name="name">hr_overtime_payment_form</field>
+        <field name="model">hr.overtime.payment</field>
+        <field name="arch" type="xml">
+            <form string="Overtime Payment">
+                <header>
+                    <!-- Submit Button -->
+                    <button name="action_submit" type="object" string="Submit"
+                        attrs="{'invisible': [('state', '!=', 'draft')]}" class="btn-primary"
+                        confirm="Are you sure you want to submit this request?" />
+
+                    <!-- Approve Button -->
+                    <button name="action_approve" type="object" string="Approve"
+                        attrs="{'invisible': [('state', '!=', 'submitted')]}" class="btn-success"
+                        confirm="Are you sure you want to approve this request?" />
+
+                    <!-- Reject Button -->
+                    <button name="action_reject" type="object" string="Reject"
+                        attrs="{'invisible': [('state', '!=', 'submitted')]}" class="btn-danger"
+                    />
+
+                    <!-- Statusbar -->
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,submitted,approved,rejected" />
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Approved" bg_color="bg-success"
+                        attrs="{'invisible':[('state','!=','approved')]}" />
+                    <widget name="web_ribbon" title="Rejected" bg_color="bg-danger"
+                        attrs="{'invisible':[('state','!=','rejected')]}" />
+                    <group col="2">
+                        <group>
+                            <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="department_id" />
+                        </group>
+                        <group>
+                            <field name="contract_id" />
+                            <field name="wage" />
+                        </group>
+                    </group>
+                    <group string="Overtime Details">
+                        <field name="overtime_payment_item_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                            <tree editable="bottom">
+                                <field name="start_date" widget="date" />
+                                <field name="end_date" widget="date" />
+                                <field name="hours" />
+                                <field name="overtime_rate_id" widget="selection"
+                                    options="{'no_create': True, 'no_create_edit':True}" />
+                                <field name="amount" readonly="1" />
+                            </tree>
+                        </field>
+                    </group>
+                    <group string="Summary">
+                        <field name="total_amount" readonly="1"
+                            decoration-success="total_amount > 0" />
+                        <field name="rejection_reason" readonly="1"
+                            attrs="{'invisible': [('state', '!=', 'rejected')]}" />
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_overtime_payment_tree" model="ir.ui.view">
+        <field name="name">hr_overtime_payment_tree</field>
+        <field name="model">hr.overtime.payment</field>
+        <field name="arch" type="xml">
+            <tree string="Overtime Payments">
+                <field name="create_date" string="Request Date" widget="date" />
+                <field name="employee_id" string="Employee" />
+                <field name="total_amount" string="Total Amount" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_overtime_payment_item_tree" model="ir.ui.view">
+        <field name="name">hr_overtime_payment_item_tree</field>
+        <field name="model">hr.overtime.payment.item</field>
+        <field name="arch" type="xml">
+            <tree string="Overtime Payment Items">
+                <field name="start_date" />
+                <field name="end_date" />
+                <field name="hours" />
+                <field name="overtime_rate_id" />
+                <field name="amount" />
+            </tree>
+        </field>
+    </record>
+
+
+</odoo>
