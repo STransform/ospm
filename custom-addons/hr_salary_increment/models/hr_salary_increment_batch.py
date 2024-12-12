@@ -31,7 +31,7 @@ class HrSalaryIncrementBatch(models.Model):
         string="Increment Lines",
         readonly=True,
     )
-    remarks = fields.Text(string="Remarks", help="Batch-level remarks.")
+    rejection_reason = fields.Text(string="Rejection Reason", help="Reason.")
 
     @api.depends("start_date", "end_date")
     def _compute_name(self):
@@ -74,7 +74,7 @@ class HrSalaryIncrementBatch(models.Model):
                     salary_increment.start_date
                     <= self.start_date
                     <= salary_increment.end_date
-                ):
+                ) and salary_increment.state != "rejected":
                     raise ValidationError(
                         f"Salary Increment Request cannot be duplicated! exist in {salary_increment.name}"
                     )
@@ -82,7 +82,7 @@ class HrSalaryIncrementBatch(models.Model):
                     salary_increment.start_date
                     <= self.end_date
                     <= salary_increment.end_date
-                ):
+                ) and salary_increment.state != "rejected":
                     raise ValidationError(
                         f"Salary Increment Request cannot be duplicated! exist in {salary_increment.name}"
                     )
@@ -95,6 +95,7 @@ class HrSalaryIncrementBatch(models.Model):
             raise ValidationError(("No employees with active contracts to process."))
 
         batch_lines = []
+        self.increment_line_ids = None
         for employee in employees:
             contract = employee.contract_id
 
@@ -201,18 +202,22 @@ class HrSalaryIncrementBatch(models.Model):
 
             # store  increment history
             self.env["hr.salary.increment.history"].create(
-            {
-                "employee_id": line.employee_id.id,
-                "increment_date": fields.Datetime.now(),
-                "approved_by": self.env.user.id,
-                "from_increment_name": line.current_increment_level_id.display_name
-                if line.current_increment_level_id
-                else "Base",
-                "to_increment_name": line.next_increment_level_id.display_name
-                if not line.next_increment_is_ceiling
-                else "Ceiling",
-            }
-        )
+                {
+                    "employee_id": line.employee_id.id,
+                    "increment_date": fields.Datetime.now(),
+                    "approved_by": self.env.user.id,
+                    "from_increment_name": (
+                        line.current_increment_level_id.display_name
+                        if line.current_increment_level_id
+                        else "Base"
+                    ),
+                    "to_increment_name": (
+                        line.next_increment_level_id.display_name
+                        if not line.next_increment_is_ceiling
+                        else "Ceiling"
+                    ),
+                }
+            )
             contract.write(
                 {
                     "is_base": False,
@@ -230,4 +235,11 @@ class HrSalaryIncrementBatch(models.Model):
 
     def action_reject(self):
         """Reject the batch."""
-        self.state = "rejected"
+        return {
+            "name": "Reject Incrment Batch",
+            "type": "ir.actions.act_window",
+            "res_model": "hr.salary.increment.batch.rejection.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_rejection_reason": self.rejection_reason},
+        }

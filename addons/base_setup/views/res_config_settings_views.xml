@@ -130,17 +130,17 @@
                         <div id="emails"/>
 
                         <div id="contacts_settings">
-                            <h2>Contacts</h2>
+                            <!-- <h2>Contacts</h2> -->
                             <div class="row mt16 o_settings_container" name="contacts_setting_container">
                                 <div class="col-xs-12 col-md-6 o_setting_box" id="sms">
                                         <div class="o_setting_right_pane" id="sms_settings">
-                                            <div class="o_form_label">
-                                            Send SMS
+                                            <!--<div class="o_form_label">
+                                             Send SMS
                                             <a href="https://www.odoo.com/documentation/16.0/applications/marketing/sms_marketing/pricing/pricing_and_faq.html" title="Documentation" class="ms-1 o_doc_link" target="_blank"></a>
                                             </div>
                                             <div class="text-muted">
                                                 Send texts to your contacts
-                                            </div>
+                                            </div> -->
                                         </div>
                                 </div>
                                 <div class="col-xs-12 col-md-6 o_setting_box" title="When populating your address book, Odoo provides a list of matching companies. When selecting one item, the company data and logo are auto-filled." id="partner_autocomplete">
@@ -148,10 +148,10 @@
                                         <field name="module_partner_autocomplete"/>
                                     </div>
                                     <div class="o_setting_right_pane" id="partner_autocomplete_settings">
-                                        <label for="module_partner_autocomplete"/>
+                                        <!-- <label for="module_partner_autocomplete"/>
                                         <div class="text-muted">
                                             Automatically enrich your contact base with company data
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                         </div>

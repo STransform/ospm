@@ -1,0 +1,16 @@
+<odoo>
+       <record id="category_complain_handling" model="ir.module.category">
+            <field name="name">Complaint handling</field>
+        </record>
+        <!-- Property Approval Group -->
+        <record id="group_legal_servicedepartment" model="res.groups">
+            <field name="name">Legal Service Department</field>
+            <field name="category_id" ref="category_complain_handling"/>
+        </record>
+
+        <record id="group_ceo" model="res.groups">
+            <field name="name">CEO </field>
+            <field name="category_id" ref="category_complain_handling"/>
+        </record>
+   
+</odoo>

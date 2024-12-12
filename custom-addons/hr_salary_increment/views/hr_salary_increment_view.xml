@@ -30,18 +30,27 @@
                 <header>
                     <button name="action_populate_batch" type="object" string="Filter Employees"
                         class="btn-primary"
-                        attrs="{'invisible': [('show_filter_button', '=', True)]}"
-                        groups="hr_salary_increment.group_hr_officer" />
+                        states="draft"
+                        groups="hr_salary_increment.group_hr_officer,base.group_system" />
                     <button name="action_submit" type="object" string="Submit" class="btn-primary"
-                        states="draft" groups="hr_salary_increment.group_hr_officer" />
+                        states="draft"
+                        groups="hr_salary_increment.group_hr_officer,base.group_system"
+                        confirm="Are you sure you want to process this? Plaese double check it"
+                    />
                     <button name="action_approve" type="object" string="Approve" class="btn-success"
-                        states="submitted" groups="hr_salary_increment.group_hr_director" />
+                        states="submitted" groups="hr_salary_increment.group_hr_director"
+                        confirm="Are you sure you want to process this? Plaese double check it" />
                     <button name="action_reject" type="object" string="Reject" class="btn-danger"
-                        states="submitted" groups="hr_salary_increment.group_hr_director" />
+                        states="submitted"
+                        groups="hr_salary_increment.group_hr_director,base.group_system" />
                     <field name="state" widget="statusbar"
                         statusbar_visible="draft,submitted,approved,rejected" />
                 </header>
                 <sheet>
+                    <widget name="web_ribbon" title="Approved" bg_color="bg-success"
+                        attrs="{'invisible':[('state','!=','approved')]}" />
+                    <widget name="web_ribbon" title="Rejected" bg_color="bg-danger"
+                        attrs="{'invisible':[('state','!=','rejected')]}" />
                     <group col="3">
                         <group>
                             <field name="name" />
@@ -75,7 +84,8 @@
                         </page>
                     </notebook>
                     <group>
-                        <field name="remarks" widget="text" />
+                        <field name="rejection_reason" readonly="1" widget="text"
+                            attrs="{'invisible': [('state', '!=', 'rejected')]}" />
                     </group>
                 </sheet>
             </form>
