@@ -4,18 +4,21 @@
         id="hr_overtime_rate"
         name="Overtime Rate Types"
         action="hr_overtime_type_action"
+        groups="user_group.group_hr_office,base.group_system"
         parent="hr.menu_human_resources_configuration"
         sequence="10" />
 
     <menuitem
         id="hr_overtime_payment_root"
         name="Overtime Payment"
+        groups="user_group.group_hr_office,user_group.group_department_manager,base.group_system"
         parent="hr.menu_hr_root"
         sequence="22" />
 
     <menuitem
         id="hr_overtime_root"
         name="Overtime Payment Request"
+        groups="user_group.group_hr_office,user_group.group_department_manager,base.group_system"
         action="hr_overtime_payment_action"
         parent="hr_overtime_payment_root"
         sequence="22" />
