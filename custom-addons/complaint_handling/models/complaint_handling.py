@@ -84,6 +84,7 @@ class EmployeeComplaint(models.Model):
         if self.state != 'draft':
             raise ValidationError(_("Only complaints in draft state can be submitted to Legal Service."))
         self.state = 'submitted'
+        
 
     def action_legal_review(self):
         self._check_access('complaint_handling.group_legal_servicedepartment')  # Legal department group
@@ -149,7 +150,7 @@ class EmployeeComplaint(models.Model):
     
     def action_save_complaint(self):
         for record in self:
-            # Saving the record
+            
             record.write({
                 'name': record.name,
                 'employee_id': record.employee_id.id,
@@ -165,9 +166,9 @@ class EmployeeComplaint(models.Model):
             'tag': 'display_notification',
             'params': {
                 'title': 'Success',
-                'message': 'Your complaint has been successfully saved!',
+                'message': 'Your decision has been successfully saved!',
                 'type': 'success',
-                'sticky': False,  # It will disappear after a few seconds
+                'sticky': False,  
             }
         }
     
