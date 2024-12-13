@@ -152,4 +152,10 @@
         </field>
     </record>
 
+    <!--Menu item for employee.promotion model-->
+    <record id="hr_termination_dashboard_action" model='ir.actions.client'>
+        <field name="name">Dashboard</field>
+        <field name='tag'>hr_termination.dashboard</field>
+    </record>
+
 </odoo>
