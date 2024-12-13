@@ -5,5 +5,7 @@
     <!-- Terminatiosn Submenu -->
     <menuitem id="termination_request_parent" name="Terminations" parent="termination_menu_root" />
     <menuitem id="termination_requests" parent="termination_request_parent" name="Terminination Requests" action="employee_termination_action"/>
+    <menuitem id="termination_reporting" parent="termination_menu_root" name="Reporting"/>
+    <menuitem id="termiantion_reporting_dashboard" parent="termination_reporting" name="Dashboard" action="hr_termination_dashboard_action"/>
 
 </odoo>

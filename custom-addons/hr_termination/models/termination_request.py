@@ -112,11 +112,27 @@ class TerminationRequest(models.Model):
     def _get_employee(self):
         return self.env['hr.employee'].search([('user_id', '=', self.env.uid)], limit=1)
 
+    # add notification function 
+    @api.model
+    def send_notification(self, message, user, title):
+        self.env['custom.notification'].create({
+            'title': title,
+            'message': message,
+            'user_id': user.id,
+        })
 
 
     def action_by_service_request_approval(self):
         for record in self:
             record.state_by_service = 'approved'
+            # send notification to the director
+            director = self.env.ref("hr_termination.group_hr_training_department_director").users
+            title = "Termination Request"
+            message = f"Termination Request for {record.employee_id.name} has been approved by the service."
+            for user in director:
+                self.send_notification(message, user, title) 
+                user.notify_success(title=title, message=message)
+            self.env.user.notify_success("Request Submitted")
 
     def action_by_service_refuse_request(self):
         for record in self:
@@ -125,6 +141,14 @@ class TerminationRequest(models.Model):
     def action_by_director_request_approval(self):
         for record in self:
             record.state_by_director = 'approved'
+            # send notification to the dceo
+            dceo = self.env.ref("hr_termination.group_hr_training_dceo").users
+            title = "Termination Request"
+            message = f"Termination Request for {record.employee_id.name} has been approved by the director."
+            for user in dceo:
+                self.send_notification(message, user, title) 
+                user.notify_success(title=title, message=message)
+            self.env.user.notify_success("Request Submitted")
 
     
     def action_by_director_refuse_request(self):
@@ -135,6 +159,15 @@ class TerminationRequest(models.Model):
     def action_by_dceo_request_approval(self):
         for record in self:
             record.state_by_dceo = 'approved'
+            # send notification to the ceo
+            ceo = self.env.ref("hr_termination.group_hr_training_ceo").users
+            title = "Termination Request"
+            message = f"Termination Request for {record.employee_id.name} has been approved by the dceo."
+            for user in ceo:
+                self.send_notification(message, user, title) 
+                user.notify_success(title=title, message=message)
+            self.env.user.notify_success("Request Submitted")
+
 
     def action_by_dceo_refuse_request(self):
         for record in self:
@@ -143,6 +176,12 @@ class TerminationRequest(models.Model):
     def action_by_ceo_request_approval(self):
         for record in self:
             record.state_by_ceo = 'approved'
+            # send notification to the employee
+            title = "Termination Request"
+            message = f"Your Termination has been approved by the ceo."
+            record.employee_id.user_id.notify_success(title=title, message=message)
+            self.send_notification(message, record.employee_id.user_id, title)
+            self.env.user.notify_success("Request Approved!")
 
             if record.employee_id:
                 # Set the employee to archived (depending on your model's definition for archived state)
@@ -160,3 +199,4 @@ class TerminationRequest(models.Model):
             record.state_by_dceo = 'resubmitted'
             record.state_by_ceo = 'resubmitted'
             record.combined_state = 'processing'
+
