@@ -29,10 +29,6 @@
         <field name="arch" type="xml">
             <form string="Bonus Managment batch line">
                 <header>
-                    <button name="action_populate_batch" type="object"
-                        string="Filter Employees"
-                        class="btn-primary" attrs="{'invisible': [('state', '!=', 'draft')]}"
-                    />
                     <button name="action_submit" type="object" string="Submit" class="btn-primary"
                         states="draft"
                         groups="hr_bonus_managment.group_work_unit_manager,base.group_system"
@@ -53,7 +49,7 @@
                         attrs="{'invisible':[('state','!=','approved')]}" />
                     <widget name="web_ribbon" title="Rejected" bg_color="bg-danger"
                         attrs="{'invisible':[('state','!=','rejected')]}" />
-                    <group col="3">
+                    <group col="4">
                         <group>
                             <field name="show_filter_button" invisible="1" />
                             <field name="name" />
@@ -70,6 +66,13 @@
                             <field name="performance"
                                 attrs="{'readonly': [('state', '!=', 'draft')]}" />
                         </group>
+                        <div>
+                            <button name="action_populate_batch" type="object"
+                                string="Filter Employees"
+                                class="btn-primary"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"
+                            />
+                        </div>
                     </group>
                     <notebook>
                         <page string="Bonus Managment Line">
