@@ -6,10 +6,10 @@ class DisciplineCase(models.Model):
     _order = 'create_date desc'
     # Existing fields
     name = fields.Char('Case Reference', required=True, copy=False)
-    accuser_id = fields.Many2one('res.users', string='Accuser', default=lambda self: self.env.user)
+    accuser_id = fields.Many2one('res.users', string='Accuser',readonly=True, default=lambda self: self.env.user)
     accused_employee_id = fields.Many2one('res.users', string='Accused', required=True)
     case_description = fields.Text('Case Description', required=True)
-    
+    case_revision = fields.Text('Revision', required=True, default='revised')
     discipline_type = fields.Selection([('misconduct', 'Misconduct'), ('poor_performance', 'Poor Performance'),
                                         ('violence', 'Violence'), ('harassment', 'Harassment'),
                                         ('theft', 'Theft'), ('other', 'Other')], 
