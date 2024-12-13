@@ -53,23 +53,21 @@ class HrSalaryIncrementBatch(models.Model):
         tracking=True,
     )
     rejection_reason = fields.Text(string="Rejection Reason", help="Reason.")
+    
+    # add notification function 
+    @api.model
+    def send_notification(self, message, user, title):
+        self.env['custom.notification'].create({
+            'title': title,
+            'message': message,
+            'user_id': user.id,
+        })
 
     # is fixed
 
     def diff_month(self, date1, date2):
         return (date2.year - date1.year) * 12 + date2.month - date1.month
 
-    # uniqueness Validation
-    # @api.onchange("name")
-    # def _check_overlap(self):
-    #     if self.name:
-    #         bonus_list = self.env["hr.bonus.managment"].search([])
-    #         for bonus in bonus_list:
-    #             difference = self.diff_month(bonus.write_date, fields.Date.today())
-    #             if bonus.state != "rejected" and difference < 12:
-    #                 raise ValidationError(
-    #                     f"Bonus Request cannot be duplicated within one year! exist in {bonus.name} is already approved"
-    #                 )
 
     # Comment Validation
     @api.depends("months")
@@ -139,6 +137,15 @@ class HrSalaryIncrementBatch(models.Model):
         if not self.bonus_managment_line:
             raise ValidationError(("The batch must contain at least one employee."))
         self.state = "submitted"
+        ## search users with specific group
+        hr_office = self.env.ref("user_group.group_hr_office").users
+        title = "New Request for Bonus"
+        message = f"New Request to be approved."
+        for user in hr_office:
+            self.send_notification(message, user, title) 
+            user.notify_success(title=title, message=message)
+        self.env.user.notify_success("Request Submitted")
+        
 
     def action_approve(self):
         """Approve the batch and apply Bonus for eligible employees."""
@@ -159,6 +166,14 @@ class HrSalaryIncrementBatch(models.Model):
             )
 
         self.state = "approved"
+        ## search users with specific group
+        department_manager = self.env.ref("user_group.group_department_manager").users
+        title = "Bonus Approved"
+        message = f"approved."
+        for user in department_manager:
+            self.send_notification(message, user, title)
+            user.notify_success(title=title, message=message)
+        self.env.user.notify_success("Bonus Approved")
 
     def action_reject(self):
         """Reject the batch."""
