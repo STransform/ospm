@@ -28,10 +28,6 @@
         <field name="arch" type="xml">
             <form string="Salary Increment Batch">
                 <header>
-                    <button name="action_populate_batch" type="object" string="Filter Employees"
-                        class="btn-primary"
-                        states="draft"
-                        groups="hr_salary_increment.group_hr_officer,base.group_system" />
                     <button name="action_submit" type="object" string="Submit" class="btn-primary"
                         states="draft"
                         groups="hr_salary_increment.group_hr_officer,base.group_system"
@@ -51,7 +47,7 @@
                         attrs="{'invisible':[('state','!=','approved')]}" />
                     <widget name="web_ribbon" title="Rejected" bg_color="bg-danger"
                         attrs="{'invisible':[('state','!=','rejected')]}" />
-                    <group col="3">
+                    <group col="4">
                         <group>
                             <field name="name" />
                             <field name="show_filter_button" invisible="1" />
@@ -63,6 +59,13 @@
                         <group>
                             <field name="end_date" attrs="{'readonly': [('state', '!=', 'draft')]}" />
                         </group>
+                        <div>
+                            <button name="action_populate_batch" type="object"
+                                string="Filter Employees"
+                                class="btn-primary"
+                                states="draft"
+                                groups="hr_salary_increment.group_hr_officer,base.group_system" />
+                        </div>
                     </group>
                     <notebook>
                         <page string="Increment Lines">

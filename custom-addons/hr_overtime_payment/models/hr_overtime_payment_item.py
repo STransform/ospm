@@ -68,3 +68,6 @@ class HrOvertimePaymentItem(models.Model):
         for record in self:
             if record.start_date > record.end_date:
                 raise ValidationError("Start date cannot exceed than End date!")
+            today = fields.Datetime.today().date()
+            if record.start_date > today or record.end_date > today:
+                raise ValidationError("Start date of End date cannot enxceed today!")

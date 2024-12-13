@@ -15,7 +15,15 @@
     "category": "Human Resource",
     "version": "0.1",
     # any module necessary for this one to work correctly
-    "depends": ["base", "hr", "mail", "hr_contract"],
+    "depends": [
+        "base",
+        "hr",
+        "mail",
+        "hr_contract",
+        "user_group",
+        "custom_notification",
+        "web_notify",
+    ],
     # always loaded
     "data": [
         "security/ir.model.access.csv",

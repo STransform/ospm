@@ -15,15 +15,18 @@
                     <!-- Submit Button -->
                     <button name="action_submit" type="object" string="Submit"
                         attrs="{'invisible': [('state', '!=', 'draft')]}" class="btn-primary"
+                        groups="user_group.group_department_manager,base.group_system"
                         confirm="Are you sure you want to submit this request?" />
 
                     <!-- Approve Button -->
                     <button name="action_approve" type="object" string="Approve"
                         attrs="{'invisible': [('state', '!=', 'submitted')]}" class="btn-success"
+                        groups="user_group.group_hr_office,base.group_system"
                         confirm="Are you sure you want to approve this request?" />
 
                     <!-- Reject Button -->
                     <button name="action_reject" type="object" string="Reject"
+                        groups="user_group.group_hr_office,base.group_system"
                         attrs="{'invisible': [('state', '!=', 'submitted')]}" class="btn-danger"
                     />
 
@@ -38,7 +41,8 @@
                         attrs="{'invisible':[('state','!=','rejected')]}" />
                     <group col="2">
                         <group>
-                            <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="employee_id"
+                                attrs="{'readonly': [('state', '!=', 'draft')]}" />
                             <field name="department_id" />
                         </group>
                         <group>
@@ -47,7 +51,8 @@
                         </group>
                     </group>
                     <group string="Overtime Details">
-                        <field name="overtime_payment_item_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                        <field name="overtime_payment_item_ids"
+                            attrs="{'readonly': [('state', '!=', 'draft')]}">
                             <tree editable="bottom">
                                 <field name="start_date" widget="date" />
                                 <field name="end_date" widget="date" />
