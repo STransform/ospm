@@ -7,7 +7,7 @@
         A module to handle employee retirement requests, approvals, and dynamic configuration settings.
     """,
     'author': 'Chala Olani',
-    'depends': ['hr','base','planning'],
+    'depends': ['hr','base','user_group','custom_notification','web_notify'],
     'data': [
         'security/ir.model.access.csv',
         'security/ir.model.access.xml',

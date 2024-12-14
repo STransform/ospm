@@ -5,7 +5,7 @@
     'summary': "This module is biult for handling the Employee Transfer",
     "category": "Human Resources",
     "description": "This module is biult for handling the Employee Transfer",
-    "depends": ['base','hr','planning'],
+    "depends": ['base','hr','user_group','custom_notification','web_notify'],
     "data": [
         'security/ir.model.access.csv',
         'security/ir.model.access.xml',
