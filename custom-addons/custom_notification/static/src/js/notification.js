@@ -3,7 +3,7 @@
 import { registry } from '@web/core/registry';
 import { useService } from "@web/core/utils/hooks";
 
-const { Component, onWillStart, useState  } = owl;
+const { Component, onWillStart, useState, onMounted, onWillUnmount  } = owl;
 
 
 function getRelativeTime(date) {
@@ -40,7 +40,19 @@ export class Notification extends Component {
             await this.fetchNotifications();
         });
 
+        // Add a click listener to handle clicks outside
+        onMounted(() => {
+            document.addEventListener("click", this.onOutsideClick);
+        });
+
+        // Remove the click listener when the component is destroyed
+        onWillUnmount(() => {
+            document.removeEventListener("click", this.onOutsideClick);
+        });
+
         this.onClickNotification = this.onClickNotification.bind(this);
+        this.onOutsideClick = this.onOutsideClick.bind(this);
+
     };
 
     async onClickNavbarMenu() {
@@ -90,6 +102,23 @@ export class Notification extends Component {
         // Optionally perform additional actions
         console.log("Notification clicked:", notification);
     }
+
+
+    onOutsideClick(ev) {
+        
+        const dropdown = document.querySelector(".o_MessagingMenu_dropdownMenu");
+        const toggleButton = document.querySelector(".o_NavbarMenu_toggler");
+    
+        // Ensure the dropdown is open and the clicked target is not inside the dropdown or the toggle button
+        if (
+            this.state.showDropdown &&
+            !dropdown?.contains(ev.target) &&
+            !toggleButton?.contains(ev.target)
+        ) {
+            this.state.showDropdown = false;
+        }
+    }
+    
 }
 
 // Assigning Template to class Component 
