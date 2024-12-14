@@ -34,7 +34,7 @@
                                 name="action_approve" 
                                 type="object" 
                                 class="oe_highlight" 
-                                groups="planning.group_ceo" 
+                                groups="user_group.group_ceo" 
                                 attrs="{'invisible':[('state','!=','submitted')]}"
                                 confirm="Are you sure you want to approve this request?"
                         />
@@ -42,19 +42,19 @@
                                 name="action_reject" 
                                 type="object" 
                                 class="oe_highlight" 
-                                groups="planning.group_ceo" 
+                                groups="user_group.group_ceo" 
                                 attrs="{'invisible':[('state','!=','submitted')]}"
                                 confirm="Are you sure you want to reject this request?"
                         />
                         <field name="state" 
                                widget="statusbar" 
                                statusbar_visible="draft,submitted,approved,rejected" 
-                               attrs="{'invisible':[('user_can_comment','=',True)]}"
+                               attrs="{'invisible':[('user_can_comment','=',False)]}"
                         />
                         <field name="ceo_state" 
                                widget="statusbar"
                                statusbar_visible="pending,approved,rejected"
-                               attrs="{'invisible':[('user_can_comment','=',False)]}"
+                               attrs="{'invisible':[('user_can_comment','=',True)]}"
                         />
                     </header>
                     <group>
@@ -62,7 +62,7 @@
                     </group>
                     <sheet>
                         <group>
-                            <field name="employee_id" readonly="1"/>
+                            <field name="employee_id" readonly="1" options="{'no_open':True}"/>
                             <field name="department" readonly="1"/>
                             <field name="proposed_retirement_date" readonly="1"/>
                             <field name="request_date" readonly="1"/>
@@ -77,7 +77,7 @@
 
     <!-- Action -->
     <record id="hr_retirement_request_action" model="ir.actions.act_window">
-        <field name="name">Hr. Retirement Request</field>
+        <field name="name">Retirement Request</field>
         <field name="res_model">hr.retirement.request</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">

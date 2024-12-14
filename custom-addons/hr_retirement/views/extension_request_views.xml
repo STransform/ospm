@@ -46,12 +46,12 @@
                         <field name="state" 
                                widget="statusbar" 
                                statusbar_visible="draft,submitted,approved,rejected" 
-                               attrs="{'invisible':[('user_can_comment','=',True)]}"
+                               attrs="{'invisible':[('user_can_comment','=',False)]}"
                         />
                         <field name="employee_state" 
                                widget="statusbar"
                                statusbar_visible="pending,approved,rejected"
-                               attrs="{'invisible':[('user_can_comment','=',False)]}"
+                               attrs="{'invisible':[('user_can_comment','=',True)]}"
                         />
                     </header>
                     <group>
@@ -79,7 +79,7 @@
 
 
     <record id="hr_retirement_extension_requests_action" model="ir.actions.act_window">
-        <field name="name">Hr. Retirement Extension Requests</field>
+        <field name="name">Retirement Extension Requests</field>
         <field name="res_model">hr.retirement.extension.request</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">

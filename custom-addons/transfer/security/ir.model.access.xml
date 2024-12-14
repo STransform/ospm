@@ -17,7 +17,7 @@
     <record id="rule_hr_transfer_request_current_department_manager" model="ir.rule">
         <field name="name">HR Transfer Request - Current Manager Access</field>
         <field name="model_id" ref="model_transfer_request"/>
-        <field name="groups" eval="[(4, ref('planning.group_department_manager'))]"/>
+        <field name="groups" eval="[(4, ref('user_group.group_department_manager'))]"/>
         <field name="domain_force">['&amp;','|',('status','=','approved_by_current'),('status','=','submitted'),('department_manager', '=', user.id)]</field>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
@@ -29,7 +29,7 @@
     <record id="rule_hr_transfer_request_new_department_manager" model="ir.rule">
         <field name="name">HR Transfer Request - New Manager Access</field>
         <field name="model_id" ref="model_transfer_request"/>
-        <field name="groups" eval="[(4, ref('planning.group_department_manager'))]"/>
+        <field name="groups" eval="[(4, ref('user_group.group_department_manager'))]"/>
         <field name="domain_force">['&amp;','|',('status','=','approved_by_new'),('status','=','approved_by_current'),('new_department_manager', '=', user.id)]</field>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
@@ -41,7 +41,7 @@
     <record id="rule_hr_transfer_request_dceo_admin" model="ir.rule">
         <field name="name">HR Transfer Request - Admin DCEO Access</field>
         <field name="model_id" ref="model_transfer_request"/>
-        <field name="groups" eval="[(4, ref('planning.group_admin_dceo'))]"/>
+        <field name="groups" eval="[(4, ref('user_group.group_admin_dceo'))]"/>
         <field name="domain_force">['|',('status','=','approved_by_new'),('status','=','approved_by_dceo')]</field>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
@@ -53,7 +53,7 @@
     <record id="rule_hr_transfer_request_ceo" model="ir.rule">
         <field name="name">HR Transfer Request - CEO Access</field>
         <field name="model_id" ref="model_transfer_request"/>
-        <field name="groups" eval="[(4, ref('planning.group_ceo'))]"/>
+        <field name="groups" eval="[(4, ref('user_group.group_ceo'))]"/>
         <field name="domain_force">['|',('status','=','approved_by_ceo'),('status','=','approved_by_dceo')]</field>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
@@ -65,7 +65,7 @@
     <record id="rule_hr_transfer_request_hr_office" model="ir.rule">
         <field name="name">HR Transfer Request - Hr Office Access</field>
         <field name="model_id" ref="model_transfer_request"/>
-        <field name="groups" eval="[(4, ref('planning.group_hr_office'))]"/>
+        <field name="groups" eval="[(4, ref('user_group.group_hr_office'))]"/>
         <field name="domain_force">['|',('status','=','approved_by_ceo'),('status','=','completed')]</field>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
