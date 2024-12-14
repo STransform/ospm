@@ -1,8 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hr_retirement_setting_user,access.hr.retirement.setting.user,model_hr_retirement_settings,planning.group_hr_office,1,1,0,0
-access_hr_near_retirement_employee,access.hr.near.retirement.employee,model_hr_employee,planning.group_hr_office,1,0,0,0
+access_hr_retirement_setting_user,access.hr.retirement.setting.user,model_hr_retirement_settings,user_group.group_hr_office,1,1,0,0
+access_hr_near_retirement_employee,access.hr.near.retirement.employee,model_hr_employee,user_group.group_hr_office,1,0,0,0
 
 access_hr_retirement_request_user,hr.retirement.request.user,model_hr_retirement_request,base.group_user,1,1,1,0
 access_hr_early_retirement_request_user,access.hr.early.retirement.request.user,model_hr_early_retirement_request,base.group_user,1,1,1,0
 access_hr_retirement_extension_request_user,hr.retirement.extension.request.user,model_hr_retirement_extension_request,base.group_user,1,1,0,0
-access_hr_retirement_extension_request_hr_office,hr.retirement.extension.request.hr.office,model_hr_retirement_extension_request,planning.group_hr_office,1,1,1,0
+access_hr_retirement_extension_request_hr_office,hr.retirement.extension.request.hr.office,model_hr_retirement_extension_request,user_group.group_hr_office,1,1,1,0

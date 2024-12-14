@@ -1,11 +1,14 @@
 from odoo import models, api, fields, _
 from odoo.exceptions import ValidationError
-
+from babel.dates import format_date
 class TransferRequest(models.Model):
     
     _name = "transfer.request"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "This is the transfer request Model for the OSPM"
+    _rec_name = "employee_id"
 
+    title = fields.Char(string="Title", default = "Transfer Request")
     employee_id = fields.Many2one('hr.employee', string="Employee", required=True, default=lambda self: self._get_employee())
     department_id = fields.Many2one('hr.department', string="Current Department", compute="_compute_employee_details", store=True)
     department_manager = fields.Many2one('res.users', string="Current Department Manager", compute="_compute_employee_details", store=True)
@@ -32,6 +35,13 @@ class TransferRequest(models.Model):
         ('rejected', 'Rejected'),
     ], string='Status', default='draft')
     
+    employee_combined_state = fields.Selection([
+        ('draft', 'Draft'),
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('rejected', 'Rejected'),
+    ], string='Employee State', compute='_compute_employee_combined_state',default='draft')
+
     attachment_ids = fields.Many2many(
         'ir.attachment', string='Attachments',
         help="Attach documents related to this training session.",
@@ -56,6 +66,22 @@ class TransferRequest(models.Model):
         string="Is Creator", compute="_compute_is_creator", store=False
     )
 
+
+    # Format the date to a human-readable format
+    def _format_date(self, date):
+        if date:
+            return format_date(date, format="long", locale=self.env.user.lang or "en_US")
+        return ""
+
+     # add notification function 
+    @api.model
+    def send_notification(self, message, user, title):
+        self.env['custom.notification'].create({
+            'title': title,
+            'message': message,
+            'user_id': user.id,
+        })
+    
     @api.model
     def _get_employee(self):
         """
@@ -65,6 +91,31 @@ class TransferRequest(models.Model):
         if not employee:
             raise ValidationError(_("You are not linked to any employee record. Please contact your administrator."))
         return employee.id
+
+    @api.onchange('status')
+    def _compute_employee_combined_state(self):
+        """
+        Compute the combined state of the employee based on the transfer request status.
+        """
+        for record in self:
+            if record.status == 'draft':
+                record.employee_combined_state = 'draft'
+            elif record.status == 'submitted':
+                record.employee_combined_state = 'pending'
+            elif record.status == 'approved_by_current':
+                record.employee_combined_state = 'pending'
+            elif record.status == 'approved_by_new':
+                record.employee_combined_state = 'pending'
+            elif record.status == 'approved_by_dceo':
+                record.employee_combined_state = 'pending'
+            elif record.status == 'approved_by_ceo':
+                record.employee_combined_state = 'pending'
+            elif record.status == 'completed':
+                record.employee_combined_state = 'completed'
+            elif record.status == 'rejected':
+                record.employee_combined_state = 'rejected'
+            else:
+                record.employee_combined_state = 'draft'
 
     @api.depends('employee_id')
     def _compute_employee_details(self):
@@ -114,15 +165,15 @@ class TransferRequest(models.Model):
 
     @api.depends()
     def _compute_is_dceo(self):
-        self.is_dceo = self.env.user.has_group('planning.group_admin_dceo')
+        self.is_dceo = self.env.user.has_group('user_group.group_admin_dceo')
 
     @api.depends()
     def _compute_is_ceo(self):
-        self.is_ceo = self.env.user.has_group('planning.group_ceo')
+        self.is_ceo = self.env.user.has_group('user_group.group_ceo')
     
     @api.depends()
     def _compute_is_hr_officer(self):
-        self.is_hr_officer = self.env.user.has_group('planning.group_hr_officer')
+        self.is_hr_officer = self.env.user.has_group('user_group.group_hr_office')
     
     @api.depends()
     def _compute_is_creator(self):
@@ -139,61 +190,125 @@ class TransferRequest(models.Model):
             raise ValidationError(_("You cannot request the same position as your current job position."))
     
     def submit(self):
-        if self.status == 'draft':
-            self.status = 'submitted'
-            return
-        raise ValidationError(_("You cannot submit this request."))
+        if self.status != 'draft':
+            raise ValidationError(_("You cannot submit this request."))
+        self.status = 'submitted'
+        ## notify the current Manager
+        message = f"Employee {self.employee_id.name} has submitted a transfer request from {self.department_id.name} to {self.new_department_id.name}. Please review and take necessary action."
+        self.send_notification(message=message, user = self.department_manager,title=self.title)
+        self.env.user.notify_success(message="Request Submitted",title="Success")
+        self.department_manager.notify_success(title=self.title,message=message)
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Transfer Requests',
+            'res_model': 'transfer.request',
+            'view_mode': 'tree,form',
+            'target': 'current',
+        }
     
     def approve_by_current_department(self):
         if self.status == 'submitted' and self.env.user.id == self.department_manager.id:
             self.status = 'approved_by_current'
-            return
+            ## notify new department manager
+            message = f"Employee {self.employee_id.name} has Requested a transfer to you Department. Please review and take necessary action."
+            self.send_notification(message=message,user=self.new_department_manager,title=self.title)
+            self.env.user.notify_success(message="Request Approved",title="Success")
+            self.new_department_manager.notify_success(message=message, title=self.title)
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Transfer Requests',
+                'res_model': 'transfer.request',
+                'view_mode': 'tree,form',
+                'target': 'current',
+            }
         raise ValidationError(_("You cannot approve this request."))
     
     def approve_by_new_department(self):
         if self.status == 'approved_by_current' and self.env.user.id == self.new_department_manager.id:
             self.status = 'approved_by_new'
-            return
+            ## notify the Admin DCEO
+            dceo_admin = self.env.ref('user_group.group_admin_dceo').users
+            message = f"Employee {self.employee_id.name} has requested for transfer from {self.department_id.name} to {self.new_department_id.name}. Please review and take necessary action."
+            for user in dceo_admin:
+                self.send_notification(message=message, user=user, title=self.title)
+                user.notify_success(message=message, title=self.title)
+            self.env.user.notify_success(message="Request Approved",title="Success")
+            return {
+            'type': 'ir.actions.act_window',
+            'name': 'Transfer Requests',
+            'res_model': 'transfer.request',
+            'view_mode': 'tree,form',
+            'target': 'current',
+            }
         raise ValidationError(_("You cannot approve this request."))
     
     def approve_by_dceo(self):
-        if self.status == 'approved_by_new' and self.env.user.has_group('planning.group_admin_dceo'):
+        if self.status == 'approved_by_new' and self.env.user.has_group('user_group.group_admin_dceo'):
             self.status = 'approved_by_dceo'
-            return
+            ceo = self.env.ref('user_group.group_ceo').users
+            message = f"Employee {self.employee_id.name} has requested for transfer from {self.department_id.name} to {self.new_department_id.name}. Please review and take necessary action."
+            for user in ceo:
+                self.send_notification(message=message, user=user, title=self.title)
+                user.notify_success(message=message, title=self.title)
+            self.env.user.notify_success(message="Request Approved",title="Success")
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Transfer Requests',
+                'res_model': 'transfer.request',
+                'view_mode': 'tree,form',
+                'target': 'current',
+            }
         raise ValidationError(_("You cannot approve this request."))
     
     def approve_by_ceo(self):
-        if self.status == 'approved_by_dceo' and self.env.user.has_group('planning.group_ceo'):
+        if self.status == 'approved_by_dceo' and self.env.user.has_group('user_group.group_ceo'):
             self.status = 'approved_by_ceo'
-            return
+            hr_officer = self.env.ref('user_group.group_hr_office').users
+            message = f"Employee {self.employee_id.name} has requested for transfer from {self.department_id.name} to {self.new_department_id.name}. Please review and take necessary action."
+            for user in hr_officer:
+                self.send_notification(message=message, user=user, title=self.title)
+                user.notify_success(message=message, title=self.title)
+            self.env.user.notify_success(message="Request Approved",title="Success")
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Transfer Requests',
+                'res_model': 'transfer.request',
+                'view_mode': 'tree,form',
+                'target': 'current',
+            }
         raise ValidationError(_("You cannot approve this request."))
     
     def reject(self):
         if self.status == 'submitted':
             if self.department_manager.id != self.env.uid:
                 raise ValidationError(_("You are not the Manager of this Department"))
-            self.status = 'rejected'
         elif self.status == 'approved_by_current':
             if self.new_department_manager.id != self.env.uid:
                 raise ValidationError(_("You are not the Manager of this Department"))
-            self.status = 'rejected'
         elif self.status == 'approved_by_new':
-            if not self.env.user.has_group('planning.group_admin_dceo'):
+            if not self.env.user.has_group('user_group.group_admin_dceo'):
                 raise ValidationError(_("You are not the D/CEO, Administration & Marketing Division"))
-            self.status = 'rejected'
         elif self.status == 'approved_by_dceo':
-            if not self.env.user.has_group('planning.group_admin_ceo'):
+            if not self.env.user.has_group('user_group.group_ceo'):
                 raise ValidationError(_("You are not the CEO"))
-            self.status = 'rejected'
-
+        self.status = 'rejected'
+        message = f"Your Requset for Transfer from {self.department_id.name} to {self.new_department_id.name} is Rejected."
+        self.send_notification(message=message, user=self.employee_id.user_id, title=self.title)
+        self.employee_id.user_id.notify_warning(message=message, title=self.title)
+        self.env.user.notify_warning(message="Request Rejected",title="Warning")
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Transfer Requests',
+            'res_model': 'transfer.request',
+            'view_mode': 'tree,form',
+            'target': 'current',
+        }
     def hr_office_proceed(self):
         if not self.status == 'approved_by_ceo':
             raise ValidationError(_("You cannot proceed with this request."))
-        if not self.env.user.has_group('planning.group_hr_office'):
+        if not self.env.user.has_group('user_group.group_hr_office'):
             raise ValidationError(_("You are not the HR Officer."))
-        # self.employee_id.department_id = self.new_department_id.id
-        # self.employee_id.job_id = self.requested_position.id
-
+        
       
         self.employee_id.write({
             'department_id': self.new_department_id.id,
@@ -215,5 +330,15 @@ class TransferRequest(models.Model):
         if self.requested_position != self.employee_id.job_id:
             raise ValidationError(_("Please Update The employee Information before making the transfer Completed"))
 
-        
         self.status = 'completed'
+        message = f"Your Requset for Transfer from {self.department_id.name} to {self.new_department_id.name} is Completed."
+        self.send_notification(message=message, user=self.employee_id.user_id, title=self.title)
+        self.employee_id.user_id.notify_success(message=message, title=self.title)
+        self.env.user.notify_success(message="Request Completed",title="Success")
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Transfer Requests',
+            'res_model': 'transfer.request',
+            'view_mode': 'tree,form',
+            'target': 'current',
+        }

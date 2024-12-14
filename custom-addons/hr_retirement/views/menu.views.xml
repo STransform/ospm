@@ -16,7 +16,7 @@
         action="action_hr_employee_near_retirement"
         parent="retirement_root_menu"
         sequence="10"
-        groups="planning.group_hr_office"
+        groups="user_group.group_hr_office"
     />
     <menuitem
         id="hr_early_retirement_request_menu"
