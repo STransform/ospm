@@ -25,11 +25,11 @@ class EmployeeComplaint(models.Model):
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
         ('legal_reviewed', 'Legal Reviewed'),
-        ('accept_legal_review', 'Accept Legal Review'),
-        ('reject_legal_review', 'Reject Legal Reviewed'),
+        ('accept_legal_review', 'Accepted,Legal Review'),
+        ('reject_legal_review', 'Rejected,Legal Review'),
         ('ceo_reviewed', 'CEO Reviewed'),
-        ('accept_ceo_review', 'Accept CEO Review'),
-        ('reject_ceo_review', 'Reject CEO Reviewed')
+        ('accept_ceo_review', 'Accepted,CEO Review'),
+        ('reject_ceo_review', 'Rejected,CEO Reviewed')
     ], default='draft', string='Status', tracking=True)
     decision_by_legalservice = fields.Text(
         string='Legal Service Decision', 
