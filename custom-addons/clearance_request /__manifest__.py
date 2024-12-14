@@ -12,6 +12,7 @@ Employee Clearance Workflow:
     "data": [
         "views/clearance_views.xml",
         "security/ir.model.access.csv",
+        "security/record_rule.xml",
         "security/clearance_security.xml",
     ],
     "installable": True,

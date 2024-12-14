@@ -1,0 +1,27 @@
+<odoo>
+   <record id="rule_clearance_own_records" model="ir.rule">
+    <field name="name">Employee Clearance: Own Records</field>
+    <field name="model_id" ref="model_employee_clearance"/>
+    <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+    <field name="groups" eval="[(4, ref('base.group_user'))]"/> 
+    <field name="perm_read" eval="True"/>
+    <field name="perm_write" eval="True"/>
+    <field name="perm_create" eval="True"/>
+    <field name="perm_unlink" eval="True"/>
+</record>
+
+<record id="rule_clearance_approvals" model="ir.rule">
+    <field name="name">Employee Clearance: Approval Access</field>
+    <field name="model_id" ref="model_employee_clearance"/>
+    <field name="domain_force">[]</field>
+    <field name="groups" eval="[(4, ref('clearance_request.group_department_approval')),
+                                (4, ref('clearance_request.group_property_approval')),
+                                (4, ref('clearance_request.group_finance_approval')),
+                                (4, ref('clearance_request.group_hr_approval'))]"/>
+    <field name="perm_read" eval="True"/>
+    <field name="perm_write" eval="True"/>
+    <field name="perm_create" eval="False"/>
+    <field name="perm_unlink" eval="False"/>
+</record>
+
+</odoo>
