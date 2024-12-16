@@ -43,8 +43,6 @@ class RecruitmentRequest(models.Model):
         ('approved', 'Approved'),
         ('refused', 'Refused'),
     ])
-
-
     combined_state = fields.Selection([
         ('approved', 'Approved'),
         ('refused', 'Rejected'),

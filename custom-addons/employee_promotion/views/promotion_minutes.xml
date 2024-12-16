@@ -73,6 +73,6 @@
               name="Promotion Minutes"
               parent="employee_promotion_menu"
               action="promotion_minutes_action"
-              groups="employee_promotion.group_hr_recruitment_promotion_committe,employee_promotion.group_hr_recruitment_promotion_committe"
+              groups="employee_promotion.group_hr_recruitment_promotion_committe,employee_promotion.group_hr_recruitment_ceo"
               />
 </odoo>
