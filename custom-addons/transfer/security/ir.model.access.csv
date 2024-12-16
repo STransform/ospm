@@ -1,10 +1,10 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_employee_transfer_user,access_employee_transfer_user,model_transfer_request,base.group_user,1,1,1,1
-access_transfer_request_employee,access.transfer.request.employee,model_transfer_request,planning.group_employee,1,1,1,1
-access_transfer_request_department,access.transfer.request.department,model_transfer_request,planning.group_department_manager,1,1,1,1
-access_transfer_request_dceo,access.transfer.request.dceo,model_transfer_request,planning.group_admin_dceo,1,1,1,1
-access_transfer_request_ceo,access.transfer.request.ceo,model_transfer_request,planning.group_ceo,1,1,1,1
-access_transfer_request_hr_office,access.transfer.request.hr.office,model_transfer_request,planning.group_hr_office,1,1,1,1
+access_transfer_request_employee,access.transfer.request.employee,model_transfer_request,user_group.group_employee,1,1,1,1
+access_transfer_request_department,access.transfer.request.department,model_transfer_request,user_group.group_department_manager,1,1,1,1
+access_transfer_request_dceo,access.transfer.request.dceo,model_transfer_request,user_group.group_admin_dceo,1,1,1,1
+access_transfer_request_ceo,access.transfer.request.ceo,model_transfer_request,user_group.group_ceo,1,1,1,1
+access_transfer_request_hr_office,access.transfer.request.hr.office,model_transfer_request,user_group.group_hr_office,1,1,1,1
 
 access_job_position_user,access.job.position.user,hr.model_hr_job,base.group_user,1,0,0,0
 access_transfer_history_user,access.transfer.history.user,model_transfer_history,base.group_user,1,1,1,1
