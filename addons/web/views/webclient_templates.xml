@@ -140,88 +140,7 @@
     <!-- Section: Social media -->
 
     <!-- Section: Links  -->
-    <section class="">
-      <div class="container text-center text-md-start mt-5">
-        <!-- Grid row -->
-        <div class="row mt-3">
-          <!-- Grid column -->
-          <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
-            <!-- Content -->
-            <h6 class="text-uppercase fw-bold">OTech Engineering</h6>
-            <hr
-                class="mb-4 mt-0 d-inline-block mx-auto"
-                style="width: 60px; background-color: #7c4dff; height: 2px"
-                />
-            <p>
-             Lets own the future
-            </p>
-          </div>
-          <!-- Grid column -->
 
-          <!-- Grid column -->
-          <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
-            <!-- Links -->
-            <h6 class="text-uppercase fw-bold">Products</h6>
-            <hr
-                class="mb-4 mt-0 d-inline-block mx-auto"
-                style="width: 60px; background-color: #7c4dff; height: 2px"
-                />
-            <p>
-              <a href="#!" class="text-white">Experts</a>
-            </p>
-            <p>
-              <a href="#!" class="text-white">Software</a>
-            </p>
-            <p>
-              <a href="#!" class="text-white">Website</a>
-            </p>
-            <p>
-              <a href="#!" class="text-white">OTech erp</a>
-            </p>
-          </div>
-          <!-- Grid column -->
-
-          <!-- Grid column -->
-          <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
-            <!-- Links -->
-            <h6 class="text-uppercase fw-bold">Useful links</h6>
-            <hr
-                class="mb-4 mt-0 d-inline-block mx-auto"
-                style="width: 60px; background-color: #7c4dff; height: 2px"
-                />
-            <p>
-              <a href="#!" class="text-white">OTech website</a>
-            </p>
-            <p>
-              <a href="#!" class="text-white">OTech website</a>
-            </p>
-            <p>
-              <a href="#!" class="text-white">OTECH ERP</a>
-            </p>
-            <p>
-              <a href="#!" class="text-white">Help</a>
-            </p>
-          </div>
-          <!-- Grid column -->
-
-          <!-- Grid column -->
-          <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
-            <!-- Links -->
-            <h6 class="text-uppercase fw-bold">Contact</h6>
-            <hr
-                class="mb-4 mt-0 d-inline-block mx-auto"
-                style="width: 60px; background-color: #7c4dff; height: 2px"
-                />
-            <p><i class="fas fa-home mr-3"></i> Ayertena, Ethiopia</p>
-            <p><i class="fas fa-envelope mr-3"></i> info@otech.com</p>
-            <p><i class="fas fa-phone mr-3"></i> + 251 9xx</p>
-            <p><i class="fas fa-print mr-3"></i> + 251 1xx</p>
-          </div>
-          <!-- Grid column -->
-        </div>
-        <!-- Grid row -->
-      </div>
-    </section>
     <!-- Section: Links  -->
 
     <!-- Copyright -->
@@ -231,7 +150,7 @@
          >
       Designed by:
       <a class="text-white" href="https://otech.com/"
-         >OTech </a
+         >OTech Engineering </a
         >
     </div>
     <!-- Copyright -->
@@ -252,8 +171,8 @@
                 </div>
 
                 <div class="mb-3 field-login">
-                    <label for="login" class="form-label">Email</label>
-                    <input type="text" placeholder="Email" name="login" t-att-value="login" id="login" t-attf-class="form-control #{'form-control-sm' if form_small else ''}" required="required" autocomplete="username" autofocus="autofocus" autocapitalize="off"/>
+                    <label for="login" class="form-label">User ID</label>
+                    <input type="text" placeholder="Email or user id..." name="login" t-att-value="login" id="login" t-attf-class="form-control #{'form-control-sm' if form_small else ''}" required="required" autocomplete="username" autofocus="autofocus" autocapitalize="off"/>
                 </div>
 
                 <div class="mb-3">
