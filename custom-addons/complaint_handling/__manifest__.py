@@ -5,7 +5,7 @@
     'summary': 'Manages employee complaints regarding HR or Discipline Committee decisions.',
     'description': """A module for handling employee complaints, enabling escalation to legal service, CEO, and court.""",
     'author': 'Simon Temesgen',
-    'depends': ['base', 'hr'],
+    'depends': ['base', 'hr','user_group','custom_notification','web_notify'],
     'data': [
         'security/groups.xml',
         'security/ir.model.access.csv',
