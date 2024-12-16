@@ -46,8 +46,8 @@
                                 <field name="recruitment_type" groups="hr_recruitment_request.group_hr_recruitment_hr_director" />
                                 <field name="comment_by_hr_director" groups="hr_recruitment_request.group_hr_recruitment_hr_director"/>
 
-                                <field name="recruitment_type" groups="hr_recruitment_request.group_hr_recruitment_dceo, hr_recruitment_request.group_hr_recruitment_ceo" readonly="1"  />
-                                <field name="comment_by_hr_director" groups="hr_recruitment_request.group_hr_recruitment_dceo, hr_recruitment_request.group_hr_recruitment_ceo" readonly="1" />
+                                <field name="recruitment_type" groups="hr_recruitment_request.group_hr_recruitment_dceo,hr_recruitment_request.group_hr_recruitment_ceo" readonly="1"  />
+                                <field name="comment_by_hr_director" groups="hr_recruitment_request.group_hr_recruitment_dceo,hr_recruitment_request.group_hr_recruitment_ceo" readonly="1" />
 
 
                             </group>

@@ -185,6 +185,8 @@ class TerminationRequest(models.Model):
 
             if record.employee_id:
                 # Set the employee to archived (depending on your model's definition for archived state)
+                if record.employee_id.user_id:
+                    record.employee_id.user_id.active = False
                 record.employee_id.write({'active': False})
     
     def action_by_ceo_refuse_request(self):
