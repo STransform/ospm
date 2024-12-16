@@ -25,11 +25,11 @@ class EmployeeComplaint(models.Model):
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
         ('legal_reviewed', 'Legal Reviewed'),
-        ('accept_legal_review', 'Accept Legal Review'),
-        ('reject_legal_review', 'Reject Legal Reviewed'),
+        ('accept_legal_review', 'Accepted,Legal Review'),
+        ('reject_legal_review', 'Rejected,Legal Review'),
         ('ceo_reviewed', 'CEO Reviewed'),
-        ('accept_ceo_review', 'Accept CEO Review'),
-        ('reject_ceo_review', 'Reject CEO Reviewed')
+        ('accept_ceo_review', 'Accepted,CEO Review'),
+        ('reject_ceo_review', 'Rejected,CEO Reviewed')
     ], default='draft', string='Status', tracking=True)
     decision_by_legalservice = fields.Text(
         string='Legal Service Decision', 
@@ -78,12 +78,56 @@ class EmployeeComplaint(models.Model):
         """Check if the current user belongs to one of the allowed groups."""
         if not self.env.user.has_group(allowed_groups):
             raise ValidationError(_("You do not have the access rights to perform this action."))
-
+    @api.model
+    def send_notification(self, message, user, title):
+        """
+        Send a notification to a specific user.
+        
+        Args:
+            message (str): The notification message
+            user (res.users): The user to notify
+            title (str): The notification title
+        """
+        self.env['custom.notification'].create({
+            'title': title,
+            'message': message,
+            'user_id': user.id,
+        })
     def action_submit(self):
         self._check_access('base.group_user')  # Only initiator (regular users)
         if self.state != 'draft':
             raise ValidationError(_("Only complaints in draft state can be submitted to Legal Service."))
         self.state = 'submitted'
+        
+        # Prepare the message
+        message = f"This is my complaint details submitted to you,for review!"
+        # Get the users in the group "group_department_approval"
+        legal_service_group = self.env.ref('complaint_handling.group_legal_servicedepartment', raise_if_not_found=False)
+        if legal_service_group:
+            for user in legal_service_group.users:
+                # Send notification to each user in the department approval group
+                self.send_notification(message=message, user=user, title=self._description)
+                user.notify_warning(message=message, title=self._description)
+        
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Employee Complaints',
+                'res_model': 'employee.complaint',
+                'view_mode': 'tree,form',
+                'view_id': False,
+                'views': [(False, 'tree'), (False, 'form')],
+                'target': 'current',
+                'context': {},
+                'domain': [],  
+                'res_id': False,     
+            
+                'params': {
+                    'title': 'Success',
+                    'message': 'Your decision has been successfully saved!',
+                    'type': 'success',
+                    'sticky': False,  
+                }
+        }
         
 
     def action_legal_review(self):
@@ -91,36 +135,174 @@ class EmployeeComplaint(models.Model):
         if self.state != 'submitted':
             raise ValidationError(_("Only complaints in submitted state can be legal reviewed."))
         self.state = 'legal_reviewed'
+        # Prepare the message
+        message = "Complaint details have been reviewed. Please verify if they are satisfactory."
+        
+        # Send notification to the complaint initiator
+        if self.employee_id and self.employee_id.user_id:
+            self.send_notification(message=message, user=self.employee_id.user_id, title=self._description)
+            self.employee_id.user_id.notify_warning(message=message, title=self._description)
+            
 
     def action_accept_legal_review(self):
         self._check_access('base.group_user')  # Only initiator (regular users)
         if self.state != 'legal_reviewed':
             raise ValidationError(_("Legal reviewed must be done first!"))
         self.state = 'accept_legal_review'
+        # Prepare the message
+        message = f"I've accepted your response.Thank you very much!."
+        # Get the users in the group "group_department_approval"
+        legal_service_group = self.env.ref('complaint_handling.group_legal_servicedepartment', raise_if_not_found=False)
+        if legal_service_group:
+            for user in legal_service_group.users:
+                # Send notification to each user in the department approval group
+                self.send_notification(message=message, user=user, title=self._description)
+                user.notify_warning(message=message, title=self._description)
+        
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Employee Complaints',
+                'res_model': 'employee.complaint',
+                'view_mode': 'tree,form',
+                'view_id': False,
+                'views': [(False, 'tree'), (False, 'form')],
+                'target': 'current',
+                'context': {},
+                'domain': [],  
+                'res_id': False,     
+            
+                'params': {
+                    'title': 'Success',
+                    'message': 'Your decision has been successfully saved!',
+                    'type': 'success',
+                    'sticky': False,  
+                }
+        }
+        
 
     def action_reject_legal_review(self):
         self._check_access('base.group_user')  # Only initiator (regular users)
         if self.state != 'legal_reviewed':
             raise ValidationError(_("Legal reviewed must be done first!"))
         self.state = 'reject_legal_review'
+        # Prepare the message
+        message = f"Legal service review not satisfactory, so I escalated the case to you for further review and better response."
+        # Get the users in the group "group_department_approval"
+        ceo_group = self.env.ref('complaint_handling.group_ceo', raise_if_not_found=False)
+        if ceo_group:
+            for user in ceo_group.users:
+                # Send notification to each user in the department approval group
+                self.send_notification(message=message, user=user, title=self._description)
+                user.notify_warning(message=message, title=self._description)
+        
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Employee Complaints',
+                'res_model': 'employee.complaint',
+                'view_mode': 'tree,form',
+                'view_id': False,
+                'views': [(False, 'tree'), (False, 'form')],
+                'target': 'current',
+                'context': {},
+                'domain': [],  
+                'res_id': False,     
+            
+                'params': {
+                    'title': 'Success',
+                    'message': 'Your decision has been successfully saved!',
+                    'type': 'success',
+                    'sticky': False,  
+                }
+        }
+        
 
     def action_ceo_review(self):
         self._check_access('complaint_handling.group_ceo')  # CEO group
         if self.state != 'legal_reviewed' and self.state not in ['accept_legal_review', 'reject_legal_review']:
             raise ValidationError(_("Legal reviewed must be done first!"))
         self.state = 'ceo_reviewed'
+        
+        # Prepare the message
+        message = "Complaint details have been reviewed by the CEO. Please verify if they are satisfactory."
+        
+        # Send notification to the complaint initiator
+        if self.employee_id and self.employee_id.user_id:
+            self.send_notification(message=message, user=self.employee_id.user_id, title=self._description)
+            self.employee_id.user_id.notify_warning(message=message, title=self._description)
+        
 
     def action_accept_ceo_review(self):
         self._check_access('base.group_user')  # Only initiator (regular users)
         if self.state != 'ceo_reviewed':
             raise ValidationError(_("Legal and CEO reviews must be completed before proceeding to this stage."))
         self.state = 'accept_ceo_review'
+          # Prepare the message
+        message = f"I've accepted your response.I want to thank you."
+        # Get the users in the group "group_department_approval"
+        ceo_group = self.env.ref('complaint_handling.group_ceo', raise_if_not_found=False)
+        if ceo_group:
+            for user in ceo_group.users:
+                # Send notification to each user in the department approval group
+                self.send_notification(message=message, user=user, title=self._description)
+                user.notify_warning(message=message, title=self._description)
+        
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Employee Complaints',
+                'res_model': 'employee.complaint',
+                'view_mode': 'tree,form',
+                'view_id': False,
+                'views': [(False, 'tree'), (False, 'form')],
+                'target': 'current',
+                'context': {},
+                'domain': [],  
+                'res_id': False,     
+            
+                'params': {
+                    'title': 'Success',
+                    'message': 'Your decision has been successfully saved!',
+                    'type': 'success',
+                    'sticky': False,  
+                }
+        }
+        
+
 
     def action_reject_ceo_review(self):
         self._check_access('base.group_user')  # Only initiator (regular users)
         if self.state != 'ceo_reviewed':
             raise ValidationError(_("Legal and CEO reviews must be completed before proceeding to this stage."))
         self.state = 'reject_ceo_review'
+        # Prepare the message
+        message = f"CEO review is not satisfactory,I want to take the case to the court!."
+        # Get the users in the group "group_department_approval"
+        ceo_group = self.env.ref('base.group_user', raise_if_not_found=False)
+        if ceo_group:
+            for user in ceo_group.users:
+                # Send notification to each user in the department approval group
+                self.send_notification(message=message, user=user, title=self._description)
+                user.notify_warning(message=message, title=self._description)
+        
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Employee Complaints',
+                'res_model': 'employee.complaint',
+                'view_mode': 'tree,form',
+                'view_id': False,
+                'views': [(False, 'tree'), (False, 'form')],
+                'target': 'current',
+                'context': {},
+                'domain': [],  
+                'res_id': False,     
+            
+                'params': {
+                    'title': 'Success',
+                    'message': 'Your decision has been successfully saved!',
+                    'type': 'success',
+                    'sticky': False,  
+                }
+        }
+        
 
     def write(self, values):
         if 'state' in values:
@@ -162,13 +344,22 @@ class EmployeeComplaint(models.Model):
             })
 
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Success',
-                'message': 'Your decision has been successfully saved!',
-                'type': 'success',
-                'sticky': False,  
-            }
+                'type': 'ir.actions.act_window',
+                'name': 'Employee Complaints',
+                'res_model': 'employee.complaint',
+                'view_mode': 'tree,form',
+                'view_id': False,
+                'views': [(False, 'tree'), (False, 'form')],
+                'target': 'current',
+                'context': {},
+                'domain': [],  
+                'res_id': False,     
+            
+                'params': {
+                    'title': 'Success',
+                    'message': 'Your decision has been successfully saved!',
+                    'type': 'success',
+                    'sticky': False,  
+                }
         }
     

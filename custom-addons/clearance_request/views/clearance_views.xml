@@ -1,208 +1,96 @@
 <odoo>
-  <record id="view_clearance_form" model="ir.ui.view">
+<record id="view_clearance_form" model="ir.ui.view">
     <field name="name">clearance.form</field>
     <field name="model">employee.clearance</field>
     <field name="arch" type="xml">
-      <form string="Clearance Request">
-      
-        <group>
-          <field name="state" invisible="1"/>
-          <field name="is_department_approve" invisible="1"/>
-          <field name="is_property_approve" invisible="1"/>
-          <field name="is_finance_approve" invisible="1"/>
-          <field name="is_hr_approve" invisible="1"/>
-          <field name="user_in_group" invisible="1"/>
-        </group>
-        <div class="d-flex justify-content-center align-items-center my-5">
-          <div class="card w-75 shadow-lg rounded">
-            <div class="card-header text-center bg-primary text-white">
-              <h3 class="fw-bold text-white">Clearance Request</h3>
+        <form string="Clearance Request">
+            <header>
+                <field name="state" widget="statusbar" statusbar_visible="draft,pending,department,property,finance,hr,rejected"/>
+            </header>
+            <group>
+                <field name="state" invisible="1"/>
+                <field name="is_department_approve" invisible="1"/>
+                <field name="is_property_approve" invisible="1"/>
+                <field name="is_finance_approve" invisible="1"/>
+                <field name="is_hr_approve" invisible="1"/>
+                <field name="user_in_group" invisible="1"/>
+            </group>
+            <div class="container mt-5">
+                <div class="card shadow-lg rounded">
+                    <div class="card-header text-center bg-primary text-white">
+                        <h3 class="fw-bold text-white">Clearance Request</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Row 1 -->
+                        <div class="row g-3">
+                            <div class="col-md-6 col-sm-12">
+                                <label for="employee_id" class="form-label fw-bold">Employee</label>
+                                <field name="employee_id" readonly="1" class="form-control" id="employee_id" attrs="{'readonly': [('state', 'in', ['pending', 'approved', 'rejected'])]}"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="department_id" class="form-label fw-bold">Department</label>
+                                <field name="department_id" readonly="1" class="form-control" id="department_id" attrs="{'readonly': [('state', 'in', ['pending', 'approved', 'rejected'])]}"/>
+                            </div>
+                        </div>
+                        <!-- Row 2 -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="job_id" class="form-label fw-bold">Position</label>
+                                <field name="job_id" readonly="1" class="form-control" id="job_id" 
+                                attrs="{'readonly': [('state', 'in', ['pending', 'approved', 'rejected'])]}"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="documents" class="form-label fw-bold">Attachments</label>
+                                <field name="documents" widget="many2many_binary" class="form-control" id="documents"/>
+                            </div>
+                        </div>
+                        <!-- Row 3 -->
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="reason" class="form-label fw-bold">Reason</label>
+                                <field name="reason" readonly="0" class="form-control" id="reason" 
+                                attrs="{'readonly':[('state','!=','draft')]}"/>
+                            </div>
+                             <div class="col-md-6">
+                                <label for="clearance_description" class="form-label fw-bold">Description</label>
+                                <field name="clearance_description" class="form-control" id="clearance_description" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            </div> 
+                        </div>
+                        
+                        <!-- Approval Buttons -->
+                        <div class="row g-3">
+                            <div class="col-md-6 text-center">
+                                <button name="action_department_approve" type="object" string="Approve" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_department_approve','=',False)]}" confirm="Are you sure you want to approve this?"/>
+                                <button name="action_reject_department" type="object" string="Reject" class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_department_approve','=',False)]}" confirm="Are you sure you want to reject this?"/>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <button name="action_property_approve" type="object" string="Approve" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_property_approve','=',False)]}" confirm="Are you sure you want to approve this?"/>
+                                <button name="action_reject_property" type="object" string="Reject" class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_property_approve','=',False)]}" confirm="Are you sure you want to reject this?"/>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6 text-center">
+                                <button name="action_finance_approve" type="object" string="Approve" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_finance_approve','=',False)]}" confirm="Are you sure you want to approve this?"/>
+                                <button name="action_reject_finance" type="object" string="Reject" class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_finance_approve','=',False)]}" confirm="Are you sure you want to reject this?"/>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <button name="action_hr_approve" type="object" string="Approve" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_hr_approve','=',False)]}" confirm="Are you sure you want to approve this?"/>
+                                <button name="action_reject_hr" type="object" string="Reject" class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_hr_approve','=',False)]}" confirm="Are you sure you want to reject this?"/>
+                            </div>
+                        </div>
+                        <div class="row g-3 justify-content-center">
+                            <div class="col-md-6 text-center">
+                                <button name="action_save_clearance" type="object" string="Save" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible':[('state','!=','draft')]}" confirm="Are you sure you want to save this?"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-              <div class="row g-3">
-                <!-- Row 1 -->
-                <div class="col-md-6">
-                  <label for="employee_id" class="form-label fw-bold">Employee</label>
-                  <field name="employee_id" 
-                         readonly="1" 
-                         class="form-control" 
-                         id="employee_id"
-                         attrs="{'readonly': [('state', 'in', ['in_progress', 'approved', 'rejected'])]}"/>
-                </div>
-                <div class="col-md-6">
-                  <label for="department_id" class="form-label fw-bold">Department</label>
-                  <field name="department_id" 
-                         readonly="0" 
-                         class="form-control" 
-                         id="department_id"
-                         attrs="{'readonly': [('state', 'in', ['in_progress', 'approved', 'rejected'])]}"/>
-                          <!-- to make save button only visible at creation step -->
-                </div>
-
-                <!-- Row 2 -->
-                <div class="col-md-6">
-                  <label for="position_id" class="form-label fw-bold">Position</label>
-                  <field name="position_id" 
-                         readonly="0" 
-                         class="form-control" 
-                         id="position_id"
-                         attrs="{'readonly': [('state', 'in', ['in_progress', 'approved', 'rejected'])]}"/>
-                </div>
-                <div class="col-md-6">
-                  <label for="documents" class="form-label fw-bold">Attachments</label>
-                  <field name="documents" widget="many2many_binary" class="form-control" id="documents"/>
-                </div>
-                <div class="col-md-6">
-                  <label for="reason" class="form-label fw-bold">Reason</label>
-                  <field name="reason" 
-                         readonly="0" 
-                         class="form-control" 
-                         id="reason"
-                         attrs="{'readonly': [('state', 'in', ['in_progress', 'approved', 'rejected'])]}"/>
-                </div>
-
-                <!-- Row 3 -->
-                <div class="col-md-6">
-                  <label for="department_approval" class="form-label fw-bold">Department Approval</label>
-                  <field name="department_approval" 
-                         readonly="1" 
-                         class="form-control" 
-                         id="department_approval"
-                         attrs="{'invisible': [('state', '=', 'draft')]}"/>
-                </div>
-                <div class="col-md-6">
-                  <label for="property_approval" class="form-label fw-bold">Property Approval</label>
-                  <field name="property_approval" 
-                         readonly="1" 
-                         class="form-control" 
-                         id="property_approval"
-                         attrs="{'invisible': [('state', '=', 'draft')]}"/>
-                </div>
-
-                <!-- Row 4 -->
-                <div class="col-md-6">
-                  <label for="finance_approval" class="form-label fw-bold">Finance Approval</label>
-                  <field name="finance_approval" 
-                         readonly="1" 
-                         class="form-control" 
-                         id="finance_approval"
-                         attrs="{'invisible': [('state', '=', 'draft')]}"/>
-                </div>
-                <div class="col-md-6">
-                  <label for="hr_approval" class="form-label fw-bold">HR Approval</label>
-                  <field name="hr_approval" 
-                         readonly="1" 
-                         class="form-control" 
-                         id="hr_approval"
-                         attrs="{'invisible': [('state', '=', 'draft')]}"/>
-                </div>
-
-                <!-- Row 5 -->
-                <div class="col-md-6 d-flex justify-content-center mt-4">
-                  <button name="action_department_approve" 
-                          type="object" 
-                          string="Approve" 
-                          class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
-                           attrs="{'invisible': ['|',('is_department_approve','=',False),('state', '!=', 'draft')]}" 
-                          />
-                           <!-- to make Approve button only visible at this draft state or if is_department_approve is=True -->
-
-                  <button name="action_reject_department" 
-                          type="object" 
-                          string="Reject" 
-                          class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill"
-                          attrs="{'invisible': ['|',('is_department_approve','=',False),('state', '!=', 'draft')]}"
-                          />
-                  <button name="action_reapprove_department" 
-                          type="object" 
-                          string="Approve" 
-                          class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
-                          groups="clearance_request.group_department_approval"
-                          attrs="{'invisible': [('department_approval', '!=', 'rejected')]}"/>
-                </div>
-                <div class="col-md-6 d-flex justify-content-center mt-4">
-                  <button name="action_property_approve" 
-                          type="object" 
-                          string="Approve" 
-                          class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
-                          attrs="{'invisible': ['|',('is_property_approve','=',False),('state', '!=', 'in_progress')]}"
-                          />
-                  <button name="action_reject_property" 
-                          type="object" 
-                          string="Reject" 
-                          class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill"
-                           attrs="{'invisible': ['|',('is_property_approve','=',False),('state', '!=', 'in_progress')]}"
-                           />
-                  <button name="action_reapprove_property" 
-                          type="object" 
-                          string="Approve" 
-                          class="btn btn-success btn-sm"
-                          groups="clearance_request.group_property_approval"
-                          attrs="{'invisible': [('property_approval', '!=', 'rejected')]}"/>
-                </div>
-              </div>
-
-              <!-- Row 6 -->
-              <div class="col-md-6 d-flex justify-content-center mt-4">
-                <button name="action_finance_approve" 
-                        type="object" 
-                        string="Approve" 
-                        class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
-                        attrs="{'invisible': ['|',('is_finance_approve','=',False),('state', '!=', 'in_progress')]}"
-                        />
-                <button name="action_reject_finance" 
-                        type="object" 
-                        string="Reject" 
-                        class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill"
-                        attrs="{'invisible': ['|',('is_finance_approve','=',False),('state', '!=', 'in_progress')]}"
-                        />
-                <button name="action_reapprove_finance" 
-                        type="object" 
-                        string="Approve Finance" 
-                        class="btn btn-success btn-sm"
-                        groups="clearance_request.group_finance_approval"
-                        attrs="{'invisible': [('department_approval', '!=', 'rejected')]}"/>
-              </div>
-              <div class="col-md-6 d-flex justify-content-center mt-5">
-                <button name="action_hr_approve" 
-                        type="object" 
-                        string="Approve HR" 
-                        class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
-                        attrs="{'invisible': ['|',('is_hr_approve','=',False),('state', '!=', 'in_progress')]}"
-                        />
-                <button name="action_reject_hr" 
-                        type="object" 
-                        string="Reject HR" 
-                        class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill"
-                        attrs="{'invisible': ['|',('is_hr_approve','=',False),('state', '!=', 'in_progress')]}"
-                        />
-                <button name="action_reapprove_hr" 
-                        type="object" 
-                        string="Reapprove Hr" 
-                        class="btn btn-success btn-sm"
-                        groups="clearance_request.group_hr_approval"
-                        attrs="{'invisible': [('hr_approval', '!=', 'rejected')]}"/>
-                 
-                <button name="action_save_clearance" 
-                            type="object" 
-                            string="Save" 
-                            class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
-                            attrs="{'invisible': ['|', 
-                              ('state', 'in', ['in_progress', 'approved', 'rejected']), 
-                              ('user_in_group', '=', True)]}"/>
-                  
-              </div>
-             
-            </div>
-            
-          </div>
-        </div>
-        <!-- Save Button -->
-        
-        
-      </form>
+        </form>
     </field>
-  </record>
+</record>
+
+  
   <record id="view_clearance_kanban" model="ir.ui.view">
     <field name="name">clearance.kanban</field>
     <field name="model">employee.clearance</field>
@@ -215,7 +103,7 @@
               <div class="oe_kanban_details">
                 <strong><field name="employee_id"/></strong>
                 <div>Department: <field name="department_id"/></div>
-                <div>Position: <field name="position_id"/></div>
+                <div>Position: <field name="job_id"/></div>
                 <div>Reason: <field name="reason"/></div>
                 <div class="mt-2">
                   <button name="action_department_approve" 
@@ -227,17 +115,17 @@
                           type="object" 
                           string="Approve Property" 
                           class="btn btn-success btn-sm"
-                          states="in_progress"/>
+                          states="pending"/>
                   <button name="action_finance_approve" 
                           type="object" 
                           string="Approve Finance" 
                           class="btn btn-success btn-sm"
-                          states="in_progress"/>
+                          states="pending"/>
                   <button name="action_hr_approve" 
                           type="object" 
                           string="Approve HR" 
                           class="btn btn-success btn-sm"
-                          states="in_progress"/>
+                          states="pending"/>
                 </div>
               </div>
             </div>
@@ -253,25 +141,25 @@
       <tree string="Clearance Requests">
         <field name="employee_id"/>
         <field name="department_id"/>
-        <field name="position_id"/>
+        <field name="job_id"/>
         <field name="reason"/>
         <field name="state"/>
         <button name="action_department_approve" 
                 type="object" 
-                string="Approve Department" 
+                string="Approve" 
                 states="draft"/>
         <button name="action_property_approve" 
                 type="object" 
-                string="Approve Property" 
-                states="in_progress"/>
+                string="Approve" 
+                states="pending"/>
         <button name="action_finance_approve" 
                 type="object" 
-                string="Approve Finance" 
-                states="in_progress"/>
+                string="Approve" 
+                states="pending"/>
         <button name="action_hr_approve" 
                 type="object" 
-                string="Approve HR" 
-                states="in_progress"/>
+                string="Approve" 
+                states="pending"/>
       </tree>
     </field>
   </record>
@@ -282,6 +170,7 @@
     <field name="res_model">employee.clearance</field>
     <field name="view_mode">tree,form</field>
     <field name="context">{}</field>
+    
   </record>
 
   <!-- Menu Item for Clearance -->
