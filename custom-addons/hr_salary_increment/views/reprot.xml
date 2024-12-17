@@ -10,6 +10,7 @@
             <graph string="Increments by Steps" type="bar">
                 <field name="steps" type="row" />
                 <field name="id" type="measure" />
+                <field name="eligible_value" string="Eligible Employees" type="measure"/>
             </graph>
         </field>
     </record>
@@ -41,6 +42,7 @@
                 <field name="batch_id" type="row" />
                 <field name="employee_id" type="col" />
                 <field name="steps" type="measure" />
+                <field name="eligible_value" string="Eligible Employees" type="measure"/>
             </pivot>
         </field>
     </record>

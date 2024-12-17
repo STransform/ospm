@@ -80,8 +80,8 @@ class HrSalaryIncrementBatch(models.Model):
                     )
                 if (
                     salary_increment.start_date
-                    <= self.end_date
-                    <= salary_increment.end_date
+                    < self.end_date
+                    < salary_increment.end_date
                 ) and salary_increment.state != "rejected":
                     raise ValidationError(
                         f"Salary Increment Request cannot be duplicated! exist in {salary_increment.name}"

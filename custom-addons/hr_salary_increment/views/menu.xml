@@ -28,6 +28,7 @@
         <field name="res_model">hr.salary.increment.batch.line</field>
         <field name="view_mode">graph,tree</field>
         <field name="context">{'group_by': ['batch_id']}</field>
+        <field name="domain">[('batch_id.state', '=', 'approved')]</field>
         <field name="help">Use the search filters to select a specific batch and see the increments
             per employee.</field>
     </record>
