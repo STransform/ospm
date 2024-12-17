@@ -56,6 +56,29 @@
                                 <field name="clearance_description" class="form-control" id="clearance_description" attrs="{'readonly':[('state','!=','draft')]}"/>
                             </div> 
                         </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="department_approval" class="form-label fw-bold">Department approval</label>
+                                <field name="department_approval" class="form-control" id="department_approval" style="color:teal;"
+                                readonly="1"/>
+                            </div>
+                             <div class="col-md-6">
+                                <label for="property_approval" class="form-label fw-bold">Property approval</label>
+                                <field name="property_approval" class="form-control" id="property_approval" style="color:teal;"
+                                readonly="1"/>
+                            </div> 
+                            <div class="col-md-6">
+                                <label for="finance_approval" class="form-label fw-bold">finance approval</label>
+                                <field name="finance_approval" class="form-control" id="finance_approval" style="color:teal;"
+                                readonly="1"/>
+                            </div> 
+                            <div class="col-md-6">
+                                <label for="hr_approval" class="form-label fw-bold">Hr approval</label>
+                                <field name="hr_approval" class="form-control" id="hr_approval" style="color:teal;"
+                                readonly="1"/>
+                            </div> 
+                        </div>
                         
                         <!-- Approval Buttons -->
                         <div class="row g-3">
@@ -80,7 +103,7 @@
                         </div>
                         <div class="row g-3 justify-content-center">
                             <div class="col-md-6 text-center">
-                                <button name="action_save_clearance" type="object" string="Save" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible':[('state','!=','draft')]}" confirm="Are you sure you want to save this?"/>
+                                <button name="action_save_clearance" type="object" string="Submit" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible':[('state','!=','draft')]}" confirm="Are you sure you want to submit this?"/>
                             </div>
                         </div>
                     </div>
