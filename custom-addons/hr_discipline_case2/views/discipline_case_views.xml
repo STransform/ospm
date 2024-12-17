@@ -90,12 +90,22 @@
                         </div>
                             <!-- Row 5 -->
                         <div class="row g-4" style="margin-bottom: 20px;">
-                            <div class="col-md-12" attrs="{'invisible': ['|',('is_committee','=',False),('state', '!=', 'escalate_to_committee'),('state', '!=', 'escalate_to_ceo'),('state', '!=', 'approve')]}">
+                            <div class="col-md-12" attrs="{'invisible': ['|',('is_committee','=',False),('state', '!=', 'escalate_to_committee'),('state', '!=', 'escalate_to_ceo'),('state', '!=', 'approve'),('state', '!=', 'reject'),('state', '!=', 'reviewed')]}">
                                 <label for="penalty_type" class="form-label fw-bold">Penalty Type</label>
                                 <field name="penalty_type" class="form-control" 
                                 attrs="{'readonly': ['|',('state','!=','escalate_to_committee'),('is_committee', '=', False)]}"/>
                             </div>
                         </div>
+                        <div class="row g-4" style="margin-bottom: 20px;">
+
+                            <!-- Row 7 -->
+                            <div class="col-md-12" attrs="{'invisible': ['|',('is_committee','=',False),('state', '!=', 'escalate_to_committee'),('state', '!=', 'escalate_to_ceo'),('state', '!=', 'approve'),('state', '!=', 'reject'),('state', '!=', 'reviewed')]}">
+                                <label for="documents_for_committee" class="form-label fw-bold">Documents</label>
+                                <field name="documents_for_committee" widget="many2many_binary" class="form-control" 
+                                attrs="{'readonly': ['|',('state','!=','escalate_to_committee'),('is_committee', '=', False)]}"/>
+                            </div>
+                        </div>
+                        
                         <div class="row g-4" style="margin-bottom: 20px;">
                             <!-- Row 6 -->
                             <div class="col-md-12" attrs="{'invisible': [('reason_for_revision_is_visible','=',False)]}" >
@@ -117,7 +127,7 @@
                                 <button name="action_submit" 
                                         type="object" 
                                         string="Submit" 
-                                        class="btn btn-success mx-2"
+                                        class="btn btn-success mx-2 btn-lg px-5 py-2 shadow-sm rounded-pill"
                                         attrs="{'invisible': [('state', '!=', 'draft')]}"
                                         confirm="Are you sure you want to submit this?"/>
                                 <button name="action_resolve" 
@@ -147,7 +157,7 @@
                                         confirm="Are you sure you want to approve this?"/>
                                 <button name="action_reject" 
                                         type="object" 
-                                        string="Reject" 
+                                        string="Return" 
                                         class="btn btn-danger mx-2 btn-lg px-5 py-2 shadow-sm rounded-pill"
                                         attrs="{'invisible': [('is_ceo', '=', False)]}"
                                         confirm="Are you sure you want to reject this?"/>

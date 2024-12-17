@@ -20,12 +20,8 @@ class Clearance(models.Model):
         tracking=True
     )
     date_requested = fields.Date(string="Requested Date", default=fields.Date.today, tracking=True)
-    department_approval = fields.Selection(
-        [('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')],
-        string="Department Approval",
-        default='pending',
-        tracking=True
-    )
+    
+    
      # to make the department approval button only visible at this state
 
     is_department_approve = fields.Boolean(string="Is Department Approve", compute="_compute_is_department_approve", store=False)
@@ -34,6 +30,45 @@ class Clearance(models.Model):
     is_hr_approve = fields.Boolean(string="Is Hr Approve", compute="_compute_is_hr_approve", store=False)
     show_save_button = fields.Boolean(
         compute='_compute_show_save_button', string="Show Save Button"
+    )
+    department_approval = fields.Selection(
+        [('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')],
+        string="Department Approval",
+        default='pending',
+        tracking=True
+    )
+    
+    
+    property_approval = fields.Selection(
+        [('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')],
+        string="Property Approval",
+        default='pending',
+        tracking=True
+    )
+    finance_approval = fields.Selection(
+        [('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')],
+        string="Finance Approval",
+        default='pending',
+        tracking=True
+    )
+    hr_approval = fields.Selection(
+        [('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')],
+        string="HR Approval",
+        default='pending',
+        tracking=True
+    )
+    state = fields.Selection(
+        [('draft', 'Draft'), 
+        ('pending','In Progress'),
+        ('department', 'Department Approved'), 
+        ('property', 'Property Approved'),
+        ('finance', 'Finance Approved'),
+        ('hr', 'HR Approved'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected')],
+        string="Status",
+        default='draft',
+        tracking=True
     )
     is_creator = fields.Boolean(string="Is Creator", compute="_compute_is_creator", store=False)
     
@@ -87,37 +122,7 @@ class Clearance(models.Model):
     def _compute_is_hr_approve(self):
         self.is_hr_approve = self.env.user.has_group("clearance_request.group_hr_approval")
     
-    property_approval = fields.Selection(
-        [('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')],
-        string="Property Approval",
-        default='pending',
-        tracking=True
-    )
-    finance_approval = fields.Selection(
-        [('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')],
-        string="Finance Approval",
-        default='pending',
-        tracking=True
-    )
-    hr_approval = fields.Selection(
-        [('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')],
-        string="HR Approval",
-        default='pending',
-        tracking=True
-    )
-    state = fields.Selection(
-        [('draft', 'Draft'), 
-        ('pending','In Progress'),
-        ('department', 'Department Approved'), 
-        ('property', 'Property Approved'),
-        ('finance', 'Finance Approved'),
-        ('hr', 'HR Approved'),
-        ('approved', 'Approved'),
-        ('rejected', 'Rejected')],
-        string="Status",
-        default='draft',
-        tracking=True
-    )
+   
     @api.model
     def send_notification(self, message, user, title):
         """
@@ -150,7 +155,7 @@ class Clearance(models.Model):
 
     def action_department_approve(self):
         """Approve the department stage."""
-        if self.department_approval != 'pending':
+        if self.department_approval not in ['pending', 'rejected']:
             raise ValidationError(_("Department approval has already been processed."))
         self.department_approval = 'approved'
          
@@ -185,8 +190,8 @@ class Clearance(models.Model):
                 'message': 'Department stage approved successfully!',
                 'type': 'success',
                 'sticky': False,
-    }
-}
+                    }
+                }
 
 
     
@@ -548,5 +553,4 @@ class Clearance(models.Model):
                 'sticky': False,  # this makes the success button disappear after a few seconds
             }
         }
-
 

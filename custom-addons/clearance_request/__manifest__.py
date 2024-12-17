@@ -14,6 +14,7 @@ Employee Clearance Workflow:
         "security/record_rule.xml",
         "security/ir.model.access.csv",  # Access rights should come after groups
         "views/clearance_views.xml",     # Other views are loaded last
+       
     ],
     "installable": True,
     "application": False,

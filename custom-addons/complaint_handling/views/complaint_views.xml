@@ -60,27 +60,33 @@
                                 <field name="created_on" readonly="1" class="form-control" id="created_on"/>
                             </div>
                         </div>
-
-                       
-
-                       
-
+                        
                         <!-- Decision Sections -->
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <notebook>
                                     <page string="Decision by Legal Service Department" attrs="{'invisible': [('state', 'in', ['draft', 'submitted'])]}">
                                         <div class="row g-3">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <field name="decision_by_legalservice" class="form-control" id="decision_by_legalservice"
                                                 attrs="{'readonly': ['|',('state', '=', 'submitted'), ('is_legal_service', '=', False)]}"
                                                  />
                                             </div>
+                                           
+                                        </div>
+                                    </page>
+                                     <page string="Documents by Legal Service Department" attrs="{'invisible': [('state', 'in', ['draft', 'submitted'])]}">
+                                        <div class="row g-3">
+                                            <div class="col-md-4" attrs="{'readonly': ['|',('state', '=', 'submitted'), ('is_legal_service', '=', False)]}">
+                                                <label for="documents_by_legal_service" class="form-label">Documents by legal service department</label>
+                                                <field name="documents_by_legal_service" widget="many2many_binary" class="form-control" id="documents_by_legal_service" attrs="{'readonly': ['|',('state', '=', 'submitted'), ('is_legal_service', '=', False)]}"/>
+                                            </div>
+                                           
                                         </div>
                                     </page>
                                     <page string="Decision by CEO" attrs="{'invisible': [('state', 'in', ['draft', 'submitted', 'legal_reviewed', 'reject_legal_review', 'accept_legal_review'])]}">
                                         <div class="row g-3">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <field name="decision_by_ceo" class="form-control" id="decision_by_ceo"
                                                 attrs="{'readonly': ['|',('state', '=', 'legal_reviewed'), ('is_ceo', '=', False)]}"
                                                  />
@@ -94,7 +100,7 @@
                         <!-- Approval Buttons -->
                         <div class="row g-3">
                             <div class="col-md-3 text-center">
-                            <button name="action_save_complaint" type="object" string="Save" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_legal_service', '=', False)]}" confirm="Are you sure you want to save this?"/>
+                            <button name="action_save_complaint" type="object" string="Submit" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_legal_service', '=', False)]}" confirm="Are you sure you want to submit this?"/>
 
                             </div>
                             <div class="col-md-3 text-center">
@@ -103,8 +109,8 @@
                             <div class="col-md-3 text-center">
                                 <button name="action_ceo_review" type="object" string="Reviewed" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('state', '!=', 'reject_legal_review')]}" groups="complaint_handling.group_ceo" confirm="Are you sure you want to review this?"/>
                             </div>
-                            <div class="col-md-3">
-                            <button name="action_save_complaint" type="object" string="Save" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_ceo', '=', False)]}" confirm="Are you sure you want to save this?"/>
+                            <div class="col-md-3 " style="display: flex; justify-content: center;">
+                            <button name="action_save_complaint" type="object" string="Submit"  class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_ceo', '=', False)]}" confirm="Are you sure you want to submit this?"/>
 
                             </div>
                         </div>

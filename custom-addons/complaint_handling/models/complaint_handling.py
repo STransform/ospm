@@ -20,7 +20,7 @@ class EmployeeComplaint(models.Model):
         ('other', 'Other')
     ], string='Complain Type', required=True, tracking=True)
     description = fields.Text(string='Description', required=True, tracking=True)
-    documents = fields.Many2many('ir.attachment', string='Attachments', help="Attach documents related to the complaint")
+    documents = fields.Many2many('ir.attachment', string='Attachments',relation='employee_complaint_for_complainer_rel', help="Attach documents related to the complaint")
     state = fields.Selection([
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
@@ -45,6 +45,8 @@ class EmployeeComplaint(models.Model):
     _sql_constraints = [
         ('unique_case_reference', 'unique(name)', 'The Case Reference must be unique.')
     ]
+    documents_by_legal_service = fields.Many2many('ir.attachment',relation='employee_complaint_for_legal_service_rel', string='Documents by legal service department', help="Attach documents by legal service decision")
+
     
     is_creator = fields.Boolean(string="Is Creator", compute="_compute_is_creator", store=False)
     is_ceo = fields.Boolean(string="Is CEO", compute="_compute_is_ceo", store=False)

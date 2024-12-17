@@ -19,7 +19,7 @@ class DisciplineCase(models.Model):
         ('warning', 'Warning'),
         ('dismiss', 'Dismissal'),
         ('demotion', 'Demotion'),
-    ], string='Penalty Type', required=True, default='salary')
+    ], string='Penalty Type',default='salary')
 
     hr_decision = fields.Selection([('resolve', 'Resolved by HR'), 
                                     ('escalate_to_committee', 'Escalate to Committee')],
@@ -34,7 +34,7 @@ class DisciplineCase(models.Model):
     
     assigned_to_committee = fields.Many2one('res.users', string='Assigned Committee Member', readonly=True)
     assigned_to_ceo = fields.Many2one('res.users', string='Assigned CEO', readonly=True)
-    documents = fields.Many2many('ir.attachment', string='Attachments', help="Attach documents related to discipline case")
+    documents = fields.Many2many('ir.attachment', relation='employee_discipline_case_documents_rel', string='Attachments', help="Attach documents related to discipline case")
     accused_response = fields.Text('Accused Response', help="Response from the accused (only for HR to fill)")
     witness_by_accused = fields.Many2many('res.users', string='Witnesses by Accused', help="Witnesses selected by the committee for the case")
     reason_for_revision = fields.Text('Reason for Revision', help="Reason revision (only for CEO to fill)")
@@ -59,6 +59,7 @@ class DisciplineCase(models.Model):
     is_ceo = fields.Boolean(string="Is CEO", compute="_compute_is_ceo", store=False)
     reason_for_revision_is_visible = fields.Boolean(string="Reason Visibility", compute="_compute_reason_for_revision_is_visible", store=False)
     case_revision_is_visible = fields.Boolean(string="Reason Visibility", compute="_compute_case_revision_is_visible", store=False)
+    documents_for_committee = fields.Many2many('ir.attachment',relation='employee_discipline_case_documents_for_committee_rel', string='Documents by committee', help="Attach documents by committee decision")
 
 
     @api.model
