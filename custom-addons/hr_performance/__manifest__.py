@@ -11,6 +11,7 @@
         "security/hr_performance_group.xml",
         "security/ir.model.access.csv",
         "views/performance_measure_views.xml",
+        "views/report.xml",
         "views/menu.xml",
         
     ],
