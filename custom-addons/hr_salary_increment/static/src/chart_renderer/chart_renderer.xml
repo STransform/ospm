@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="hr_salary_increment.ChartRenderer" owl="1">
+        <canvas t-ref="chart" class="chart-canvas" style="width: 100%; height: 100%;"></canvas>
+    </t>
+</templates>

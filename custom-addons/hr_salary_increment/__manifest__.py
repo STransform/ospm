@@ -16,6 +16,10 @@
         "views/menu.xml",
         "views/hr_salary_increment_batch_line_views.xml"
     ],
+    'assets': {
+        'web.assets_backend': [
+            'hr_salary_increment/static/src/**/*',
+        ]},
     'application': True,
     'installable': True,
     'auto_install': False,
