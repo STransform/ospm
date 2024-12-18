@@ -41,7 +41,8 @@
                             <field name="name" placeholder="2024 1 - 6 month evaulation" />
                             <field name="from_date" />
                             <field name="to_date" />
-                            <field name="survey_id" />
+                            <field name="survey_id"
+                                options="{'no_create': True, 'no_create_edit':True}" />
                         </group>
                         <group>
                             <field name="scheduled_date" />
