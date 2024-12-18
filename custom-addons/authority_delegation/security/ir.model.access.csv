@@ -1,2 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_authority_delegation_user,access.authority.delegation.user,model_authority_delegation,base.group_user,1,1,1,1
+access_authority_delegation_employee,access.authority.delegation.employee,model_authority_delegation,user_group.group_employee,1,1,0,0
+access_authority_delegation_ceo,access.authority.delegation.ceo,model_authority_delegation,user_group.group_ceo,1,1,1,0
+access_authority_delegation_dceo,access.authority.delegation.dceo,model_authority_delegation,user_group.group_dceo,1,1,1,0
+access_authority_delegation_director,access.authority.delegation.director,model_authority_delegation,user_group.group_director,1,1,1,0
+access_authority_delegation_department,access.authority.delegation.department,model_authority_delegation,user_group.group_department_manager,1,1,1,0
