@@ -1,5 +1,13 @@
 <odoo>
     <data>
+        <!-- Define the action -->
+        <record id="hr_recruitment_request_action" model="ir.actions.act_window">
+            <field name="name">Recruitment Requests</field>
+            <field name="res_model">hr.recruitments</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Define the menu -->
         <menuitem id="menu_hr_request" name="Recruitment Request" parent="hr.menu_hr_root"/>
         <menuitem id="Manage_recruitment" name="Requests" parent="menu_hr_request" action="hr_recruitment_request_action"/>
     </data>
