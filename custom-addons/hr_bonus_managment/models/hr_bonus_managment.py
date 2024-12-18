@@ -53,21 +53,24 @@ class HrSalaryIncrementBatch(models.Model):
         tracking=True,
     )
     rejection_reason = fields.Text(string="Rejection Reason", help="Reason.")
-    
-    # add notification function 
+
+    # add notification function
     @api.model
-    def send_notification(self, message, user, title):
-        self.env['custom.notification'].create({
-            'title': title,
-            'message': message,
-            'user_id': user.id,
-        })
+    def send_notification(self, message, user, title, model, res_id):
+        self.env["custom.notification"].create(
+            {
+                "title": title,
+                "message": message,
+                "user_id": user.id,
+                "action_model": model,
+                "action_res_id": res_id,
+            }
+        )
 
     # is fixed
 
     def diff_month(self, date1, date2):
         return (date2.year - date1.year) * 12 + date2.month - date1.month
-
 
     # Comment Validation
     @api.depends("months")
@@ -139,13 +142,18 @@ class HrSalaryIncrementBatch(models.Model):
         self.state = "submitted"
         ## search users with specific group
         hr_office = self.env.ref("user_group.group_hr_office").users
-        title = "New Request for Bonus"
-        message = f"New Request to be approved."
+        title = "Bonus Batch Submitted"
+        message = f"submitted."
         for user in hr_office:
-            self.send_notification(message, user, title) 
+            self.send_notification(
+                message=message,
+                user=user,
+                title=title,
+                model=self._name,
+                res_id=self.id,
+            )
             user.notify_success(title=title, message=message)
         self.env.user.notify_success("Request Submitted")
-        
 
     def action_approve(self):
         """Approve the batch and apply Bonus for eligible employees."""
@@ -171,7 +179,13 @@ class HrSalaryIncrementBatch(models.Model):
         title = "Bonus Approved"
         message = f"approved."
         for user in department_manager:
-            self.send_notification(message, user, title)
+            self.send_notification(
+                message=message,
+                user=user,
+                title=title,
+                model=self._name,
+                res_id=self.id,
+            )
             user.notify_success(title=title, message=message)
         self.env.user.notify_success("Bonus Approved")
 

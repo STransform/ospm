@@ -4,7 +4,7 @@
     <record id="salary_increment_hr_director_rule" model="ir.rule">
         <field name="name">Salary Increment HR Director Rule</field>
         <field name="model_id" ref="model_hr_salary_increment_batch" />
-        <field name="groups" eval="[(4, ref('uuser_group.group_hr_director'))]" />
+        <field name="groups" eval="[(4, ref('user_group.group_hr_director'))]" />
         <field name="perm_read" eval="1" />
         <field name="perm_create" eval="1" />
         <field name="perm_write" eval="1" />
