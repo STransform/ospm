@@ -8,7 +8,7 @@
         </record>
 
         <!-- Define the menu -->
-        <menuitem id="menu_hr_request" name="Recruitment Request" parent="hr.menu_hr_root"/>
+        <menuitem id="menu_hr_request" parent="hr.menu_hr_services" name="Recruitment Request"/>
         <menuitem id="Manage_recruitment" name="Requests" parent="menu_hr_request" action="hr_recruitment_request_action"/>
     </data>
 </odoo>
