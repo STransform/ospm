@@ -27,6 +27,9 @@ class HrAttendance(models.Model):
     check_in = fields.Datetime(string="Check In", default=fields.Datetime.now, required=True)
     check_out = fields.Datetime(string="Check Out")
     worked_hours = fields.Float(string='Worked Hours', compute='_compute_worked_hours', store=True, readonly=True)
+    # Custom Fields added
+    
+
 
     def name_get(self):
         result = []
