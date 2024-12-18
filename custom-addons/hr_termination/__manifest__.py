@@ -4,9 +4,8 @@
     "category": "Human Resources",
     "author" : "Yohanes Mesfin",
     "description": "This module allows you to terminate employees.",
-    "depends": ["base", "hr", "mail", "hr_contract", "custom_notification"],
+    "depends": ["base", "hr", "mail", "hr_contract", "custom_notification", "user_group"],
     "data":[
-        "security/groups.xml",
         "security/ir.model.access.csv",
         "security/access_rule.xml",
         "views/termination_views.xml",

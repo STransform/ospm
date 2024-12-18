@@ -22,16 +22,16 @@
 
 
                     <!-- Approval by HR director -->
-                    <button name="action_by_director_request_approval" type="object" string="Accept" groups="hr_termination.group_hr_training_department_director" attrs="{'invisible': ['|',  ('state_by_director', 'in', ['approved', 'refused']),  ('state_by_service', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
-                    <button name="action_by_director_refuse_request" type="object" string="Refuse" groups="hr_termination.group_hr_training_department_director" attrs="{'invisible': ['|', ('state_by_director', 'in', ['approved', 'refused']),  ('state_by_service', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
+                    <button name="action_by_director_request_approval" type="object" string="Accept" groups="user_group.group_director" attrs="{'invisible': ['|',  ('state_by_director', 'in', ['approved', 'refused']),  ('state_by_service', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
+                    <button name="action_by_director_refuse_request" type="object" string="Refuse" groups="user_group.group_director" attrs="{'invisible': ['|', ('state_by_director', 'in', ['approved', 'refused']),  ('state_by_service', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
 
                     <!-- Approval by HR DCEO -->
-                    <button name="action_by_dceo_request_approval" type="object" string="Accept" groups="hr_termination.group_hr_training_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']),  ('state_by_director', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
-                    <button name="action_by_dceo_refuse_request" type="object" string="Refuse" groups="hr_termination.group_hr_training_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']),  ('state_by_director', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
+                    <button name="action_by_dceo_request_approval" type="object" string="Accept" groups="user_group.group_admin_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']),  ('state_by_director', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
+                    <button name="action_by_dceo_refuse_request" type="object" string="Refuse" groups="user_group.group_admin_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']),  ('state_by_director', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
 
                     <!-- Approval by CEO -->
-                    <button name="action_by_ceo_request_approval" type="object" string="Accept" groups="hr_termination.group_hr_training_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
-                    <button name="action_by_ceo_refuse_request" type="object" string="Refuse" groups="hr_termination.group_hr_training_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
+                    <button name="action_by_ceo_request_approval" type="object" string="Accept" groups="user_group.group_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
+                    <button name="action_by_ceo_refuse_request" type="object" string="Refuse" groups="user_group.group_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}" confirm="Are you sure! Do you wish to proceed ?"/>
 
 
                     <field name="combined_state" widget="statusbar" statusbar_visible="draft,processing,approved,refused"/>
