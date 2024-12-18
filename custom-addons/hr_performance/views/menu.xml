@@ -7,7 +7,7 @@
         name="Evaluation Schedules"
         parent="menu_hr_performance_root"
         action="action_evaluation_schedule"
-        groups="hr_performance.group_hr_director,base.group_system"
+        groups="user_group.group_hr_office,base.group_system"
         sequence="1" />
 
     <!-- Submenu for Performance Evaluations -->
@@ -22,6 +22,6 @@
         name="Reporting"
         parent="menu_hr_performance_root"
         action="action_hr_performance_evaluation_report"
-        groups="hr_performance.group_hr_director,base.group_system"
+        groups="user_group.group_hr_office,base.group_system"
         sequence="3" />
 </odoo>

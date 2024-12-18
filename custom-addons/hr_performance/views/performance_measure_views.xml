@@ -64,7 +64,7 @@
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_evaluation_schedule_tree" /> <!-- Default view -->
         <field name="domain">[]</field> <!-- Allow HR Directors to view all schedules -->
-        <field name="groups_id" eval="[(4, ref('hr_performance.group_hr_director'))]" />
+        <field name="groups_id" eval="[(4, ref('user_group.group_hr_office'))]" />
     </record>
 
     <!-- Tree View for Performance Evaluations -->
@@ -108,17 +108,17 @@
                         name="action_employee_reject" type="object" string="Reject"
                         class="btn-danger"
                         attrs="{'invisible': ['|', ('evaluation_status', '!=', 'employee_review'), ('is_employee', '=', False)]}"
-                        groups="hr_performance.group_employee" />
+                        groups="user_group.group_employee" />
                     <button
                         name="action_employee_accept" type="object" string="Accept"
                         class="btn-success"
                         attrs="{'invisible': ['|', ('evaluation_status', '!=', 'employee_review'), ('is_employee', '=', False)]}"
-                        groups="hr_performance.group_employee" />
+                        groups="user_group.group_employee" />
                     <button
                         name="action_mark_completed" type="object"
                         string="Mark as Completed" class="btn-success"
                         attrs="{'invisible': [('evaluation_status', '!=', 'employee_accepted')]}"
-                        groups="hr_performance.group_hr_director" />
+                        groups="user_group.group_hr_office" />
                     <field
                         name="evaluation_status" widget="statusbar"
                         statusbar_visible="draft,in_progress,employee_review,completed" />

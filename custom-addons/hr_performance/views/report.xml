@@ -4,7 +4,7 @@
     <record id="action_hr_performance_evaluation_report" model="ir.actions.act_window">
         <field name="name">Performance Evaluation Report</field>
         <field name="res_model">hr.performance.evaluation</field>
-        <field name="view_mode">graph,pivot,tree</field>
+        <field name="view_mode">tree,graph,pivot</field>
         <!-- Removed search_view_id to avoid referencing a non-existent search view -->
         <field name="context">{'group_by': ['score_category']}</field>
         <field name="domain">[('evaluation_status', '=', 'completed')]</field>
