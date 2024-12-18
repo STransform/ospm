@@ -15,8 +15,8 @@
 
             <form string="Promotion Minutes">
                 <header>
-                    <button name="action_approve" type="object" string="Approve" groups="employee_promotion.group_hr_recruitment_ceo"  attrs="{'invisible': [('state', 'in', ['approved', 'refused'])]}"/>
-                    <button name="action_refuse" type="object" string="Refuse" groups="employee_promotion.group_hr_recruitment_ceo" attrs="{'invisible': [('state', 'in', ['approved', 'refused'])]}"/> 
+                    <button name="action_approve" type="object" string="Approve" groups="user_group.group_ceo"  attrs="{'invisible': [('state', 'in', ['approved', 'refused'])]}"/>
+                    <button name="action_refuse" type="object" string="Refuse" groups="user_group.group_ceo" attrs="{'invisible': [('state', 'in', ['approved', 'refused'])]}"/> 
                     <field name="state" widget="statusbar" statusbar_visible="draft,approved,refused"/>
                 </header>
                 <sheet>
@@ -73,6 +73,6 @@
               name="Promotion Minutes"
               parent="employee_promotion_menu"
               action="promotion_minutes_action"
-              groups="employee_promotion.group_hr_recruitment_promotion_committe,employee_promotion.group_hr_recruitment_ceo"
+              groups="user_group.promotion_committee,user_group.group_ceo"
               />
 </odoo>

@@ -61,7 +61,7 @@
     </record>
     
     <!--Menu view in employee form-->
-    <menuitem id="employee_promotion_menu" name="Employee Promotion"
-              parent="hr.menu_hr_root"
+    <menuitem id="employee_promotion_menu" name="Promotion"
+              parent="hr.menu_hr_services"
               sequence="14"/>
 </odoo>

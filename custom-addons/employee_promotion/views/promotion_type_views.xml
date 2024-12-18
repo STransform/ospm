@@ -40,7 +40,7 @@
               name="Employee Promotion Type"
               parent="employee_promotion_menu"
               action="promotion_type_action"
-              groups="employee_promotion.group_hr_recruitment_hr_director"
+              groups="user_group.group_hr_director"
               />
               
 </odoo>

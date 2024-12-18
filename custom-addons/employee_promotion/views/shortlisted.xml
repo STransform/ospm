@@ -65,5 +65,5 @@
         </field>
     </record>
     <!--Menu view in employee form-->
-    <menuitem id="shortlisted_appiliactions_sub_menu" name="Short Listed" parent="employee_promotion_menu" action="shortlisted_appilications_action"  groups="employee_promotion.group_hr_recruitment_hr_director,employee_promotion.group_hr_recruitment_ceo"/>
+    <menuitem id="shortlisted_appiliactions_sub_menu" name="Short Listed" parent="employee_promotion_menu" action="shortlisted_appilications_action"  groups="user_group.group_hr_director,user_group.group_ceo"/>
 </odoo>
