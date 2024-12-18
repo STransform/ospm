@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-
-
     <!-- Graph View: increments grouped by steps -->
     <record id="view_hr_salary_increment_batch_line_graph" model="ir.ui.view">
         <field name="name">hr.salary.increment.batch.line.graph</field>
