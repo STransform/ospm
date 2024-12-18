@@ -64,21 +64,117 @@ class HrMedicalCoverage(models.Model):
                 item.amount for item in record.costItemIds
             )
 
+    @api.model
+    def send_notification(self, message, user, title, model, res_id):
+        self.env["custom.notification"].create(
+            {
+                "title": title,
+                "message": message,
+                "user_id": user.id,
+                "action_model": model,
+                "action_res_id": res_id,
+            }
+        )
+
+
     # Methods for request submission and approvals
     def actionSubmit(self):
         self.status = "submitted"
+        # send notification to hr
+        hr_group = self.env.ref("user_group.group_hr_office")
+        message = "New Medical Coverage Request"
+        title = "New Medical Coverage Request"
+        for user in hr_group.users:
+            self.send_notification(
+                message=message,
+                user=user,
+                title=title,
+                model=self._name,
+                res_id=self.id,
+            )
+            # web notify
+            user.notify_success(title=title, message=message)
+        self.env.user.notify_success("Request Submitted")
 
     def actionHrApprove(self):
         self.status = "hr_approved"
+        # send notification to finance
+        finance_group = self.env.ref("user_group.group_finance_office")
+        message = "Medical Coverage Request Approved"
+        title = "Medical Coverage Request Approved"
+        for user in finance_group.users:
+            self.send_notification(
+                message=message,
+                user=user,
+                title=title,
+                model=self._name,
+                res_id=self.id,
+            )
+            # web notify
+            user.notify_success(title=title, message=message)
+        self.env.user.notify_success("Request Approved")
+        # send notification to employee
+        employee = self.create_uid
+        message = "Medical Coverage Request Approved By HR"
+        title = "Medical Coverage Request Approved By HR"
+        self.send_notification(
+            message=message,
+            user=employee,
+            title=title,
+            model=self._name,
+            res_id=self.id,
+        )
 
     def actionHrReject(self):
         self.status = "hr_rejected"
+        # send notification to employee
+        employee = self.create_uid
+        message = "Medical Coverage Request Rejected By HR"
+        title = "Medical Coverage Request Rejected By HR"
+        self.send_notification(
+            message=message,
+            user=employee,
+            title=title,
+            model=self._name,
+            res_id=self.id,
+        )
+        self.env.user.notify_danger("Successfully Rejected")
+        
 
     def actionFinanceApprove(self):
         self.status = "finance_approved"
+        # send notification to employee
+        employee = self.create_uid
+        message = "Medical Coverage Request Approved By Finance"
+        title = "Medical Coverage Request Approved By Finance"
+        self.send_notification(
+            message=message,
+            user=employee,
+            title=title,
+            model=self._name,
+            res_id=self.id,
+        )
+        # web notify
+        self.env.user.notify_success("Successfully Approved")
+        employee.notify_success(title=title, message=message)
+        
 
     def actionFinanceReject(self):
         self.status = "finance_rejected"
+        self.env.user.notify_danger("Successfully Rejected")
+        # send notification to employee
+        employee = self.create_uid
+        message = "Medical Coverage Request Rejected By Finance"
+        title = "Medical Coverage Request Rejected By Finance"
+        self.send_notification(
+            message=message,
+            user=employee,
+            title=title,
+            model=self._name,
+            res_id=self.id,
+        )
+        employee.notify_danger(title=title, message=message)
+        
 
     # Amount Validation
     @api.constrains("totalRequestedAmount")
