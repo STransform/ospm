@@ -64,14 +64,14 @@ class DisciplineCase(models.Model):
 
     @api.model
     def _compute_reason_for_revision_is_visible(self):
-        if self.env.user.has_group("hr_discipline_case2.group_ceo"):
+        if self.env.user.has_group("user_group.group_ceo"):
             self.reason_for_revision_is_visible = self.state in ['escalate_to_ceo','reject','reviewed'] or self.approve_after
         else:
             self.reason_for_revision_is_visible = self.state in ['reject','reviewed'] or self.approve_after
 
     @api.model
     def _compute_case_revision_is_visible(self):
-        if self.env.user.has_group('hr_discipline_case2.group_discipline_committee'):
+        if self.env.user.has_group('user_group.group_discipline_committee'):
             self.case_revision_is_visible = self.state in ['reject','reviewed'] or self.approve_after
         else:
             self.case_revision_is_visible = self.state == 'reviewed' or self.approve_after or self.rejected_more
@@ -83,14 +83,14 @@ class DisciplineCase(models.Model):
     
     @api.model
     def _compute_is_hr(self):
-        self.is_hr = self.env.user.has_group("hr_discipline_case2.group_hr_manager")
+        self.is_hr = self.env.user.has_group("user_group.group_hr_director")
 
     @api.model
     def _compute_is_committee(self):
-        self.is_committee = self.env.user.has_group("hr_discipline_case2.group_discipline_committee")
+        self.is_committee = self.env.user.has_group("user_group.group_discipline_committee")
     @api.model
     def _compute_is_ceo(self):
-        self.is_ceo = self.env.user.has_group("hr_discipline_case2.group_ceo")
+        self.is_ceo = self.env.user.has_group("user_group.group_ceo")
     approve_button_visible = fields.Boolean(compute='_compute_approve_button', store=True)
     @api.model
     def send_notification(self, message, user, title):
@@ -117,24 +117,25 @@ class DisciplineCase(models.Model):
             # State transition rules
             if current_state == 'draft' and new_state == 'submitted' and user.has_group('base.group_user'):
                 pass
-            elif current_state == 'submitted' and new_state == 'resolved' and user.has_group('hr_discipline_case2.group_hr_manager'):
+            elif current_state == 'submitted' and new_state == 'resolved' and user.has_group('user_group.group_hr_director'):
                 pass
-            elif current_state == 'submitted' and new_state == 'escalate_to_committee' and user.has_group('hr_discipline_case2.group_hr_manager'):
+            elif current_state == 'submitted' and new_state == 'escalate_to_committee' and user.has_group('user_group.group_hr_director'):
                 pass
-            elif current_state == 'escalate_to_committee' and new_state == 'escalate_to_ceo' and user.has_group('hr_discipline_case2.group_discipline_committee'):
+            elif current_state == 'escalate_to_committee' and new_state == 'escalate_to_ceo' and user.has_group('user_group.group_discipline_committee'):
                 pass
-            elif current_state == 'escalate_to_ceo' and new_state == 'approve' and user.has_group('hr_discipline_case2.group_ceo'):
+            elif current_state == 'escalate_to_ceo' and new_state == 'approve' and user.has_group('user_group.group_ceo'):
                 pass
-            elif current_state == 'escalate_to_ceo' and new_state == 'reject' and user.has_group('hr_discipline_case2.group_ceo'):
+            elif current_state == 'escalate_to_ceo' and new_state == 'reject' and user.has_group('user_group.group_ceo'):
                 pass
-            elif current_state == 'reject' and new_state == 'reviewed' and user.has_group('hr_discipline_case2.group_discipline_committee'):
+            elif current_state == 'reject' and new_state == 'reviewed' and user.has_group('user_group.group_discipline_committee'):
                 pass
-            elif current_state == 'reviewed' and (new_state == 'approve' or new_state == 'reject') and user.has_group('hr_discipline_case2.group_ceo'):
+            elif current_state == 'reviewed' and (new_state == 'approve' or new_state == 'reject') and user.has_group('user_group.group_ceo'):
                 pass
             else:
                 raise ValidationError(_("You do not have the rights to perform this state transition or the transition is invalid."))
 
         return super(DisciplineCase, self).write(values)
+    
     # Action Buttons
     def _check_access(self, allowed_groups):
         """Check if the current user belongs to one of the allowed groups."""
@@ -149,7 +150,7 @@ class DisciplineCase(models.Model):
          # Prepare the message
         message = f"This case has been submitted to you!,Pls kindly resolve it ASAP!"
         # Get the users in the group "group_department_approval"
-        hr_department_group = self.env.ref('hr_discipline_case2.group_hr_manager', raise_if_not_found=False)
+        hr_department_group = self.env.ref('user_group.group_hr_director', raise_if_not_found=False)
         if hr_department_group:
             for user in hr_department_group.users:
                 # Send notification to each user in the department approval group
@@ -177,7 +178,7 @@ class DisciplineCase(models.Model):
         
 
     def action_resolve(self):
-        self._check_access('hr_discipline_case2.group_hr_manager')  # Only HR can resolve
+        self._check_access('user_group.group_hr_director')  # Only HR can resolve
         if self.state != 'submitted':
             raise ValidationError(_("Only cases in the 'Submitted' state can be resolved."))
         self.write({'state': 'resolved'})
@@ -215,14 +216,14 @@ class DisciplineCase(models.Model):
             }
 
     def action_escalate_to_committee(self):
-        self._check_access('hr_discipline_case2.group_hr_manager')  # Only HR can escalate to committee
+        self._check_access('user_group.group_hr_director')  # Only HR can escalate to committee
         if self.state != 'submitted':
             raise ValidationError(_("Only cases in the 'Submitted' state can be escalated to the committee."))
         self.write({'state': 'escalate_to_committee'})
          # Prepare the message
         message = f"This case has been scalated to you!,Pls kindly resolve it ASAP!"
         # Get the users in the group "group_department_approval"
-        committee_group = self.env.ref('hr_discipline_case2.group_discipline_committee', raise_if_not_found=False)
+        committee_group = self.env.ref('user_group.group_discipline_committee', raise_if_not_found=False)
         if committee_group:
             for user in committee_group.users:
                 # Send notification to each user in the department approval group
@@ -250,14 +251,14 @@ class DisciplineCase(models.Model):
         
 
     def action_escalate_to_ceo(self):
-        self._check_access('hr_discipline_case2.group_discipline_committee')  # Only committee can escalate to CEO
+        self._check_access('user_group.group_discipline_committee')  # Only committee can escalate to CEO
         if self.state != 'escalate_to_committee':
             raise ValidationError(_("Only cases in the 'Escalate to Committee' state can be escalated to the CEO."))
         self.write({'state': 'escalate_to_ceo'})
          # Prepare the message
         message = f"This case has been scalated to you!,Pls kindly resolve it ASAP!"
         # Get the users in the group "group_department_approval"
-        ceo = self.env.ref('hr_discipline_case2.group_ceo', raise_if_not_found=False)
+        ceo = self.env.ref('user_group.group_ceo', raise_if_not_found=False)
         if ceo:
             for user in ceo.users:
                 # Send notification to each user in the department approval group
@@ -286,7 +287,7 @@ class DisciplineCase(models.Model):
         
 
     def action_approve(self):
-        self._check_access('hr_discipline_case2.group_ceo')  # Only CEO can approve
+        self._check_access('user_group.group_ceo')  # Only CEO can approve
         if self.state not in ['escalate_to_ceo','reviewed']:
             raise ValidationError(_("Only cases in the 'Escalate to CEO' or 'Reviewed' state can be approved."))
         if self.state == 'reviewed':
@@ -296,7 +297,7 @@ class DisciplineCase(models.Model):
          # Prepare the message
         message = f"This case has been approved!,Pls kindly check it and take your action!"
         # Get the users in the group "group_department_approval"
-        hr = self.env.ref('hr_discipline_case2.group_hr_manager', raise_if_not_found=False)
+        hr = self.env.ref('user_group.group_hr_director', raise_if_not_found=False)
         if hr:
             for user in hr.users:
                 # Send notification to each user in the department approval group
@@ -327,7 +328,7 @@ class DisciplineCase(models.Model):
 
 
     def action_reject(self):
-        self._check_access('hr_discipline_case2.group_ceo')  # Only CEO can reject
+        self._check_access('user_group.group_ceo')  # Only CEO can reject
         if self.state not in ["escalate_to_ceo","reviewed"]:
             raise ValidationError(_("Only cases in the 'Escalate to CEO' state can be rejected."))
         if not self.reason_for_revision:
@@ -338,7 +339,7 @@ class DisciplineCase(models.Model):
           # Prepare the message
         message = f"This case has been returned to you!,Pls kindly review it and send it back to me ASAP!"
         # Get the users in the group "group_department_approval"
-        returned_to_committee = self.env.ref('hr_discipline_case2.group_discipline_committee', raise_if_not_found=False)
+        returned_to_committee = self.env.ref('user_group.group_discipline_committee', raise_if_not_found=False)
         if returned_to_committee:
             for user in returned_to_committee.users:
                 # Send notification to each user in the department approval group
@@ -365,14 +366,14 @@ class DisciplineCase(models.Model):
             }
 
     def action_review(self):
-        self._check_access('hr_discipline_case2.group_discipline_committee')  # Only committee can review
+        self._check_access('user_group.group_discipline_committee')  # Only committee can review
         if self.state != 'reject':
             raise ValidationError(_("Only cases in the 'Rejected' state can be reviewed."))
         self.write({'state': 'reviewed'})
          # Prepare the message
         message = f"I reviewed the case and sent it back to you,Pls kindly review it and approve it!"
         # Get the users in the group "group_department_approval"
-        to_ceo = self.env.ref('hr_discipline_case2.group_ceo', raise_if_not_found=False)
+        to_ceo = self.env.ref('user_group.group_ceo', raise_if_not_found=False)
         if to_ceo:
             for user in to_ceo.users:
                 # Send notification to each user in the department approval group

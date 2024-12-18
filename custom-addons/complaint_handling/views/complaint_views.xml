@@ -78,7 +78,7 @@
                                      <page string="Documents by Legal Service Department" attrs="{'invisible': [('state', 'in', ['draft', 'submitted'])]}">
                                         <div class="row g-3">
                                             <div class="col-md-4" attrs="{'readonly': ['|',('state', '=', 'submitted'), ('is_legal_service', '=', False)]}">
-                                                <label for="documents_by_legal_service" class="form-label">Documents by legal service department</label>
+                                                <label for="documents_by_legal_service" class="form-label">Attachments by legal service department</label>
                                                 <field name="documents_by_legal_service" widget="many2many_binary" class="form-control" id="documents_by_legal_service" attrs="{'readonly': ['|',('state', '=', 'submitted'), ('is_legal_service', '=', False)]}"/>
                                             </div>
                                            
@@ -104,10 +104,10 @@
 
                             </div>
                             <div class="col-md-3 text-center">
-                                <button name="action_legal_review" type="object" string="Reviewed" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('state', '!=', 'submitted')]}" groups="complaint_handling.group_legal_servicedepartment" confirm="Are you sure you want to review this?"/>
+                                <button name="action_legal_review" type="object" string="Reviewed" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('state', '!=', 'submitted')]}" groups="user_group.group_legal_servicedepartment" confirm="Are you sure you want to review this?"/>
                             </div>
                             <div class="col-md-3 text-center">
-                                <button name="action_ceo_review" type="object" string="Reviewed" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('state', '!=', 'reject_legal_review')]}" groups="complaint_handling.group_ceo" confirm="Are you sure you want to review this?"/>
+                                <button name="action_ceo_review" type="object" string="Reviewed" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('state', '!=', 'reject_legal_review')]}" groups="user_group.group_ceo" confirm="Are you sure you want to review this?"/>
                             </div>
                             <div class="col-md-3 " style="display: flex; justify-content: center;">
                             <button name="action_save_complaint" type="object" string="Submit"  class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_ceo', '=', False)]}" confirm="Are you sure you want to submit this?"/>

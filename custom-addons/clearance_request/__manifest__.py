@@ -10,7 +10,7 @@ Employee Clearance Workflow:
 - Department/Service, Property Administration, Finance, and HR Office approvals.
 """,
     "data": [
-        "security/clearance_security.xml",  # Group definitions MUST come first
+        # "security/clearance_security.xml",  # Group definitions MUST come first
         "security/record_rule.xml",
         "security/ir.model.access.csv",  # Access rights should come after groups
         "views/clearance_views.xml",     # Other views are loaded last

@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from random import randint
+import re
 
 from odoo import api, fields, models, tools, SUPERUSER_ID
 from odoo.exceptions import AccessError, ValidationError
@@ -269,6 +270,42 @@ class Applicant(models.Model):
         for applicant in applicants:
             applicant.application_count = application_data_mapped.get(applicant.id, 1) - 1
         (self - applicants).application_count = False
+    # for phone number validation in the job application form
+    @api.constrains('partner_mobile')
+    def _check_partner_mobile(self):
+        for record in self:
+            if record.partner_mobile:
+                # Check if the mobile number starts with 0 (representing +251) and is followed by exactly 9 digits
+                if not re.match(r"^0\d{9}$", record.partner_mobile):
+                    raise ValidationError(_("Mobile number must start with 0 and contain exactly 9 digits after that."))
+    # for email validation in the job application form
+    @api.constrains('email_from')
+    def _check_email_from(self):
+        for record in self:
+            if record.email_from:
+                # To Check if the email contains the '@' symbol
+                if '@' not in record.email_from:
+                    raise ValidationError(_("The email address must contain the '@' symbol."))
+                # Optionally, check the general format of the email
+                elif not re.match(r"[^@]+@[^@]+\.[^@]+", record.email_from):
+                    raise ValidationError(_("Please enter a valid email address."))
+                
+    @api.onchange('partner_mobile')
+    def _onchange_partner_mobile(self):
+        for applicant in self:
+            if applicant.partner_mobile:
+                # Remove non-numeric characters
+                cleaned_mobile = re.sub(r'\D', '', applicant.partner_mobile)
+                
+                # Ensure it starts with the country code +251 and has exactly 10 digits
+                if cleaned_mobile.startswith("251"):
+                    cleaned_mobile = "251" + cleaned_mobile[3:]  # Ensure it's exactly 10 digits
+                if len(cleaned_mobile) == 12:
+                    applicant.partner_mobile = cleaned_mobile
+                else:
+                    raise ValidationError("The mobile number should be exactly 10 digits, starting with +251.")
+            else:
+                applicant.partner_mobile = ''
 
     @api.depends_context('lang')
     @api.depends('meeting_ids', 'meeting_ids.start')
@@ -852,6 +889,13 @@ class HrApplicant(models.Model):
             applicant.is_hired_stage = stage_name == 'Hired stage'
     cgpa = fields.Float(string="CGPA" , store=True)
     experience = fields.Float(string="Experience" , store=True)
+    
+    @api.constrains('cgpa')
+    def _check_cgpa_range(self):
+        for record in self:
+            if record.cgpa < 2 or record.cgpa > 4:
+                raise ValidationError(_("CGPA must be between 2 and 4."))
+            
     def get_cgpa_filter_domain(self, min_cgpa):
         return [('cgpa', '>=', min_cgpa)]
     
