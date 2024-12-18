@@ -28,7 +28,7 @@ class AuthorityDeligation(models.Model):
         track_visibility="onchange",
     )
     delegatee_response = fields.Text(string="Delegatee Reason")
-    Hr_response = fields.Text(string="HR Reason")
+    hr_response = fields.Text(string="HR Reason")
     reason = fields.Text(string="Reason for Delegation", required=True)
     attachment_ids = fields.Many2many(
         'ir.attachment', string='Attachments',
@@ -214,7 +214,7 @@ class AuthorityDeligation(models.Model):
             raise ValidationError(_("You are not allowed to reject this request."))
         if self.status != 'accepted_by_delegatee':
             raise ValidationError(_("You are not allowed to reject this request."))
-        if not self.hr_director_response:
+        if not self.hr_response:
             raise ValidationError(_("Please provide a reason for rejecting the request to the delegator."))
         title = "Authority delegation Rejection"
         message = f"Hr Director {self.env.user.employee_id.name} has rejected the request for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
