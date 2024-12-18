@@ -81,6 +81,16 @@ class HrSalaryIncrementBatch(models.Model):
                 if not record.name
                 else f"Bonus for {fields.Datetime.today().year} "
             )
+    @api.onchange('performance', 'fixed_amount', 'months', 'is_fixed')
+    def _onchange_bonus_management_line(self):
+        self.bonus_managment_line = None
+            
+    @api.onchange("is_fixed")
+    def _onchange_is_fixed(self):
+        self.months = None
+        self.fixed_amount = None
+        self.performance = None
+            
 
     def action_populate_batch(self):
         """Populate batch with all employees and their bonus details."""
