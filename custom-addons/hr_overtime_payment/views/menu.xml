@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem
-        id="hr_overtime_rate"
-        name="Overtime Rate Types"
-        action="hr_overtime_type_action"
-        groups="user_group.group_hr_office,base.group_system"
-        parent="hr.menu_human_resources_configuration"
-        sequence="10" />
 
     <menuitem
         id="hr_overtime_payment_root"
         name="Overtime Payment"
         groups="user_group.group_hr_office,user_group.group_department_manager,base.group_system"
-        parent="hr.menu_hr_root"
+        parent="hr.menu_employee_benefits"
         sequence="22" />
 
+    <menuitem
+        id="hr_overtime_rate"
+        name="Overtime Rate Types"
+        action="hr_overtime_type_action"
+        groups="user_group.group_hr_office,base.group_system"
+        parent="hr_overtime_payment_root"
+        sequence="10" />
     <menuitem
         id="hr_overtime_root"
         name="Overtime Payment Request"

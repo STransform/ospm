@@ -6,7 +6,7 @@
     'author': 'Kuma Telila @otech',
     'website': 'www.otech.et',
     'category': 'Human Resources',
-    'depends': ['base', 'hr', 'survey', 'mail'],
+    'depends': ['base', 'hr', 'survey', 'mail', 'custom_notification', 'web_notify', 'user_group'],
     'data': [
         "security/hr_performance_group.xml",
         "security/ir.model.access.csv",

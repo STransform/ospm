@@ -30,6 +30,19 @@ class HrEvaluationSchedule(models.Model):
     )
     evaluations_created = fields.Boolean("Evaluations Created", default=False)
 
+    # notification function
+    @api.model
+    def send_notification(self, message, user, title, model, res_id):
+        self.env["custom.notification"].create(
+            {
+                "title": title,
+                "message": message,
+                "user_id": user.id,
+                "action_model": model,
+                "action_res_id": res_id,
+            }
+        )
+
     @api.depends("from_date", "to_date")
     def _compute_name(self):
         for record in self:
@@ -49,13 +62,29 @@ class HrEvaluationSchedule(models.Model):
             raise ValidationError(_("No employees available to evaluate."))
 
         for employee in self.env["hr.employee"].search([]):
-            self.env["hr.performance.evaluation"].create(
+            evaulation = self.env["hr.performance.evaluation"].create(
                 {
                     "schedule_id": self.id,
                     "employee_id": employee.id,
                     "survey_id": self.survey_id.id,
                 }
             )
+            print(evaulation.id)
+
+            if employee.parent_id:
+                message = f"New Performance Evaluation to be submitted for Employee {employee.name}"
+                title = "New Performance Evaluation to be submitted"
+                self.send_notification(
+                    message=message,
+                    user=employee.parent_id.user_id,
+                    title=title,
+                    model="hr.performance.evaluation",
+                    res_id=evaulation.id,
+                )
+                # web notify
+                employee.parent_id.user_id.notify_success(title=title, message=message)
+        # web notify use evaulation is created
+        self.env.user.notify_success("Evaulation is created")
         self.state = "active"
         self.evaluations_created = True
 
@@ -88,13 +117,17 @@ class HrEvaluationSchedule(models.Model):
             for evaulation_schedule in evaulation_schedules:
                 if (
                     evaulation_schedule.from_date
-                    <= self.from_date
-                    <= evaulation_schedule.to_date
+                    < self.from_date
+                    < evaulation_schedule.to_date
                 ):
-                    raise ValidationError(f"Evaulation Schedule cannot be duplicated! exist in {evaulation_schedule.name}")
+                    raise ValidationError(
+                        f"Evaulation Schedule cannot be duplicated! exist in {evaulation_schedule.name}"
+                    )
                 if (
                     evaulation_schedule.from_date
-                    <= self.to_date
-                    <= evaulation_schedule.to_date
+                    < self.to_date
+                    < evaulation_schedule.to_date
                 ):
-                    raise ValidationError(f"Evaulation Schedule cannot be duplicated! exist in {evaulation_schedule.name}")
+                    raise ValidationError(
+                        f"Evaulation Schedule cannot be duplicated! exist in {evaulation_schedule.name}"
+                    )
