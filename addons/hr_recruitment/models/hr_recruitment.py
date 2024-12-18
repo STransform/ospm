@@ -206,6 +206,11 @@ class Applicant(models.Model):
         ('refused', 'Refused'),
     ], compute="_compute_application_status")
     ceo_approved = fields.Boolean(string='CEO Approved', default=False)
+
+    # _sql_constraints = [
+    #     ('unique_job_mobile', 'UNIQUE(job_id, partner_id)', 
+    #      "The combination of job position and mobile number must be unique."),
+    # ]
     #cgpa = fields.Float(string="CGPA")
     #experience = fields.Float(string="Experience (Years)")
 
@@ -297,13 +302,13 @@ class Applicant(models.Model):
                 # Remove non-numeric characters
                 cleaned_mobile = re.sub(r'\D', '', applicant.partner_mobile)
                 
-                # Ensure it starts with the country code +251 and has exactly 10 digits
-                if cleaned_mobile.startswith("251"):
-                    cleaned_mobile = "251" + cleaned_mobile[3:]  # Ensure it's exactly 10 digits
-                if len(cleaned_mobile) == 12:
+                # Check if it starts with '0' and is exactly 10 digits
+                if len(cleaned_mobile) == 10 and cleaned_mobile.startswith('0'):
                     applicant.partner_mobile = cleaned_mobile
                 else:
-                    raise ValidationError("The mobile number should be exactly 10 digits, starting with +251.")
+                    raise ValidationError(
+                        "The mobile number should be exactly 10 digits and must start with '0'."
+                    )
             else:
                 applicant.partner_mobile = ''
 

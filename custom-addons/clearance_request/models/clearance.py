@@ -123,21 +123,17 @@ class Clearance(models.Model):
         self.is_hr_approve = self.env.user.has_group("user_group.group_hr_director")
     
    
+   
     @api.model
-    def send_notification(self, message, user, title):
-        """
-        Send a notification to a specific user.
-        
-        Args:
-            message (str): The notification message
-            user (res.users): The user to notify
-            title (str): The notification title
-        """
+    def send_notification(self, message, user, title, model,res_id):
         self.env['custom.notification'].create({
             'title': title,
             'message': message,
             'user_id': user.id,
+            'action_model': model,
+            'action_res_id': res_id
         })
+
     @api.onchange('department_approval', 'property_approval', 'finance_approval')
     def _check_clearance_status(self):
         if (self.department_approval == 'approved' and
@@ -163,15 +159,18 @@ class Clearance(models.Model):
         message = f"Our department has approved this clearance request"
         
         # Get the users in the group "group_department_approval"
-        department_group = self.env.ref('user_group.group_property_approval', raise_if_not_found=False)
+        department_group = self.env.ref('user_group.group_property_approval').users
         if department_group:
-            for user in department_group.users:
+            for user in department_group:
                 # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
+                self.send_notification(message=message, user=user, title=self._description, model=self._name, res_id=self.id)
+                
                 user.notify_warning(message=message, title=self._description)
         
         # Notify the employee (optional, if you still want to notify the employee as well)
         self.employee_id.user_id.notify_warning(message=message, title=self._description)
+
+        
         
         self.state = 'department'
         return {
@@ -200,15 +199,16 @@ class Clearance(models.Model):
         if self.department_approval != 'approved':
             raise ValidationError(_("Cannot approve property clearance until department clearance is approved."))
         self.property_approval = 'approved'
-         # Prepare the message
+        
         message = f"Our department has approved this clearance request"
         
         # Get the users in the group "group_department_approval"
-        department_group = self.env.ref('user_group.group_finance_approval', raise_if_not_found=False)
-        if department_group:
-            for user in department_group.users:
-                # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
+        finance_group = self.env.ref('user_group.group_finance_approval', raise_if_not_found=False).users
+        if finance_group:
+            for user in finance_group:
+                # Send notification to each user in the finance approval group
+                self.send_notification(message=message, user=user, title=self._description, model=self._name, res_id=self.id)
+                
                 user.notify_warning(message=message, title=self._description)
         
         # Notify the employee (optional, if you still want to notify the employee as well)
@@ -240,15 +240,15 @@ class Clearance(models.Model):
             raise ValidationError(_("Cannot approve finance clearance until property clearance is approved."))
         self.finance_approval = 'approved'
          
-         # send the message
         message = f"Our department has approved this clearance request"
         
         # Get the users in the group "group_department_approval"
-        department_group = self.env.ref('user_group.group_hr_director', raise_if_not_found=False)
-        if department_group:
-            for user in department_group.users:
-                # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
+        finance_group = self.env.ref('user_group.group_hr_director', raise_if_not_found=False).users
+        if finance_group:
+            for user in finance_group:
+                # Send notification to each user in the finance approval group
+                self.send_notification(message=message, user=user, title=self._description, model=self._name, res_id=self.id)
+                
                 user.notify_warning(message=message, title=self._description)
         
         # Notify the employee (optional, if you still want to notify the employee as well)
@@ -532,7 +532,7 @@ class Clearance(models.Model):
             if department_group:
                 for user in department_group.users:
                     # Send notification to each user in the department approval group
-                    self.send_notification(message=message, user=user, title=self._description)
+                    self.send_notification(message=message, user=user, title=self._description,model=self._name,res_id=self.id)
                     user.notify_warning(message=message, title=self._description)
         
 
