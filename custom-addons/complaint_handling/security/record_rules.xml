@@ -16,7 +16,7 @@
         <field name="name">Legal Service can access all complaints</field>
         <field name="model_id" ref="model_employee_complaint"/>
         <field name="domain_force">[]</field> <!-- No filter, can access all complaints -->
-        <field name="groups" eval="[(4, ref('complaint_handling.group_legal_servicedepartment'))]"/>
+        <field name="groups" eval="[(4, ref('user_group.group_legal_servicedepartment'))]"/>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
         <field name="perm_create" eval="1"/>
@@ -28,7 +28,7 @@
         <field name="name">CEO can access all complaints</field>
         <field name="model_id" ref="model_employee_complaint"/>
         <field name="domain_force">[]</field> <!-- No filter, can access all complaints -->
-        <field name="groups" eval="[(4, ref('complaint_handling.group_ceo'))]"/>
+        <field name="groups" eval="[(4, ref('user_group.group_ceo'))]"/>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
         <field name="perm_create" eval="1"/>
