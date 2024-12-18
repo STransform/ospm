@@ -103,12 +103,12 @@ class HrMedicalCoverage(models.Model):
         # Check if hr_comment is being modified
         if "hr_comment" in vals:
             # Check if the current user is in the HR Director group
-            if not self.env.user.has_group("hr_medical_coverage.group_hr_director"):
+            if not self.env.user.has_group("user_group.group_hr_office"):
                 raise AccessError("You are not allowed to edit the HR Comment field.")
 
         # check if finance comment is changed
         if "finance_comment" in vals:
-            if not self.env.user.has_group("hr_medical_coverage.group_finance_officer"):
+            if not self.env.user.has_group("user_group.group_finance_office"):
                 raise AccessError(
                     "You are not allowed to edit the Finance Comment field."
                 )
@@ -122,8 +122,8 @@ class HrMedicalCoverage(models.Model):
     #     self.status = 'submitted'
 
     #     # Get HR and Finance Officers' user IDs
-    #     hr_group = self.env.ref('hr_medical_coverage.group_hr_director')
-    #     finance_group = self.env.ref('hr_medical_coverage.group_finance_officer')
+    #     hr_group = self.env.ref('user_group.group_hr_office')
+    #     finance_group = self.env.ref('user_group.group_finance_office')
     #     user_ids = hr_group.users.ids + finance_group.users.ids
 
     #     # Send real-time notifications

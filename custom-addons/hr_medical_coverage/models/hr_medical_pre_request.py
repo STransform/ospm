@@ -55,6 +55,6 @@ class HrMedicalPreRequest(models.Model):
 
     def write(self, vals):
         if "hr_comment" in vals:
-            if not self.env.user.has_group("hr_medical_coverage.group_hr_director"):
+            if not self.env.user.has_group("user_group.group_hr_office"):
                 raise AccessError("You are not allowed to edit this field")
         return super(HrMedicalPreRequest, self).write(vals)
