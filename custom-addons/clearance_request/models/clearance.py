@@ -82,7 +82,7 @@ class Clearance(models.Model):
     user_in_group = fields.Boolean(compute='_compute_user_in_group', store=False)
     @api.depends('user_id')
     def _compute_user_in_group(self):
-        group = self.env.ref('clearance_request.group_department_approval', raise_if_not_found=False)
+        group = self.env.ref('user_group.group_department_manager', raise_if_not_found=False)
         if group:
             self.user_in_group = self.env.user in group.users
         else:
@@ -111,16 +111,16 @@ class Clearance(models.Model):
             self.job_id = False
     @api.model
     def _compute_is_department_approve(self):
-        self.is_department_approve = self.env.user.has_group("clearance_request.group_department_approval")
+        self.is_department_approve = self.env.user.has_group("user_group.group_department_manager")
     @api.model
     def _compute_is_property_approve(self):
-        self.is_property_approve = self.env.user.has_group("clearance_request.group_property_approval")
+        self.is_property_approve = self.env.user.has_group("user_group.group_property_approval")
     @api.model
     def _compute_is_finance_approve(self):
-        self.is_finance_approve = self.env.user.has_group("clearance_request.group_finance_approval")
+        self.is_finance_approve = self.env.user.has_group("user_group.group_finance_approval")
     @api.model
     def _compute_is_hr_approve(self):
-        self.is_hr_approve = self.env.user.has_group("clearance_request.group_hr_approval")
+        self.is_hr_approve = self.env.user.has_group("user_group.group_hr_director")
     
    
     @api.model
@@ -163,7 +163,7 @@ class Clearance(models.Model):
         message = f"Our department has approved this clearance request"
         
         # Get the users in the group "group_department_approval"
-        department_group = self.env.ref('clearance_request.group_property_approval', raise_if_not_found=False)
+        department_group = self.env.ref('user_group.group_property_approval', raise_if_not_found=False)
         if department_group:
             for user in department_group.users:
                 # Send notification to each user in the department approval group
@@ -204,7 +204,7 @@ class Clearance(models.Model):
         message = f"Our department has approved this clearance request"
         
         # Get the users in the group "group_department_approval"
-        department_group = self.env.ref('clearance_request.group_finance_approval', raise_if_not_found=False)
+        department_group = self.env.ref('user_group.group_finance_approval', raise_if_not_found=False)
         if department_group:
             for user in department_group.users:
                 # Send notification to each user in the department approval group
@@ -239,11 +239,12 @@ class Clearance(models.Model):
         if self.property_approval != 'approved':
             raise ValidationError(_("Cannot approve finance clearance until property clearance is approved."))
         self.finance_approval = 'approved'
-         # Prepare the message
+         
+         # send the message
         message = f"Our department has approved this clearance request"
         
         # Get the users in the group "group_department_approval"
-        department_group = self.env.ref('clearance_request.group_hr_approval', raise_if_not_found=False)
+        department_group = self.env.ref('user_group.group_hr_director', raise_if_not_found=False)
         if department_group:
             for user in department_group.users:
                 # Send notification to each user in the department approval group
@@ -527,7 +528,7 @@ class Clearance(models.Model):
             message = f"Dear Department Team, a new clearance request has been submitted by {record.employee_id.name}. Please review it."
 
             # Get the users in the group "group_department_approval"
-            department_group = self.env.ref('clearance_request.group_department_approval', raise_if_not_found=False)
+            department_group = self.env.ref('user_group.group_department_manager', raise_if_not_found=False)
             if department_group:
                 for user in department_group.users:
                     # Send notification to each user in the department approval group

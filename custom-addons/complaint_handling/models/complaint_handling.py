@@ -60,11 +60,11 @@ class EmployeeComplaint(models.Model):
     
     @api.model
     def _compute_is_ceo(self):
-        self.is_ceo = self.env.user.has_group("complaint_handling.group_ceo")
+        self.is_ceo = self.env.user.has_group("user_group.group_ceo")
 
     @api.model
     def _compute_is_legal_service(self):
-        self.is_legal_service = self.env.user.has_group("complaint_handling.group_legal_servicedepartment")
+        self.is_legal_service = self.env.user.has_group("user_group.group_legal_servicedepartment")
 
     # for default logged in user user,so that initiator is automatically populated from logged in user...
     @api.model
@@ -104,7 +104,7 @@ class EmployeeComplaint(models.Model):
         # Prepare the message
         message = f"This is my complaint details submitted to you,for review!"
         # Get the users in the group "group_department_approval"
-        legal_service_group = self.env.ref('complaint_handling.group_legal_servicedepartment', raise_if_not_found=False)
+        legal_service_group = self.env.ref('user_group.group_legal_servicedepartment', raise_if_not_found=False)
         if legal_service_group:
             for user in legal_service_group.users:
                 # Send notification to each user in the department approval group
@@ -133,7 +133,7 @@ class EmployeeComplaint(models.Model):
         
 
     def action_legal_review(self):
-        self._check_access('complaint_handling.group_legal_servicedepartment')  # Legal department group
+        self._check_access('user_group.group_legal_servicedepartment')  # Legal department group
         if self.state != 'submitted':
             raise ValidationError(_("Only complaints in submitted state can be legal reviewed."))
         self.state = 'legal_reviewed'
@@ -154,7 +154,7 @@ class EmployeeComplaint(models.Model):
         # Prepare the message
         message = f"I've accepted your response.Thank you very much!."
         # Get the users in the group "group_department_approval"
-        legal_service_group = self.env.ref('complaint_handling.group_legal_servicedepartment', raise_if_not_found=False)
+        legal_service_group = self.env.ref('user_group.group_legal_servicedepartment', raise_if_not_found=False)
         if legal_service_group:
             for user in legal_service_group.users:
                 # Send notification to each user in the department approval group
@@ -190,7 +190,7 @@ class EmployeeComplaint(models.Model):
         # Prepare the message
         message = f"Legal service review not satisfactory, so I escalated the case to you for further review and better response."
         # Get the users in the group "group_department_approval"
-        ceo_group = self.env.ref('complaint_handling.group_ceo', raise_if_not_found=False)
+        ceo_group = self.env.ref('user_group.group_ceo', raise_if_not_found=False)
         if ceo_group:
             for user in ceo_group.users:
                 # Send notification to each user in the department approval group
@@ -219,7 +219,7 @@ class EmployeeComplaint(models.Model):
         
 
     def action_ceo_review(self):
-        self._check_access('complaint_handling.group_ceo')  # CEO group
+        self._check_access('user_group.group_ceo')  # CEO group
         if self.state != 'legal_reviewed' and self.state not in ['accept_legal_review', 'reject_legal_review']:
             raise ValidationError(_("Legal reviewed must be done first!"))
         self.state = 'ceo_reviewed'
@@ -241,7 +241,7 @@ class EmployeeComplaint(models.Model):
           # Prepare the message
         message = f"I've accepted your response.I want to thank you."
         # Get the users in the group "group_department_approval"
-        ceo_group = self.env.ref('complaint_handling.group_ceo', raise_if_not_found=False)
+        ceo_group = self.env.ref('user_group.group_ceo', raise_if_not_found=False)
         if ceo_group:
             for user in ceo_group.users:
                 # Send notification to each user in the department approval group
@@ -315,13 +315,13 @@ class EmployeeComplaint(models.Model):
             if current_state == 'draft' and self.env.user.has_group('base.group_user') and new_state == 'submitted':
                 # Initiator can submit, but not proceed to other states directly
                 pass
-            elif current_state == 'submitted' and self.env.user.has_group('complaint_handling.group_legal_servicedepartment') and new_state == 'legal_reviewed':
+            elif current_state == 'submitted' and self.env.user.has_group('user_group.group_legal_servicedepartment') and new_state == 'legal_reviewed':
                 # Legal Service can only review after submission
                 pass
             elif current_state == 'legal_reviewed' and self.env.user.has_group('base.group_user') and new_state in ['accept_legal_review', 'reject_legal_review']:
                 # Initiator can accept or reject legal review
                 pass
-            elif current_state == 'reject_legal_review' and self.env.user.has_group('complaint_handling.group_ceo') and new_state == 'ceo_reviewed':
+            elif current_state == 'reject_legal_review' and self.env.user.has_group('user_group.group_ceo') and new_state == 'ceo_reviewed':
                 # CEO can review only after legal review
                 pass
             elif current_state == 'ceo_reviewed' and self.env.user.has_group('base.group_user') and new_state in ['accept_ceo_review', 'reject_ceo_review']:

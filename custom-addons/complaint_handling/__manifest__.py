@@ -7,7 +7,7 @@
     'author': 'Simon Temesgen',
     'depends': ['base', 'hr','user_group','custom_notification','web_notify'],
     'data': [
-        'security/groups.xml',
+        # 'security/groups.xml',
         'security/ir.model.access.csv',
         'security/record_rules.xml',
         'views/complaint_views.xml',
