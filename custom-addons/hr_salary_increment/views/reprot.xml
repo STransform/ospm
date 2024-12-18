@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Graph View: increments grouped by steps -->
+    <record id="view_hr_salary_increment_batch_line_graph" model="ir.ui.view">
+        <field name="name">hr.salary.increment.batch.line.graph</field>
+        <field name="model">hr.salary.increment.batch.line</field>
+        <field name="arch" type="xml">
+            <graph string="Increments by Steps" type="bar">
+                <field name="steps" type="row" />
+                <field name="id" type="measure" />
+                <field name="eligible_value" string="Eligible Employees" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_hr_salary_increment_batch_line_search" model="ir.ui.view">
+        <field name="name">hr.salary.increment.batch.line.search</field>
+        <field name="model">hr.salary.increment.batch.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <!-- Field for selecting batch -->
+                <field name="batch_id" string="Batch" />
+                <!-- Field for selecting employee department (related field through employee_id) -->
+                <field name="employee_id" string="Employee" />
+
+                <!-- If the model has increment_date or similar; adjust field name accordingly -->
+                <field name="write_date" string="Increment Date" filter_domain="[]" />
+
+
+            </search>
+        </field>
+    </record>
+    <!-- Pivot View: increments for analytical export -->
+    <record id="view_hr_salary_increment_batch_line_pivot" model="ir.ui.view">
+        <field name="name">hr.salary.increment.batch.line.pivot</field>
+        <field name="model">hr.salary.increment.batch.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Increment Pivot">
+                <field name="batch_id" type="row" />
+                <field name="employee_id" type="col" />
+                <field name="steps" type="measure" />
+                <field name="eligible_value" string="Eligible Employees" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Tree View: for listing data if needed -->
+    <record id="view_hr_salary_increment_batch_line_tree" model="ir.ui.view">
+        <field name="name">hr.salary.increment.batch.line.tree</field>
+        <field name="model">hr.salary.increment.batch.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="batch_id" />
+                <field name="employee_id" />
+                <field name="steps" />
+                <field name="average_performance_score" />
+                <field name="new_wage" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- Action: opens graph, pivot, and tree views -->
+    <record id="action_hr_salary_increment_batch_line_report" model="ir.actions.act_window">
+        <field name="name">Increment Reporting</field>
+        <field name="res_model">hr.salary.increment.batch.line</field>
+        <field name="view_mode">graph,pivot,tree</field>
+        <field name="search_view_id" ref="view_hr_salary_increment_batch_line_search" />
+        <field name="context">{}</field>
+        <field name="help">
+            Use the search filters to select a batch and analyze increments.
+            Switch between graph, pivot, and tree views.
+            In pivot view (Odoo Enterprise), use the "Download XLSX" button to export data.
+        </field>
+    </record>
+
+
+</odoo>

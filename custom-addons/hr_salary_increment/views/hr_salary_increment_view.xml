@@ -95,4 +95,15 @@
         </field>
     </record>
 
+
+
+    <!-- this is for report to test -->
+    <!-- <record id="salary_increment_report" model="ir.actions.report">
+        <field name="name">Salary Increment</field>
+        <field name="model">hr.salary.increment.batch</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">test</field>
+        <field name="binding_model_id" ref="base.model_report_paperformat" />
+    </record> -->
+
 </odoo>

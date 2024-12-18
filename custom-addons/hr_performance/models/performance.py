@@ -60,6 +60,30 @@ class HrPerformanceEvaluation(models.Model):
     is_manager_to_employee = fields.Boolean(compute="_compute_is_manager_to_employee")
     is_manager_start = fields.Boolean(compute="_compute_is_manager_start")
 
+    score_category = fields.Selection(
+        [
+            ("below_75", "Below 75"),
+            ("75_to_84", "75 - 84"),
+            ("85_to_94", "85 - 94"),
+            ("95_above", "95 and Above"),
+        ],
+        string="Score Category",
+        compute="_compute_score_category",
+        store=True,
+    )
+
+    @api.depends("total_score")
+    def _compute_score_category(self):
+        for record in self:
+            if record.total_score >= 95:
+                record.score_category = "95_above"
+            elif record.total_score >= 85:
+                record.score_category = "85_to_94"
+            elif record.total_score >= 75:
+                record.score_category = "75_to_84"
+            else:
+                record.score_category = "below_75"
+
     @api.depends("employee_id", "employee_id.user_id")
     def _compute_is_employee(self):
         for record in self:
@@ -203,9 +227,9 @@ class HrPerformanceEvaluation(models.Model):
             # Store the total score in the evaluation record
             curr = 0
             if length > 0:
-                curr = length*5
-                total_score = total_score*100/curr
-                
+                curr = length * 5
+                total_score = total_score * 100 / curr
+
             record.total_score = total_score
 
             record.evaluation_status = "employee_review"

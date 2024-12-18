@@ -13,6 +13,7 @@
         "views/hr_salary_increment_view.xml",
         "views/hr_employee_view.xml",
         "views/hr_salary_incrment_rejection.xml",
+        "views/reprot.xml",
         "views/menu.xml",
         "views/hr_salary_increment_batch_line_views.xml"
     ],

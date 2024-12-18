@@ -80,8 +80,8 @@ class HrSalaryIncrementBatch(models.Model):
                     )
                 if (
                     salary_increment.start_date
-                    <= self.end_date
-                    <= salary_increment.end_date
+                    < self.end_date
+                    < salary_increment.end_date
                 ) and salary_increment.state != "rejected":
                     raise ValidationError(
                         f"Salary Increment Request cannot be duplicated! exist in {salary_increment.name}"
@@ -161,7 +161,7 @@ class HrSalaryIncrementBatch(models.Model):
                         "employee_id": employee.id,
                         "current_is_base": True if contract.is_base else False,
                         "current_increment_level_id": (
-                            contract.increment_level_id
+                            contract.increment_level_id.display_name
                             if contract.increment_level_id
                             else False
                         ),
@@ -207,7 +207,7 @@ class HrSalaryIncrementBatch(models.Model):
                     "increment_date": fields.Datetime.now(),
                     "approved_by": self.env.user.id,
                     "from_increment_name": (
-                        line.current_increment_level_id.display_name
+                        line.current_increment_level_id
                         if line.current_increment_level_id
                         else "Base"
                     ),

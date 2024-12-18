@@ -3,17 +3,25 @@
     <menuitem id="menu_hr_performance_root" name="Performance" sequence="10" />
 
     <!-- Submenu for Evaluation Schedules -->
-    <menuitem id="menu_hr_evaluation_schedule" 
-              name="Evaluation Schedules" 
-              parent="menu_hr_performance_root" 
-              action="action_evaluation_schedule" 
-              groups="hr_performance.group_hr_director,base.group_system"
-              sequence="10"/>
+    <menuitem id="menu_hr_evaluation_schedule"
+        name="Evaluation Schedules"
+        parent="menu_hr_performance_root"
+        action="action_evaluation_schedule"
+        groups="hr_performance.group_hr_director,base.group_system"
+        sequence="1" />
 
     <!-- Submenu for Performance Evaluations -->
-    <menuitem id="menu_hr_performance_evaluation" 
-              name="Evaluations" 
-              parent="menu_hr_performance_root" 
-              action="action_performance_evaluation" 
-              sequence="20"/>
+    <menuitem id="menu_hr_performance_evaluation"
+        name="Evaluations"
+        parent="menu_hr_performance_root"
+        action="action_performance_evaluation"
+        sequence="2" />
+
+    <!-- submenu for reporting -->
+    <menuitem id="menu_hr_evaluation_reporting"
+        name="Reporting"
+        parent="menu_hr_performance_root"
+        action="action_hr_performance_evaluation_report"
+        groups="hr_performance.group_hr_director,base.group_system"
+        sequence="3" />
 </odoo>
