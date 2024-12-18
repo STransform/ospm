@@ -90,7 +90,7 @@
                         </page>
                         <page name="hr_response" string="HR Response" attrs="{'invisible':[('status','in',['draft','submitted','rejected_by_delegatee'])]}">
                             <group>
-                                <field name="Hr_response" attrs="{'readonly':['|',('is_hr_director','=',False),('status','!=','accepted_by_delegatee')]}"/>
+                                <field name="hr_response" attrs="{'readonly':['|',('is_hr_director','=',False),('status','!=','accepted_by_delegatee')]}"/>
                             </group>
                         </page>
                     </notebook>
