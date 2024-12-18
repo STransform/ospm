@@ -7,6 +7,7 @@
     "author": "Chala Olani",
     "depends": ["base", "hr","user_group", "custom_notification","web_notify"],
     "data": [
+        'security/authority_delegation_record_rule.xml',
         'security/ir.model.access.csv',
         'views/authority_delegation_view.xml',
         'views/authority_delegation_menu.xml',
