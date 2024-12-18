@@ -6,16 +6,16 @@
             <form string="Recruitment Request">
                 <header>
                     <!-- approval by hr director -->
-                    <button name="action_approve_hr_director" type="object" string="Accept" groups="hr_recruitment_request.group_hr_recruitment_hr_director" attrs="{'invisible': [('state_by_hr_director', 'in', ['approved', 'refused'])]}"/>
-                    <button name="action_reject_hr_director" type="object" string="Refuse" groups="hr_recruitment_request.group_hr_recruitment_hr_director" attrs="{'invisible': [('state_by_hr_director', 'in', ['approved', 'refused'])]}"/>
+                    <button name="action_approve_hr_director" type="object" string="Accept" groups="user_group.group_hr_director" attrs="{'invisible': [('state_by_hr_director', 'in', ['approved', 'refused'])]}"/>
+                    <button name="action_reject_hr_director" type="object" string="Refuse" groups="user_group.group_hr_director" attrs="{'invisible': [('state_by_hr_director', 'in', ['approved', 'refused'])]}"/>
 
                     <!-- approval by dco -->
-                    <button name="action_approve_dceo" type="object" string="Accept" groups="hr_recruitment_request.group_hr_recruitment_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']), ('state_by_hr_director', '!=', 'approved')]}"/>
-                    <button name="action_reject_dceo" type="object" string="Refuse" groups="hr_recruitment_request.group_hr_recruitment_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']), ('state_by_hr_director', '!=', 'approved')]}"/>
+                    <button name="action_approve_dceo" type="object" string="Accept" groups="user_group.group_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']), ('state_by_hr_director', '!=', 'approved')]}"/>
+                    <button name="action_reject_dceo" type="object" string="Refuse" groups="user_group.group_dceo" attrs="{'invisible': ['|', ('state_by_dceo', 'in', ['approved', 'refused']), ('state_by_hr_director', '!=', 'approved')]}"/>
 
                     <!-- approval by ceo -->
-                    <button name="action_approve_ceo" type="object" string="Accept" groups="hr_recruitment_request.group_hr_recruitment_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}"/>
-                    <button name="action_reject_ceo" type="object" string="Refuse" groups="hr_recruitment_request.group_hr_recruitment_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}"/>
+                    <button name="action_approve_ceo" type="object" string="Accept" groups="user_group.group_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}"/>
+                    <button name="action_reject_ceo" type="object" string="Refuse" groups="user_group.group_ceo" attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'refused']),  ('state_by_dceo', '!=', 'approved')]}"/>
                    <field name="combined_state" widget="statusbar" statusbar_visible="approved,refused,pending"/>
                 </header>
                 
@@ -43,25 +43,25 @@
                     <notebook>
                         <page string="HR Officer Comment" attrs="{'invisible': [('state_by_hr_director', 'not in', ['approved', 'refused'])]}">
                             <group>
-                                <field name="recruitment_type" groups="hr_recruitment_request.group_hr_recruitment_hr_director" />
-                                <field name="comment_by_hr_director" groups="hr_recruitment_request.group_hr_recruitment_hr_director"/>
+                                <field name="recruitment_type" groups="user_group.group_hr_director" />
+                                <field name="comment_by_hr_director" groups="user_group.group_hr_director"/>
 
-                                <field name="recruitment_type" groups="hr_recruitment_request.group_hr_recruitment_dceo,hr_recruitment_request.group_hr_recruitment_ceo" readonly="1"  />
-                                <field name="comment_by_hr_director" groups="hr_recruitment_request.group_hr_recruitment_dceo,hr_recruitment_request.group_hr_recruitment_ceo" readonly="1" />
+                                <field name="recruitment_type" groups="user_group.group_dceo,user_group.group_ceo" readonly="1"  />
+                                <field name="comment_by_hr_director" groups="user_group.group_dceo,user_group.group_ceo" readonly="1" />
                             </group>
                         </page>
 
                         <page string="DCEO Comment"  attrs="{'invisible': [('state_by_dceo', 'not in', ['approved', 'refused'])]}">
                             <group>
-                                <field name="comment_by_dceo" groups="hr_recruitment_request.group_hr_recruitment_dceo"/>
-                                <field name="comment_by_dceo" groups="hr_recruitment_request.group_hr_recruitment_hr_director, hr_recruitment_request.group_hr_recruitment_ceo" readonly="1" />
+                                <field name="comment_by_dceo" groups="user_group.group_dceo"/>
+                                <field name="comment_by_dceo" groups="user_group.group_hr_director,user_group.group_ceo" readonly="1" />
                             </group>
                         </page>
 
                         <page string="CEO Comment"  attrs="{'invisible': [('state_by_ceo', 'not in', ['approved', 'refused'])]}">
                             <group>
-                                <field name="comment_by_ceo" groups="hr_recruitment_request.group_hr_recruitment_ceo" />
-                                <field name="comment_by_ceo" groups="hr_recruitment_request.group_hr_recruitment_dceo, hr_recruitment_request.group_hr_recruitment_hr_director"  readonly="1"/>
+                                <field name="comment_by_ceo" groups="user_group.group_ceo" />
+                                <field name="comment_by_ceo" groups="user_group.group_dceo,user_group.group_hr_director"  readonly="1"/>
                             </group>
                         </page>
                     </notebook>
@@ -117,7 +117,7 @@
 
 
 
-    <record id="hr_recruitment_request_action" model="ir.actions.act_window">
+    <record id="user_group_action" model="ir.actions.act_window">
         <field name="name">Recruitment Management</field>
         <field name="res_model">hr.recruitments</field>
         <field name="view_mode">kanban,tree,form</field>
