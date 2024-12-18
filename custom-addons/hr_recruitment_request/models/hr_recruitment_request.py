@@ -52,6 +52,34 @@ class RecruitmentRequest(models.Model):
 
     promotion_created = fields.Boolean(default=False, readonly=True)
 
+    # add notification function 
+    @api.model
+    def send_notification(self, message, user, title, model,res_id):
+        self.env['custom.notification'].create({
+            'title': title,
+            'message': message,
+            'user_id': user.id,
+            'action_model': model,
+            'action_res_id': res_id
+        })
+
+    # override create method
+    @api.model
+    def create(self, vals):
+        record = super(RecruitmentRequest, self).create(vals)
+        # Send notification to HR Director
+        hr_director = self.env.ref("user_group.group_hr_director").users
+        title = "Recruitment Requested"
+        message = f"A new recruitment request '{record.name}' has been created."
+        for user in hr_director:
+            self.send_notification(message, user, title, model=self._name, res_id=record.id)
+            user.notify_success(title=title, message=message)
+        return record
+
+
+    
+    
+
     @api.depends('state_by_hr_director', 'state_by_dceo', 'state_by_ceo')
     def _compute_combined_state(self):
         for record in self:
@@ -80,6 +108,14 @@ class RecruitmentRequest(models.Model):
     def action_approve_hr_director(self):
         for record in self:
             record.state_by_hr_director = 'approved'
+            # send notification to the ceo
+            dceo = self.env.ref("user_group.group_admin_dceo").users
+            title = "Recruitment Request Approved"
+            message = f"Recruitment Request has been approved by the HR Director."
+            for user in dceo:
+                self.send_notification(message, user, title, model = self._name, res_id = self.id) 
+                user.notify_success(title=title, message=message)
+            self.env.user.notify_success("Request Submitted")
 
     def action_reject_hr_director(self):
         for record in self:
@@ -89,6 +125,16 @@ class RecruitmentRequest(models.Model):
     def action_approve_dceo(self):
         for record in self:
             record.state_by_dceo = 'approved'
+
+            # send notification to the ceo
+            ceo = self.env.ref("user_group.group_ceo").users
+            title = "Recruitment Request Approved"
+            message = f"Recruitment Request has been approved by the dceo."
+            for user in ceo:
+                self.send_notification(message, user, title, model = self._name, res_id = self.id) 
+                user.notify_success(title=title, message=message)
+            self.env.user.notify_success("Request Submitted")
+
         
 
     def action_reject_dceo(self):
@@ -99,6 +145,11 @@ class RecruitmentRequest(models.Model):
     def action_approve_ceo(self):
         for record in self:
             record.state_by_ceo = 'approved'
+            # send notification to the one created it
+            title = "Recruitment Request Approved"
+            message = f"Recruitment Request has been approved by the CEO."
+            self.send_notification(message, record.created_by, title, model = self._name, res_id = record.id)
+            record.created_by.notify_success(title=title, message=message)
     
     def action_reject_ceo(self):
         for record in self:
