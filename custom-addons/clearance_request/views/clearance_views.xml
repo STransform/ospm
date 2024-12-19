@@ -114,49 +114,29 @@
 </record>
 
   
-  <record id="view_clearance_kanban" model="ir.ui.view">
+<record id="view_clearance_kanban" model="ir.ui.view">
     <field name="name">clearance.kanban</field>
     <field name="model">employee.clearance</field>
     <field name="arch" type="xml">
-      <kanban string="Clearance Requests">
-        <field name="state"/>
-        <templates>
-          <t t-name="kanban-box">
-            <div class="oe_kanban_card">
-              <div class="oe_kanban_details">
-                <strong><field name="employee_id"/></strong>
-                <div>Department: <field name="department_id"/></div>
-                <div>Position: <field name="job_id"/></div>
-                <div>Reason: <field name="reason"/></div>
-                <div class="mt-2">
-                  <button name="action_department_approve" 
-                          type="object" 
-                          string="Approve Department" 
-                          class="btn btn-success btn-sm"
-                          states="draft"/>
-                  <button name="action_property_approve" 
-                          type="object" 
-                          string="Approve Property" 
-                          class="btn btn-success btn-sm"
-                          states="pending"/>
-                  <button name="action_finance_approve" 
-                          type="object" 
-                          string="Approve Finance" 
-                          class="btn btn-success btn-sm"
-                          states="pending"/>
-                  <button name="action_hr_approve" 
-                          type="object" 
-                          string="Approve HR" 
-                          class="btn btn-success btn-sm"
-                          states="pending"/>
-                </div>
-              </div>
-            </div>
-          </t>
-        </templates>
-      </kanban>
+        <kanban string="Clearance Requests">
+            <field name="state"/>
+            <templates>
+                <t t-name="kanban-box">
+                    <div class="oe_kanban_card">
+                        <div class="oe_kanban_details">
+                            <strong><field name="employee_id"/></strong>
+                            <div>Department: <field name="department_id"/></div>
+                            <div>Position: <field name="job_id"/></div>
+                            <div>Reason: <field name="reason"/></div>
+                            <div >Reason: <field name="state" style="color:green;"/></div>
+                        </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
     </field>
-  </record>
+</record>
+
   <record id="view_clearance_list" model="ir.ui.view">
     <field name="name">clearance.list</field>
     <field name="model">employee.clearance</field>
@@ -176,7 +156,11 @@
   <record id="action_clearance_request" model="ir.actions.act_window">
     <field name="name">Clearance Request</field>
     <field name="res_model">employee.clearance</field>
-    <field name="view_mode">tree,form</field>
+    <field name="view_mode">kanban,tree,form</field>
+    <field name="view_ids" eval="[(5, 0, 0), 
+        (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_clearance_kanban')}), 
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('view_clearance_list')}), 
+        (0, 0, {'view_mode': 'form', 'view_id': ref('view_clearance_form')})]"/>
     <field name="context">{}</field>
     
   </record>
