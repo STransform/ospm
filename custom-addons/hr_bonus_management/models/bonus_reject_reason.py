@@ -27,7 +27,7 @@ class HrBonusRejectionWizard(models.TransientModel):
         if not bonus_id:
             raise ValidationError("No Bonus Batch found to reject.")
 
-        bonus_batch = self.env['hr.bonus.managment'].browse(bonus_id)
+        bonus_batch = self.env['hr.bonus.management'].browse(bonus_id)
         if bonus_batch.state != 'submitted':
             raise ValidationError("Only submitted batches can be rejected.")
 

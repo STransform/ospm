@@ -3,13 +3,13 @@ from odoo.exceptions import ValidationError
 from dateutil import relativedelta
 
 
-class HrBonusManagmentLine(models.Model):
-    _name = "hr.bonus.managment.line"
-    _description = "HR Bonus Managment Line"
+class HrBonusmanagementLine(models.Model):
+    _name = "hr.bonus.management.line"
+    _description = "HR Bonus management Line"
     _order = "is_eligible desc"
 
     bonus_id = fields.Many2one(
-        "hr.bonus.managment", string="Bonus", ondelete="cascade"
+        "hr.bonus.management", string="Bonus", ondelete="cascade"
     )
     employee_id = fields.Many2one("hr.employee", string="Employee", required=True)
     employee_department = fields.Many2one(related='employee_id.department_id')

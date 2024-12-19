@@ -247,13 +247,14 @@ class HrPerformanceEvaluation(models.Model):
 
             record.evaluation_status = "employee_review"
             # send notification to employee
-            self.send_notification(
-                message="Your evaluation is completed Please Accept it!",
-                user=record.employee_id.user_id,
-                title="Evaluation Completed",
-                model=self._name,
-                res_id=self.id,
-            )
+            if record.employee_id.user_id:
+                self.send_notification(
+                    message="Your evaluation is completed Please Accept it!",
+                    user=record.employee_id.user_id,
+                    title="Evaluation Completed",
+                    model=self._name,
+                    res_id=self.id,
+                )
 
     def action_employee_reject(self):
         # emplooyee reject
