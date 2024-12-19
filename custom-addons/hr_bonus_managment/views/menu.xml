@@ -5,7 +5,7 @@
     <menuitem
         id="hr_bonus_managment_menu"
         name="Bonus Managment"
-        parent="hr.menu_hr_root"
+        parent="hr.menu_employee_benefits"
         sequence="20" />
 
     <!-- sub menu for bonus Request -->

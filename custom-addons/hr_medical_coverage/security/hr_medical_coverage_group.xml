@@ -1,34 +1,9 @@
 <odoo>
-    <record id="medical_coverage" model="ir.module.category">
-        <field name="name">Medical Coverage</field>
-    </record>
-    <record id="hr_medical_coverage.group_department_manager" model="res.groups">
-        <field name="name">Department Manager</field>
-        <field name="category_id" ref="medical_coverage" />
-    </record>
-    <record id="hr_medical_coverage.group_employee" model="res.groups">
-        <field name="name">Employee</field>
-        <field name="category_id" ref="medical_coverage" />
-    </record>
-    <record id="hr_medical_coverage.group_ceo" model="res.groups">
-        <field name="name">CEO</field>
-        <field name="category_id" ref="medical_coverage" />
-    </record>
-
-    <record id="hr_medical_coverage.group_hr_director" model="res.groups">
-        <field name="name">HR Director</field>
-        <field name="category_id" ref="medical_coverage" />
-    </record>
-    <record id="hr_medical_coverage.group_finance_officer" model="res.groups">
-        <field name="name">Finance Officer</field>
-        <field name="category_id" ref="medical_coverage" />
-    </record>
-
     <!-- Rule: Employees can only see their own requests refund -->
     <record id="medical_coverage_employee_rule" model="ir.rule">
         <field name="name">Medical Coverage Employee Rule</field>
         <field name="model_id" ref="model_hr_medical_coverage" />
-        <field name="groups" eval="[(4, ref('hr_medical_coverage.group_employee'))]" />
+        <field name="groups" eval="[(4, ref('user_group.group_employee'))]" />
         <field name="domain_force">[('create_uid', '=', user.id)]</field>
         <field name="perm_read" eval="1" />
         <field name="perm_create" eval="1" />
@@ -41,8 +16,54 @@
     <record id="medical_coverage_employee_credit_rule" model="ir.rule">
         <field name="name">Medical Coverage Employee Credit Rule</field>
         <field name="model_id" ref="model_hr_medical_pre_request" />
-        <field name="groups" eval="[(4, ref('hr_medical_coverage.group_employee'))]" />
+        <field name="groups" eval="[(4, ref('user_group.group_employee'))]" />
         <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="perm_read" eval="1" />
+        <field name="perm_create" eval="1" />
+        <field name="perm_write" eval="1" />
+        <field name="perm_unlink" eval="0" />
+    </record>
+
+    <!-- Rule: hr_offices can only see their own requests refund -->
+    <record id="medical_coverage_hr_office_rule" model="ir.rule">
+        <field name="name">Medical Coverage hr_office Rule</field>
+        <field name="model_id" ref="model_hr_medical_coverage" />
+        <field name="groups" eval="[(4, ref('user_group.group_hr_office'))]" />
+        <field name="perm_read" eval="1" />
+        <field name="perm_create" eval="1" />
+        <field name="perm_write" eval="1" />
+        <field name="perm_unlink" eval="0" />
+    </record>
+
+
+    <!-- Rule: hr_offices can only see their own requests  credit-->
+    <record id="medical_coverage_hr_office_credit_rule" model="ir.rule">
+        <field name="name">Medical Coverage hr_office Credit Rule</field>
+        <field name="model_id" ref="model_hr_medical_pre_request" />
+        <field name="groups" eval="[(4, ref('user_group.group_hr_office'))]" />
+        <field name="perm_read" eval="1" />
+        <field name="perm_create" eval="1" />
+        <field name="perm_write" eval="1" />
+        <field name="perm_unlink" eval="0" />
+    </record>
+
+    <!-- Rule: finance_offices can only see their own requests refund -->
+    <record id="medical_coverage_finance_office_rule" model="ir.rule">
+        <field name="name">Medical Coverage finance_office Rule</field>
+        <field name="model_id" ref="model_hr_medical_coverage" />
+        <field name="groups" eval="[(4, ref('user_group.group_finance_office'))]" />
+        <field name="perm_read" eval="1" />
+        <field name="perm_create" eval="1" />
+        <field name="perm_write" eval="1" />
+        <field name="perm_unlink" eval="0" />
+    </record>
+
+
+    <!-- Rule: finance_offices can only see their own requests  credit-->
+    <record id="medical_coverage_finance_office_credit_rule" model="ir.rule">
+        <field name="name">Medical Coverage finance_office Credit Rule</field>
+        <field name="model_id" ref="model_hr_medical_pre_request" />
+        <field name="groups" eval="[(4, ref('user_group.group_finance_office'))]" />
         <field name="perm_read" eval="1" />
         <field name="perm_create" eval="1" />
         <field name="perm_write" eval="1" />

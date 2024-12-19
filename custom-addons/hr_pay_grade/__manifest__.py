@@ -8,7 +8,7 @@
     "maintainer": "Otech Engineering and Technology Solution PLC",
     "category": "Human Resources",
     "website": "https://www.otech.et",
-    "depends": ["hr"],
+    "depends": ["hr", "user_group"],
     "data": ["security/ir.model.access.csv", "views/hr_pay_grade_view.xml"],
     "images": ["static/description/HRGradeRank.png"],
     "sequence": 1,

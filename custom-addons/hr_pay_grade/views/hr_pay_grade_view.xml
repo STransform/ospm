@@ -52,7 +52,8 @@
     </record>
 
     <!-- Menu item for Pay Grades under HR Configuration -->
-    <menuitem id="menu_pay_grade" parent="hr.menu_human_resources_configuration" name="Pay Grades"
+    <menuitem id="menu_pay_grade" parent="hr.menu_employee_root" name="Pay Grades"
+        groups="user_group.group_hr_director,user_group.group_hr_director,base.group_system"
         action="action_pay_grade" sequence="10" />
 
     <!-- Contract Form View with Pay Grade Selection -->
@@ -75,7 +76,8 @@
                 <!-- Increment Level Field -->
                 <field name="increment_level_id" string="Increment Level"
                     domain="[('pay_grade_id', '=', pay_grade_id)]"
-                    attrs="{'invisible': ['|',('is_base', '=', True),('is_ceiling', '=', True)]}" options="{'no_create': True, 'no_create_edit':True}"/>
+                    attrs="{'invisible': ['|',('is_base', '=', True),('is_ceiling', '=', True)]}"
+                    options="{'no_create': True, 'no_create_edit':True}" />
                 <field name="is_base_or_ceil" invisible="1" />
             </field>
         </field>
