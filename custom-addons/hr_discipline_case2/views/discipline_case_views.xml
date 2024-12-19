@@ -181,7 +181,7 @@
         <field name="name">discipline.case.kanban</field>
         <field name="model">employee.discipline.case</field>
         <field name="arch" type="xml">
-            <kanban string="Discipline Cases">
+            <kanban string="Discipline Cases" group_by="state">
                 <field name="state"/>
                 <field name="name"/>
                 <field name="accused_employee_id"/>
@@ -194,9 +194,9 @@
                             <div class="oe_kanban_details">
                                 <strong><field name="name"/></strong>
                                 <div>Employee: <field name="accused_employee_id"/></div>
-                                <div>Status: <field name="state"/></div>
+                               
                                 <div>Discipline Type: <field name="discipline_type"/></div>
-                                <div>Status: <field name="discipline_type" style="color:green;"/></div>
+                                <div>Status: <field name="state" style="color:green;"/></div>
                             </div>
                         </div>
                     </t>
