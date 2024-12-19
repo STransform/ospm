@@ -363,8 +363,8 @@ class Clearance(models.Model):
                 'view_id': False,          # Set to False if using 'xml_id'.
                 'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
                 'target': 'current',
-                'context': {},             # Pass any additional context if needed.
-                'domain': [],              # Add domain filters if needed.
+                'context': {},           
+                'domain': [],             
                 'res_id': False,           # Use this if redirecting to a specific record.  
                 'params': {
                     'title': 'Success',
@@ -384,12 +384,11 @@ class Clearance(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',
                 'res_model': 'employee.clearance',
-                'view_mode': 'tree,form',  # Include 'form' if you want clickable records.
-                'view_id': False,          # Set to False if using 'xml_id'.
+                'view_mode': 'tree,form',  
+                'view_id': False,         
                 'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
                 'target': 'current',
-                'context': {},             # Pass any additional context if needed.
-                'domain': [],              # Add domain filters if needed.
+                'domain': [],             
                 'res_id': False,           # Use this if redirecting to a specific record.  
                 'params': {
                     'title': 'Success',

@@ -74,6 +74,11 @@
         <field name="name">Discipline committee</field>
         <field name="category_id" ref="hr_user_group"/>
     </record>
+
+    <record id="user_group.group_recruitment_commitee" model="res.groups">
+        <field name="name">Recruitment committee</field>
+        <field name="category_id" ref="hr_user_group"/>
+    </record>
        
 
   
