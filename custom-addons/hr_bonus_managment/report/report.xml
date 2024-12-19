@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="action_report_hr_bonus_managment" model="ir.actions.report">
+    <record id="action_report_hr_bonus_management" model="ir.actions.report">
         <field name="name">Bonus Management Report</field>
-        <field name="model">hr.bonus.managment</field>
+        <field name="model">hr.bonus.management</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">hr_bonus_managment.report_bonus</field> <!-- Must match
+        <field name="report_name">hr_bonus_management.report_bonus</field> <!-- Must match
         template -->
-        <field name="report_file">hr_bonus_managment.report_bonus</field> <!-- Must match
+        <field name="report_file">hr_bonus_management.report_bonus</field> <!-- Must match
         template -->
-        <field name="binding_model_id" ref="model_hr_bonus_managment" />
+        <field name="binding_model_id" ref="model_hr_bonus_management" />
         <field name="binding_type">report</field>
     </record>
 

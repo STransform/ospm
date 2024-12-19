@@ -41,7 +41,7 @@
                 <attribute name="options">{'always_reload': True}</attribute>
                 <attribute name="context">{'res_partner_search_mode': 'customer'}</attribute>
             </xpath>
-            <xpath expr="//group[@name='group_time_managment']" position="after">
+            <xpath expr="//group[@name='group_time_management']" position="after">
                  <group name="group_sales_invoicing" string="Sales &amp; Invoicing" col="1" class="row mt16 o_settings_container col-lg-6">
                     <div>
                         <div class="o_setting_box" id="allow_billable_container">

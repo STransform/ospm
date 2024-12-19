@@ -2,8 +2,8 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 
-class HrBonusManagmentBatch(models.Model):
-    _name = "hr.bonus.managment"
+class HrBonusmanagementBatch(models.Model):
+    _name = "hr.bonus.management"
     _description = "HR Bonus Mnagment"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "create_date desc"
@@ -34,10 +34,10 @@ class HrBonusManagmentBatch(models.Model):
         required=True,
         tracking=True,
     )
-    bonus_managment_line = fields.One2many(
-        "hr.bonus.managment.line",
+    bonus_management_line = fields.One2many(
+        "hr.bonus.management.line",
         "bonus_id",
-        string="Bonus Managment Line",
+        string="Bonus management Line",
         readonly=True,
         tracking=True,
     )
@@ -83,7 +83,7 @@ class HrBonusManagmentBatch(models.Model):
             )
     @api.onchange('performance', 'fixed_amount', 'months', 'is_fixed')
     def _onchange_bonus_management_line(self):
-        self.bonus_managment_line = None
+        self.bonus_management_line = None
             
     @api.onchange("is_fixed")
     def _onchange_is_fixed(self):
@@ -100,7 +100,7 @@ class HrBonusManagmentBatch(models.Model):
             raise ValidationError(("No employees with active contracts to process."))
 
         batch_lines = []
-        self.bonus_managment_line = None
+        self.bonus_management_line = None
         for employee in employees:
             contract = employee.contract_id
 
@@ -143,11 +143,11 @@ class HrBonusManagmentBatch(models.Model):
                 )
             )
         self.show_filter_button = True
-        self.bonus_managment_line = batch_lines
+        self.bonus_management_line = batch_lines
 
     def action_submit(self):
         """Submit the batch for approval."""
-        if not self.bonus_managment_line:
+        if not self.bonus_management_line:
             raise ValidationError(("The batch must contain at least one employee."))
         self.state = "submitted"
         ## search users with specific group
@@ -167,7 +167,7 @@ class HrBonusManagmentBatch(models.Model):
 
     def action_approve(self):
         """Approve the batch and apply Bonus for eligible employees."""
-        for line in self.bonus_managment_line.filtered(lambda l: l.is_eligible):
+        for line in self.bonus_management_line.filtered(lambda l: l.is_eligible):
             contract = line.employee_id.contract_id
             if not contract:
                 continue

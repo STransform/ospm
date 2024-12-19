@@ -65,7 +65,7 @@
                                 <th style="padding: 10px; border: 1px solid #ddd;">Bonus Amount</th>
                                 <th style="padding: 10px; border: 1px solid #ddd;">Eligible</th>
                             </tr>
-                            <t t-foreach="o.bonus_managment_line" t-as="line">
+                            <t t-foreach="o.bonus_management_line" t-as="line">
                                 <tr>
                                     <td style="padding: 10px; border: 1px solid #ddd;">
                                         <span t-field="line.employee_id.name" />

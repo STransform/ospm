@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- action for bonus managment -->
-    <record id="action_bonus_managment" model="ir.actions.act_window">
-        <field name="name">Bonus Managment</field>
-        <field name="res_model">hr.bonus.managment</field>
+    <!-- action for bonus management -->
+    <record id="action_bonus_management" model="ir.actions.act_window">
+        <field name="name">Bonus management</field>
+        <field name="res_model">hr.bonus.management</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- tree view for bonus managment -->
-    <record id="hr_bonus_managment_view_tree" model="ir.ui.view">
-        <field name="name">hr_bonus_managment.view.tree</field>
-        <field name="model">hr.bonus.managment</field>
+    <!-- tree view for bonus management -->
+    <record id="hr_bonus_management_view_tree" model="ir.ui.view">
+        <field name="name">hr_bonus_management.view.tree</field>
+        <field name="model">hr.bonus.management</field>
         <field name="arch" type="xml">
             <tree string="">
                 <field name="name" />
@@ -22,12 +22,12 @@
         </field>
     </record>
 
-    <!-- form view for bonus managment -->
-    <record id="hr_bonus_managment_view_form" model="ir.ui.view">
-        <field name="name">hr_bonus_managment.view.form</field>
-        <field name="model">hr.bonus.managment</field>
+    <!-- form view for bonus management -->
+    <record id="hr_bonus_management_view_form" model="ir.ui.view">
+        <field name="name">hr_bonus_management.view.form</field>
+        <field name="model">hr.bonus.management</field>
         <field name="arch" type="xml">
-            <form string="Bonus Managment batch line">
+            <form string="Bonus management batch line">
                 <header>
                     <button name="action_submit" type="object" string="Submit" class="btn-primary"
                         states="draft"
@@ -75,8 +75,8 @@
                         </div>
                     </group>
                     <notebook>
-                        <page string="Bonus Managment Line">
-                            <field name="bonus_managment_line">
+                        <page string="Bonus management Line">
+                            <field name="bonus_management_line">
                                 <tree editable="bottom">
                                     <field name="employee_id" />
                                     <field name="employee_department" />

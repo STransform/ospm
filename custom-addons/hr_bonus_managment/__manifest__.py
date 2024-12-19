@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
-    "name": "hr_bonus_managment",
+    "name": "hr_bonus_management",
     "version": "16.0.1.0.0",
-    "summary": """ Hr_bonus_managment Summary """,
+    "summary": """ Hr_bonus_management Summary """,
     "author": "Kuma Telila@otech",
     "website": "https://otech.et",
     "category": "Human Resource",
@@ -21,7 +21,7 @@
         "security/ir.model.access.csv",
         "report/report.xml",
         "report/template.xml",
-        "views/hr_bonus_managment_view.xml",
+        "views/hr_bonus_management_view.xml",
         "views/hr_employee_view.xml",
         "views/menu.xml",
     ],
