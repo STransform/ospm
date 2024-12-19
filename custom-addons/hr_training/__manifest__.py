@@ -3,7 +3,7 @@
     'version':'1.0.0', 
     'category': 'Human Resources', 
     'author': "Yohanes Mesfin",
-    'depends' : ['hr', 'base', 'web', 'mail', 'bus', 'web_notify'], 
+    'depends' : ['hr', 'base', 'web', 'mail', 'bus', 'web_notify', 'user_group','custom_notification'], 
     'data' : [
         'security/groups.xml',
         'security/ir.model.access.csv',

@@ -14,7 +14,6 @@ class DeptRequest(models.Model):
         default="New"
     )
 
-
     training_programs = fields.One2many('training.program', 'training_id', string='Training Programs')
     description = fields.Text(string='Description')
     department_id = fields.Many2one('hr.department', string='Department', required=True, readonly=True, default=lambda self: self._get_default_department())
@@ -55,7 +54,16 @@ class DeptRequest(models.Model):
 
         return super(DeptRequest, self).create(vals)
 
-
+    # add notification function 
+    @api.model
+    def send_notification(self, message, user, title, model,res_id):
+        self.env['custom.notification'].create({
+            'title': title,
+            'message': message,
+            'user_id': user.id,
+            'action_model': model,
+            'action_res_id': res_id
+        })
 
     @api.model
     def _get_default_department(self):
@@ -68,11 +76,36 @@ class DeptRequest(models.Model):
     def action_request_approval(self):
         for record in self:
             record.state = 'requested'
+            # notification for hr manager
+            hr_manager = self.env.ref('user_group.group_hr_director').users
+            title = "Training Plan Request"
+            message = f"Training Plan Request for {record.department_id.name} has been submitted."
+            
+            for user in hr_manager:
+                self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+                user.notify_success(title=title, message=message)
+            self.env.user.notify_success("Request Submitted")
+
+
 
     def action_approve_request(self):
         for record in self:
             record.state = 'approved'
+            # notification for department director who crated the request
+            title = "Training Plan Request"
+            message = f"Training Plan Request for {record.department_id.name} has been approved."
+            user = self.create_uid
+            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+            self.env.user.notify_success(title=title, message=message)
+
 
     def action_refuse_request(self):
         for record in self:
             record.state = 'refused'
+            
+            # notification for department director who crated the request
+            title = "Training Plan Refused"
+            message = f"Training Plan Request for {record.department_id.name} has been rejected."
+            user = self.create_uid
+            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+            self.env.user.notify_success(title=title, message=message)

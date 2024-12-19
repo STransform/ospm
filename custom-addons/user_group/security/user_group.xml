@@ -74,6 +74,8 @@
         <field name="name">Discipline committee</field>
         <field name="category_id" ref="hr_user_group"/>
     </record>
+
+
        
 
   
