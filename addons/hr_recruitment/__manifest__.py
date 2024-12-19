@@ -15,6 +15,7 @@
         'attachment_indexation',
         'web_tour',
         'digest',
+        'user_group',
     ],
     'data': [
         'security/group.xml',

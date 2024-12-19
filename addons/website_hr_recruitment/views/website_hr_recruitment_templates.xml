@@ -182,6 +182,11 @@
                                                     class="form-control s_website_form_input"
                                                     name="email_from" required=""
                                                     data-fill-with="email"/>
+                                               <t t-if="widget.errors.get('email_from')">
+                                                    <div class="invalid-feedback">
+                                                        <t t-esc="widget.errors.get('email_from')"/>
+                                                    </div>
+                                                </t>
                                             </div>
                                         </div>
                                     </div>
@@ -197,6 +202,11 @@
                                                     class="form-control s_website_form_input"
                                                     name="partner_mobile" required="" 
                                                     data-fill-with="phone"/>
+                                                 <t t-if="widget.errors.get('partner_mobile')">
+                                                    <div class="invalid-feedback">
+                                                        <t t-esc="widget.errors.get('partner_mobile')"/>
+                                                    </div>
+                                                </t>
                                             </div>
                                         </div>
                                     </div>
