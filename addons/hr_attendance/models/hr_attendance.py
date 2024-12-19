@@ -28,6 +28,9 @@ class HrAttendance(models.Model):
     check_out = fields.Datetime(string="Check Out")
     worked_hours = fields.Float(string='Worked Hours', compute='_compute_worked_hours', store=True, readonly=True)
     # Custom Fields added
+    #field to compute of its late in or early out
+
+
     
 
 
