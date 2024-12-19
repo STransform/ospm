@@ -155,13 +155,40 @@
             </tree>
         </field>
     </record>
+     <!-- Kanban View for Employee Complaints -->
+    <record id="view_employee_complaint_kanban" model="ir.ui.view">
+        <field name="name">employee.complaint.kanban</field>
+        <field name="model">employee.complaint</field>
+        <field name="arch" type="xml">
+            <kanban string="Employee Complaints">
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card">
+                            <!-- Card Header with Employee Info -->
+                            <div class="oe_kanban_details">
+                                <strong><field name="name"/></strong> <!-- Complaint Ref -->
+                                <div><strong>Employee:</strong> <field name="employee_id"/></div>
+                                <div><strong>Issue:</strong> <field name="issue_type"/></div>
+                                <div><strong>Status:</strong> <field name="state" style="color:green;"/></div>
+                            </div>
+                            
+                            
+
+                           
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
     
 
     <record id="action_employee_complaint" model="ir.actions.act_window">
         <field name="name">Employee Complaints</field>
         <field name="res_model">employee.complaint</field>
-        <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_employee_complaint_tree"/>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_id" ref="view_employee_complaint_kanban"/>
     </record>
 
     <menuitem id="menu_complaint_root" name="Employee's complaint" parent="hr.menu_hr_root" sequence="10"/>
