@@ -71,7 +71,7 @@ class HrEvaluationSchedule(models.Model):
             )
             print(evaulation.id)
 
-            if employee.parent_id:
+            if employee.parent_id.user_id:
                 message = f"New Performance Evaluation to be submitted for Employee {employee.name}"
                 title = "New Performance Evaluation to be submitted"
                 self.send_notification(
