@@ -75,11 +75,13 @@ class TransferRequest(models.Model):
 
      # add notification function 
     @api.model
-    def send_notification(self, message, user, title):
+    def send_notification(self, message, user, title, model, res_id):
         self.env['custom.notification'].create({
             'title': title,
             'message': message,
             'user_id': user.id,
+            'action_model': model,
+            'action_res_id': res_id
         })
     
     @api.model
@@ -195,7 +197,7 @@ class TransferRequest(models.Model):
         self.status = 'submitted'
         ## notify the current Manager
         message = f"Employee {self.employee_id.name} has submitted a transfer request from {self.department_id.name} to {self.new_department_id.name}. Please review and take necessary action."
-        self.send_notification(message=message, user = self.department_manager,title=self.title)
+        self.send_notification(message=message, user = self.department_manager,title=self.title, model=self._name, res_id=self.id)
         self.env.user.notify_success(message="Request Submitted",title="Success")
         self.department_manager.notify_success(title=self.title,message=message)
         return {
@@ -211,7 +213,7 @@ class TransferRequest(models.Model):
             self.status = 'approved_by_current'
             ## notify new department manager
             message = f"Employee {self.employee_id.name} has Requested a transfer to you Department. Please review and take necessary action."
-            self.send_notification(message=message,user=self.new_department_manager,title=self.title)
+            self.send_notification(message=message,user=self.new_department_manager,title=self.title, model=self._name, res_id=self.id)
             self.env.user.notify_success(message="Request Approved",title="Success")
             self.new_department_manager.notify_success(message=message, title=self.title)
             return {
@@ -230,7 +232,7 @@ class TransferRequest(models.Model):
             dceo_admin = self.env.ref('user_group.group_admin_dceo').users
             message = f"Employee {self.employee_id.name} has requested for transfer from {self.department_id.name} to {self.new_department_id.name}. Please review and take necessary action."
             for user in dceo_admin:
-                self.send_notification(message=message, user=user, title=self.title)
+                self.send_notification(message=message, user=user, title=self.title, model=self._name, res_id=self.id)
                 user.notify_success(message=message, title=self.title)
             self.env.user.notify_success(message="Request Approved",title="Success")
             return {
@@ -248,7 +250,7 @@ class TransferRequest(models.Model):
             ceo = self.env.ref('user_group.group_ceo').users
             message = f"Employee {self.employee_id.name} has requested for transfer from {self.department_id.name} to {self.new_department_id.name}. Please review and take necessary action."
             for user in ceo:
-                self.send_notification(message=message, user=user, title=self.title)
+                self.send_notification(message=message, user=user, title=self.title, model=self._name, res_id=self.id)
                 user.notify_success(message=message, title=self.title)
             self.env.user.notify_success(message="Request Approved",title="Success")
             return {
@@ -266,7 +268,7 @@ class TransferRequest(models.Model):
             hr_officer = self.env.ref('user_group.group_hr_office').users
             message = f"Employee {self.employee_id.name} has requested for transfer from {self.department_id.name} to {self.new_department_id.name}. Please review and take necessary action."
             for user in hr_officer:
-                self.send_notification(message=message, user=user, title=self.title)
+                self.send_notification(message=message, user=user, title=self.title, model=self._name, res_id=self.id)
                 user.notify_success(message=message, title=self.title)
             self.env.user.notify_success(message="Request Approved",title="Success")
             return {
@@ -293,7 +295,7 @@ class TransferRequest(models.Model):
                 raise ValidationError(_("You are not the CEO"))
         self.status = 'rejected'
         message = f"Your Requset for Transfer from {self.department_id.name} to {self.new_department_id.name} is Rejected."
-        self.send_notification(message=message, user=self.employee_id.user_id, title=self.title)
+        self.send_notification(message=message, user=self.employee_id.user_id, title=self.title, model=self._name, res_id=self.id)
         self.employee_id.user_id.notify_warning(message=message, title=self.title)
         self.env.user.notify_warning(message="Request Rejected",title="Warning")
         return {
@@ -332,7 +334,7 @@ class TransferRequest(models.Model):
 
         self.status = 'completed'
         message = f"Your Requset for Transfer from {self.department_id.name} to {self.new_department_id.name} is Completed."
-        self.send_notification(message=message, user=self.employee_id.user_id, title=self.title)
+        self.send_notification(message=message, user=self.employee_id.user_id, title=self.title, model=self._name, res_id=self.id)
         self.employee_id.user_id.notify_success(message=message, title=self.title)
         self.env.user.notify_success(message="Request Completed",title="Success")
         return {

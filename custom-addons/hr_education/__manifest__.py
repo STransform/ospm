@@ -3,7 +3,7 @@
     'version':'1.0.0', 
     'category': 'Human Resources', 
     'author': "Chala Olani",
-    'depends' : ['hr', 'base', 'web', 'mail', 'bus', 'web_notify','planning'], 
+    'depends' : ['hr', 'base', 'web', 'mail', 'bus', 'web_notify','user_group','custom_notification'], 
     'data' : [
         'security/ir.model.access.csv',
         'security/dept_request_rule.xml',

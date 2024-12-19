@@ -2,6 +2,7 @@
     <menuitem
         id="retirement_root_menu"
         name="Retirement"
+        parent="hr.menu_hr_services"
         sequence="10"
     />
     <menuitem

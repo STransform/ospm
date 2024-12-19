@@ -5,6 +5,7 @@
         id="authority_delegation_root_menu"
         name="Authority Delegation"
         sequence="10"
+        parent = "hr.menu_hr_root"
         groups = "user_group.group_ceo,user_group.group_director,user_group.group_dceo,user_group.group_department_manager,user_group.group_employee"
     />
 

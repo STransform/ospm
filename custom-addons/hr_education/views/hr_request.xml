@@ -8,11 +8,20 @@
             <form string="HR Office Education Request">
               <header>
                     <!-- Submit button for the HR Office  -->
-                    <button name="action_resubmit_planning" 
+                    <button name="action_submit" 
+                            type="object" 
+                            string="Submit" 
+                            groups="user_group.group_hr_director" 
+                            attrs="{'invisible': [('state', '!=', 'draft')]}"
+                            class="btn-success"
+                            confirm="Are You sure you want to Submit the Plan"
+                            />
+
+                    <button name="action_resubmit" 
                             type="object" 
                             string="Resubmit" 
-                            groups="planning.group_hr_office" 
-                            attrs="{'invisible': [('combined_state', '!=', 'rejected')]}"
+                            groups="user_group.group_hr_director" 
+                            attrs="{'invisible': [('state', '!=', 'rejected')]}"
                             class="btn-success"
                             confirm="Are You sure you want to Resubmit the Plan"
                             />
@@ -21,8 +30,8 @@
                     <button name="action_approve_planning" 
                             type="object" 
                             string="Approved" 
-                            groups="planning.group_planning_directorate" 
-                            attrs="{'invisible': [('state_by_planning', 'in', ['approved', 'rejected'])]}"
+                            groups="user_group.group_planning_directorate" 
+                            attrs="{'invisible': [('state', '!=','submitted')]}"
                             class="btn-success"
                             confirm="Are you sure you want to Approve the request?"
                             />
@@ -30,8 +39,8 @@
                     <button name="action_reject_planning" 
                             type="object" 
                             string="Reject" 
-                            groups="planning.group_planning_directorate" 
-                            attrs="{'invisible': [('state_by_planning', 'in', ['approved', 'rejected'])]}"
+                            groups="user_group.group_planning_directorate" 
+                            attrs="{'invisible': [('state', '!=','submitted')]}"
                             confirm="Are you sure you want to Reject the request?"
                             class="btn-danger"
                             />
@@ -40,20 +49,20 @@
                     <button name="action_approve_ceo" 
                             type="object" 
                             string="Approved" 
-                            groups="planning.group_ceo" 
-                            attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'rejected']),  ('state_by_planning', '!=', 'approved')]}"
+                            groups="user_group.group_ceo" 
+                            attrs="{'invisible': [('state', '!=','planning_approved')]}"
                             class="btn-success"
                             confirm="Are you sure you want to Approve the request?"
                             />
                     <button name="action_reject_ceo" 
                             type="object" 
                             string="Reject" 
-                            groups="planning.group_ceo" 
-                            attrs="{'invisible': ['|', ('state_by_ceo', 'in', ['approved', 'rejected']),  ('state_by_planning', '!=', 'approved')]}"
+                            groups="user_group.group_ceo" 
+                            attrs="{'invisible': [('state', '!=','planning_approved')]}"
                             confirm="Are you sure you want to Reject the request?"
                             class="btn-danger"
                             />
-                    <field name="combined_state" widget="statusbar" statusbar_visible="approved,rejected,pending"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,planning_approved,approved,rejected"/>
 
               </header>
                 <sheet>
@@ -61,21 +70,32 @@
                         <field name="name" placeholder="Request Name" required="True" style="font-size: min(4vw, 2.6rem);"/>
                     </h1>
                     <group>
-                        <field name="attachment_ids" widget="many2many_binary"/>
-                        <field name="year"/>
-                        <field name="total_employee_count" />
+                        <field name="year" attrs="{'readonly':[('state','!=','draft')]}"/>
+                        <field name="total_employee_count" readonly="1"/>
                     </group>
                     <div>
                         <strong>Description</strong>
                     </div>
-                    <field name='description' string='Description' placeholder="Your education description should be descriptive and clear."/>
-                    <field name="state_by_ceo" invisible="1"/>
-                    <field name="state_by_planning" invisible="1"/>
-                    <field name="combined_state" invisible="1"/>
+                    <field name='description' string='Description' placeholder="Your education description should be descriptive and clear." attrs="{'readonly':[('is_editable','=',False)]}"/>
+                    <group>
+                        <field name="state" invisible="1"/>
+                        <field name="planning_reason_is_visible" invisible="1"/>
+                        <field name="combined_state" invisible="1"/>
+                        <field name="ceo_reason_is_visible" invisible="1"/>
+                        <field name="is_ceo" invisible="1"/>
+                        <field name="is_planning" invisible="1"/>
+                        <field name="is_hr_office" invisible="1" />
+                        <field name="is_editable" invisible="1"/>
+                    </group>
+                    <group>
+                        <field name="attachment_ids" widget="many2many_binary" attrs="{'readonly':[('is_editable','=',False)]}"/>
+                        <field name="planning_reason" attrs="{'invisible':[('planning_reason_is_visible','=',False)], 'readonly':['|',('is_planning','=',False),('state','!=','submitted')]}"/>
+                        <field name="ceo_reason" attrs="{'invisible':[('ceo_reason_is_visible','=',False)], 'readonly':['|',('is_ceo','=',False),('state','!=','planning_approved')]}"/>
+                    </group>
                     <notebook>
                         <page string="Education Programs">
-                            <field name="education_programs">
-                               <tree >  <!--  editable="bottom"-->
+                            <field name="education_programs" attrs="{'readonly':[('is_editable','=',False)]}">
+                               <tree >
                                     <field name="program_name"/>
                                     <field name="departement_id"/>
                                     <field name="employee_count"/>
