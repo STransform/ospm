@@ -282,7 +282,8 @@ class Applicant(models.Model):
             if record.partner_mobile:
                 # Check if the mobile number starts with 0 (representing +251) and is followed by exactly 9 digits
                 if not re.match(r"^0\d{9}$", record.partner_mobile):
-                    raise ValidationError(_("Mobile number must start with 0 and contain exactly 9 digits after that."))
+                    raise ValidationError(_("Mobile number must start with 0 and contain exactly 9 digits after that."), field='partner_mobile')
+
     # for email validation in the job application form
     @api.constrains('email_from')
     def _check_email_from(self):
@@ -290,10 +291,11 @@ class Applicant(models.Model):
             if record.email_from:
                 # To Check if the email contains the '@' symbol
                 if '@' not in record.email_from:
-                    raise ValidationError(_("The email address must contain the '@' symbol."))
+                    raise ValidationError(_("The email address must contain the '@' symbol."), field='email_from')
                 # Optionally, check the general format of the email
                 elif not re.match(r"[^@]+@[^@]+\.[^@]+", record.email_from):
-                    raise ValidationError(_("Please enter a valid email address."))
+                    raise ValidationError(_("Please enter a valid email address."), field='email_from')
+
                 
     @api.onchange('partner_mobile')
     def _onchange_partner_mobile(self):
