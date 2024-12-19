@@ -1,24 +1,10 @@
 <odoo>
-    <!-- Module Category -->
-    <record id="salary_increment" model="ir.module.category">
-        <field name="name">Salary Increment</field>
-    </record>
-
-    <!-- Groups -->
-    <record id="hr_salary_increment.group_hr_director" model="res.groups">
-        <field name="name">HR Director or HR Unit Manager</field>
-        <field name="category_id" ref="salary_increment" />
-    </record>
-    <record id="hr_salary_increment.group_hr_officer" model="res.groups">
-        <field name="name">HR Officer</field>
-        <field name="category_id" ref="salary_increment" />
-    </record>
 
     <!-- Rule: HR Director Rule -->
     <record id="salary_increment_hr_director_rule" model="ir.rule">
         <field name="name">Salary Increment HR Director Rule</field>
         <field name="model_id" ref="model_hr_salary_increment_batch" />
-        <field name="groups" eval="[(4, ref('hr_salary_increment.group_hr_director'))]" />
+        <field name="groups" eval="[(4, ref('user_group.group_hr_director'))]" />
         <field name="perm_read" eval="1" />
         <field name="perm_create" eval="1" />
         <field name="perm_write" eval="1" />
@@ -29,7 +15,7 @@
     <record id="salary_increment_hr_office_rule" model="ir.rule">
         <field name="name">Salary Increment HR Officer Rule</field>
         <field name="model_id" ref="model_hr_salary_increment_batch" />
-        <field name="groups" eval="[(4, ref('hr_salary_increment.group_hr_officer'))]" />
+        <field name="groups" eval="[(4, ref('user_group.group_hr_office'))]" />
         <field name="perm_read" eval="1" />
         <field name="perm_create" eval="1" />
         <field name="perm_write" eval="1" />

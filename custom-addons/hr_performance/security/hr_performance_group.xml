@@ -1,18 +1,4 @@
 <odoo>
-    <!-- Define Groups -->
-    <record id="performance" model="ir.module.category">
-        <field name="name">Performance Evaluation</field>
-    </record>
-
-    <record id="hr_performance.group_hr_director" model="res.groups">
-        <field name="name">HR Director</field>
-        <field name="category_id" ref="performance" />
-    </record>
-
-    <record id="hr_performance.group_employee" model="res.groups">
-        <field name="name">Employee</field>
-        <field name="category_id" ref="performance" />
-    </record>
 
     <!-- Record Rules -->
 
@@ -21,7 +7,7 @@
         <field name="name">HR Director Access</field>
         <field name="model_id" ref="model_hr_performance_evaluation" />
         <field name="domain_force">[]</field>
-        <field name="groups" eval="[(4, ref('hr_performance.group_hr_director'))]" />
+        <field name="groups" eval="[(4, ref('user_group.group_hr_office'))]" />
         <field name="perm_read" eval="1" />
         <field name="perm_create" eval="1" />
         <field name="perm_write" eval="1" />
@@ -47,7 +33,7 @@
         <field name="name">Employee Access</field>
         <field name="model_id" ref="model_hr_performance_evaluation" />
         <field name="domain_force">[('employee_id.user_id.id', '=', user.id)]</field>
-        <field name="groups" eval="[(4, ref('hr_performance.group_employee'))]" />
+        <field name="groups" eval="[(4, ref('user_group.group_employee'))]" />
         <field name="perm_read" eval="1" />
         <field name="perm_create" eval="0" />
         <field name="perm_write" eval="1" />

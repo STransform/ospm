@@ -24,7 +24,8 @@
     <!-- Main Menu for Medical Coverage -->
     <menuitem id="menu_medical_coverage_root"
         name="Medical Coverage"
-        sequence="20" />
+        parent="hr.menu_employee_benefits"
+        sequence="1" />
 
 
     <!-- Dashboard menu -->
@@ -33,26 +34,26 @@
         parent="menu_medical_coverage_root"
         action="hr_medical_coverage_dashboard_action"
         sequence="1"
-        groups="hr_medical_coverage.group_hr_director,hr_medical_coverage.group_finance_officer" />
+        groups="user_group.group_hr_office,user_group.group_finance_office,base.group_system" />
 
 
     <!-- Requests Submenu under Medical Coverage -->
     <menuitem id="menu_medical_coverage"
-        name="Refund"
+        name="Medical Cash Refund"
         parent="menu_medical_coverage_root"
         action="action_medical_coverage"
         sequence="2" />
 
     <menuitem id="menu_medical_pre_request"
-        name="Credit"
+        name="Medical Credit Bill"
         parent="menu_medical_coverage_root"
         action="action_medical_pre_request"
-        sequence="2" />
+        sequence="3" />
 
     <menuitem id="menu_medical_coverage_organization"
-        name="Institution"
+        name="Medical Institution"
         parent="menu_medical_coverage_root"
         action="action_medical_coverage_organization"
-        groups="hr_medical_coverage.group_hr_director"
+        groups="user_group.group_hr_office,base.group_system"
         sequence="4" />
 </odoo>

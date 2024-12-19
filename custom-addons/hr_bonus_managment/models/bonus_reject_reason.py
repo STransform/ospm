@@ -8,12 +8,17 @@ class HrBonusRejectionWizard(models.TransientModel):
     rejection_reason = fields.Text(string="Rejection Reason", required=True)
     # add notification function 
     @api.model
-    def send_notification(self, message, user, title):
-        self.env['custom.notification'].create({
-            'title': title,
-            'message': message,
-            'user_id': user.id,
-        })
+    def send_notification(self, message, user, title, model, res_id):
+        self.env["custom.notification"].create(
+            {
+                "title": title,
+                "message": message,
+                "user_id": user.id,
+                "action_model": model,
+                "action_res_id": res_id,
+            }
+        )
+
 
     def confirm_rejection(self):
         """Confirm rejection with a reason."""
@@ -35,6 +40,12 @@ class HrBonusRejectionWizard(models.TransientModel):
         title = "Bonus Rejected"
         message = f"rejected."
         for user in department_manager:
-            self.send_notification(message, user, title)
+            self.send_notification(
+                message=message,
+                user=user,
+                title=title,
+                model=self._name,
+                res_id=self.id,
+            )
             user.notify_success(title=title, message=message)
         self.env.user.notify_success("Bonus Rejected")

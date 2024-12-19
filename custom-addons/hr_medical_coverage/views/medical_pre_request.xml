@@ -16,11 +16,11 @@
                     <!-- HR Approval Buttons (Visible only in Submitted State) -->
                     <button name="actionHrApprove" type="object" string="HR Approve"
                         attrs="{'invisible': [('status', '!=', 'submitted')]}" class="btn-success"
-                        groups="hr_medical_coverage.group_hr_director"
+                        groups="user_group.group_hr_office"
                         confirm="Are you sure you want to process this?" />
                     <button name="actionHrReject" type="object" string="HR Reject"
                         attrs="{'invisible': [('status', '!=', 'submitted')]}" class="btn-danger"
-                        groups="hr_medical_coverage.group_hr_director"
+                        groups="user_group.group_hr_office"
                         confirm="Are you sure you want to process this?" />
                     <!-- Statusbar Widget for Tracking Approval Process -->
                     <field name="status" widget="statusbar"

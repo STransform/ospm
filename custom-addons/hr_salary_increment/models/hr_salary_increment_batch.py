@@ -186,12 +186,39 @@ class HrSalaryIncrementBatch(models.Model):
             )
         self.show_filter_button = True
         self.increment_line_ids = batch_lines
+        
+    # send notification function
+    @api.model
+    def send_notification(self, message, user, title, model, res_id):
+        self.env["custom.notification"].create(
+            {
+                "title": title,
+                "message": message,
+                "user_id": user.id,
+                "action_model": model,
+                "action_res_id": res_id,
+            }
+        )
+
 
     def action_submit(self):
         """Submit the batch for approval."""
         if not self.increment_line_ids:
             raise ValidationError(("The batch must contain at least one employee."))
         self.state = "submitted"
+        # send notification to hr director
+        hr_director = self.env.ref("user_group.group_hr_director").users
+        for user in hr_director:
+            self.send_notification(
+                message="Salary Increment Request Submitted",
+                user=user,
+                title="Salary Increment Request",
+                model=self._name,
+                res_id=self.id,
+            )
+            # web notify
+            user.notify_success("Salary Increment Request Submitted")
+        self.env.user.notify_success("Salary Increment Request Submitted")
 
     def action_approve(self):
         """Approve the batch and apply increments for eligible employees."""
@@ -232,6 +259,19 @@ class HrSalaryIncrementBatch(models.Model):
             )
 
         self.state = "approved"
+        # send notification to hr office
+        hr_office = self.env.ref("user_group.group_hr_office").users
+        for user in hr_office:
+            self.send_notification(
+                message="Salary Increment Request Approved",
+                user=user,
+                title="Salary Increment Request",
+                model=self._name,
+                res_id=self.id,
+            )
+            # web notify
+            user.notify_success("Salary Increment Request Approved")
+        self.env.user.notify_success("Salary Increment Request Approved")
 
     def action_reject(self):
         """Reject the batch."""

@@ -20,6 +20,17 @@ class HrTrainingRequest(models.Model):
         help="Attach documents related to this training session.",
     )
 
+    # add notification function 
+    @api.model
+    def send_notification(self, message, user, title, model,res_id):
+        self.env['custom.notification'].create({
+            'title': title,
+            'message': message,
+            'user_id': user.id,
+            'action_model': model,
+            'action_res_id': res_id
+        })
+
     @api.model
     def create(self, vals):
         # Check if the name is being set dynamically
@@ -41,43 +52,95 @@ class HrTrainingRequest(models.Model):
     state_by_ceo = fields.Selection([
         ('approved', 'Approved'),
         ('refused', 'Refused'),
-    ])
+        ('requested', 'Approval Requested'),
+        ('draft', 'Draft'),
+    ], default="draft")
 
     state_by_planning = fields.Selection([
         ('approved', 'Approved'),
         ('refused', 'Refused'),
-    ])
+        ('requested', 'Approval Requested'),
+        ('draft', 'Draft'),
+    ], default="draft")
 
     combined_state = fields.Selection([
         ('approved', 'Approved'),
         ('refused', 'Rejected'),
-        ('pending', 'Pending'),
-    ], string="Combined State", compute='_compute_combined_state', store=True)
- 
+        ('requested', 'Approval Requested'),
+        ('draft', 'Draft'),
+    ], default="draft", string="Combined State", compute='_compute_combined_state', store=True)
+
+
 
     @api.depends('state_by_ceo', 'state_by_planning')
     def _compute_combined_state(self):
         for record in self:
             if 'refused' in [record.state_by_planning, record.state_by_ceo]:
                 record.combined_state = 'refused'
+            elif all(state == 'draft' for state in [record.state_by_planning, record.state_by_ceo]):
+                record.combined_state = 'draft'
             elif all(state == 'approved' for state in [record.state_by_planning, record.state_by_ceo]):
                 record.combined_state = 'approved'
             else:
-                record.combined_state = 'pending'
+                record.combined_state = 'requested'
 
 
     def action_approve_ceo(self):
         for record in self:
             record.state_by_ceo = 'approved'
 
+            title = "Training Plan Accepted"
+            message = f"Training Plan Request is Accepted."
+            user = self.create_uid
+            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+            self.env.user.notify_success(title=title, message=message)
+
+
     def action_reject_ceo(self):
         for record in self:
             record.state_by_ceo = 'refused'
 
+            title = "Training Plan Refused"
+            message = f"Training Plan Request has been rejected."
+            user = self.create_uid
+            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+            self.env.user.notify_success(title=title, message=message)
+
     def action_approve_planning(self):
         for record in self:
             record.state_by_planning = 'approved'
+            # Notification for CEO
+            title = "Training Request Approved"
+            message = f"Your training request has been approved by the planning department."
+            ceo = self.env.ref('user_group.group_ceo').users
+            for user in ceo:
+                self.send_notification(message=message, user=ceo, title=title, model=self._name, res_id=self.id)
+                user.notify_success(title=title, message=message)
+            self.env.user.notify_success("Request Submitted")
+
 
     def action_reject_planning(self):
         for record in self:
             record.state_by_planning = 'refused'
+
+            # notification for department director who crated the request
+            title = "Training Plan Refused"
+            message = f"Training Plan Request has been rejected."
+            user = self.create_uid
+            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+            self.env.user.notify_success(title=title, message=message)
+
+    def action_request_approval(self):
+        for record in self:
+            record.combined_state = 'requested'
+            record.state_by_planning = 'requested'
+            record.state_by_ceo = 'requested'
+            # notification for hr manager
+            planning = self.env.ref('user_group.group_planning_directorate').users
+            title = "Training Plan Request"
+            message = f"Training Plan Request has been submitted."
+            
+            for user in planning:
+                self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+                user.notify_success(title=title, message=message)
+            self.env.user.notify_success("Request Submitted")

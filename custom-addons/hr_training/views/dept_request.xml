@@ -6,9 +6,9 @@
         <field name="arch" type="xml">
             <form string="Training Request">
                 <header>
-                    <button name="action_request_approval" string="Request Training" type="object" class="btn-primary"   groups="hr_training.group_hr_training_department_director" attrs="{'invisible': [('state', 'in', ['requested', 'approved'])]}"/>
-                    <button name="action_approve_request" string="Approve" type="object" class="btn-primary"   groups="hr_training.group_hr_training_hr_officer" attrs="{'invisible': [('state', 'in', ['draft', 'approved', 'refused'])]}"/>
-                    <button name="action_refuse_request" string="Refuse" type="object" class="btn-primary"   groups="hr_training.group_hr_training_hr_officer" attrs="{'invisible': [('state', 'in', ['draft', 'approved', 'refused'])]}"/>
+                    <button name="action_request_approval" string="Request Training" type="object" class="btn-primary"   groups="user_group.group_director" attrs="{'invisible': [('state', 'in', ['requested', 'approved'])]}"/>
+                    <button name="action_approve_request" string="Approve" type="object" class="btn-primary"   groups="user_group.group_hr_director" attrs="{'invisible': [('state', 'in', ['draft', 'approved', 'refused'])]}"/>
+                    <button name="action_refuse_request" string="Refuse" type="object" classuser_grou="btn-primary"   groups="user_group.group_hr_director" attrs="{'invisible': [('state', 'in', ['draft', 'approved', 'refused'])]}"/>
 
                     <field name="state" widget="statusbar" statusbar_visible="draft,requested,approved,refused"/>
                 </header>
@@ -20,17 +20,16 @@
                         <field name='department_id' />
                     </group>
                     <group>
-                        <field name="attachment_ids" widget="many2many_binary"/>
+                        <field name="attachment_ids" widget="many2many_binary"  attrs="{'readonly': [('state', 'not in', ['draft', 'refused'])]}"/>
                     </group>
                     <div>
                         <span>Your training description should be descriptive and clear.</span>
                     </div>
-                    <field name='description' string='Description'/>
+                    <field name='description' string='Description'  attrs="{'readonly': [('state', 'not in', ['draft', 'refused'])]}"/>
 
-
-                    <notebook>
+                    <notebook >
                         <page string="Training Programs">
-                            <field name="training_programs">
+                            <field name="training_programs" attrs="{'readonly': [('state', 'not in', ['draft', 'refused'])]}">
                                <tree >  <!--  editable="bottom"-->
                                     <field name="program_name"/>
                                     <field name="start_date"/>

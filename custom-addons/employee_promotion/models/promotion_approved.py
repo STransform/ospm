@@ -23,6 +23,18 @@ class PromotionApproved(models.Model):
     # this is perfect enough johna
     job_position_id = fields.Many2one('hr.job', string='Job Position', required=True,   readonly=True)
 
+
+    # add notification function 
+    @api.model
+    def send_notification(self, message, user, title, model,res_id):
+        self.env['custom.notification'].create({
+            'title': title,
+            'message': message,
+            'user_id': user.id,
+            'action_model': model,
+            'action_res_id': res_id
+        })
+
     def action_change_state(self):
         for record in self:
             record.state = 'done'
