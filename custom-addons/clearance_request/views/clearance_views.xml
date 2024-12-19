@@ -167,22 +167,7 @@
         <field name="job_id"/>
         <field name="reason"/>
         <field name="state"/>
-        <button name="action_department_approve" 
-                type="object" 
-                string="Approve" 
-                states="draft"/>
-        <button name="action_property_approve" 
-                type="object" 
-                string="Approve" 
-                states="pending"/>
-        <button name="action_finance_approve" 
-                type="object" 
-                string="Approve" 
-                states="pending"/>
-        <button name="action_hr_approve" 
-                type="object" 
-                string="Approve" 
-                states="pending"/>
+        
       </tree>
     </field>
   </record>
