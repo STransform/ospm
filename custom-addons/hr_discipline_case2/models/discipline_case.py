@@ -92,20 +92,15 @@ class DisciplineCase(models.Model):
     def _compute_is_ceo(self):
         self.is_ceo = self.env.user.has_group("user_group.group_ceo")
     approve_button_visible = fields.Boolean(compute='_compute_approve_button', store=True)
+    # function for notification feature
     @api.model
-    def send_notification(self, message, user, title):
-        """
-        Send a notification to a specific user.
-        
-        Args:
-            message (str): The notification message
-            user (res.users): The user to notify
-            title (str): The notification title
-        """
+    def send_notification(self, message, user, title, model,res_id):
         self.env['custom.notification'].create({
             'title': title,
             'message': message,
             'user_id': user.id,
+            'action_model': model,
+            'action_res_id': res_id
         })
     
     def write(self, values):
@@ -147,14 +142,15 @@ class DisciplineCase(models.Model):
         if self.state != 'draft':
             raise ValidationError(_("Only cases in the 'Draft' state can be submitted."))
         self.write({'state': 'submitted'})
-         # Prepare the message
-        message = f"This case has been submitted to you!,Pls kindly resolve it ASAP!"
+         # Prepare the message to notify the department group
+        message = f"Dear Department Team, a new clearance request has been submitted by {self.accuser_id.name}. Please review it."
+
         # Get the users in the group "group_department_approval"
-        hr_department_group = self.env.ref('user_group.group_hr_director', raise_if_not_found=False)
-        if hr_department_group:
-            for user in hr_department_group.users:
+        department_group = self.env.ref('user_group.group_hr_director', raise_if_not_found=False)
+        if department_group:
+            for user in department_group.users:
                 # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
+                self.send_notification(message=message, user=user, title=self._description, model=self._name, res_id=self.id)
                 user.notify_warning(message=message, title=self._description)
         
         return {
@@ -188,13 +184,13 @@ class DisciplineCase(models.Model):
 
         # Notify the accuser
         if self.accuser_id:
-            self.send_notification(message=accuser_message, user=self.accuser_id, title=self._description)
-            self.accuser_id.notify_warning(message=accuser_message, title=self._description)
+            self.send_notification(message=accuser_message, user=self.accuser_id, title=self._description , model=self._name, res_id=self.id)
+            self.accuser_id.notify_warning(message=accuser_message, title=self._description , model=self._name, res_id=self.id)
 
         # Notify the accused
         if self.accused_employee_id:
-            self.send_notification(message=accused_message, user=self.accused_employee_id, title=self._description)
-            self.accused_employee_id.notify_warning(message=accused_message, title=self._description)
+            self.send_notification(message=accused_message, user=self.accused_employee_id, title=self._description ,model=self._name, res_id=self.id)
+            self.accused_employee_id.notify_warning(message=accused_message, title=self._description , model=self._name, res_id=self.id)
         
         return {
                 'type': 'ir.actions.act_window',
@@ -227,7 +223,7 @@ class DisciplineCase(models.Model):
         if committee_group:
             for user in committee_group.users:
                 # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
+                self.send_notification(message=message, user=user, title=self._description , model=self._name, res_id=self.id)
                 user.notify_warning(message=message, title=self._description)
         
         return {
@@ -262,7 +258,7 @@ class DisciplineCase(models.Model):
         if ceo:
             for user in ceo.users:
                 # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
+                self.send_notification(message=message, user=user, title=self._description , model=self._name, res_id=self.id)
                 user.notify_warning(message=message, title=self._description)
 
         return {
@@ -301,7 +297,7 @@ class DisciplineCase(models.Model):
         if hr:
             for user in hr.users:
                 # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
+                self.send_notification(message=message, user=user, title=self._description ,model=self._name, res_id=self.id)
                 user.notify_warning(message=message, title=self._description)
         
         return {
@@ -343,7 +339,7 @@ class DisciplineCase(models.Model):
         if returned_to_committee:
             for user in returned_to_committee.users:
                 # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
+                self.send_notification(message=message, user=user, title=self._description,model=self._name, res_id=self.id)
                 user.notify_warning(message=message, title=self._description)
         
         return {
@@ -377,8 +373,8 @@ class DisciplineCase(models.Model):
         if to_ceo:
             for user in to_ceo.users:
                 # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
-                user.notify_warning(message=message, title=self._description)
+                self.send_notification(message=message, user=user, title=self._description , model=self._name, res_id=self.id)
+                user.notify_warning(message=message, title=self._description )
         
         return {
                 'type': 'ir.actions.act_window',

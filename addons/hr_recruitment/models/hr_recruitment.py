@@ -945,8 +945,19 @@ class HrApplicant(models.Model):
             if vals['stage_id'] == initial_stage.id:
                 self.filter_applicants()
         return res
+
     @api.model
     def create(self, vals):
+        # Ensure 'job_id' and 'partner_mobile' exist in the input data
+        if vals.get('job_id') and vals.get('partner_mobile'):
+            # Check if an applicant with the same job and mobile already exists
+            existing_applicant = self.search([
+                ('job_id', '=', vals['job_id']),
+                ('partner_mobile', '=', vals['partner_mobile'])
+            ], limit=1)
+            if existing_applicant:
+                raise ValidationError(_("You are not allowed to apply twice for the same job!"))
+
         # Ensure the applicant is created with ceo_approval_status set to 'pending'
         if 'ceo_approval_status' not in vals:
             vals['ceo_approval_status'] = 'pending'
@@ -954,9 +965,10 @@ class HrApplicant(models.Model):
         # Check if the stage is First or Second Interview and restrict access to Committee group
         if 'stage_id' in vals:
             stage = self.env['hr.recruitment.stage'].browse(vals['stage_id'])
-            if stage.name in ['First Interview', 'Second Interview']:
-                if not self.env.user.has_group('hr_recruitment.group_hr_recruitment_committee'):
+            if stage.name in ['Exam', 'Interview']:
+                if not self.env.user.has_group('user_group.group_recruitment_commitee'):
                     raise ValidationError(_("You do not have permission to access this stage."))
+        
         
         return super(HrApplicant, self).create(vals)
 
@@ -980,7 +992,7 @@ class HrApplicant(models.Model):
                 
                 # Restrict modification of First and Second Interview stages to Committee users
                 if new_stage.name in ['Exam', 'Interview']:
-                    if not self.env.user.has_group('hr_recruitment.group_hr_recruitment_committee'):
+                    if not self.env.user.has_group('user_group.group_recruitment_commitee'):
                         raise ValidationError(_("Only Committee member can do that."))
 
         # Proceed with the original write method after the checks

@@ -81,20 +81,15 @@ class EmployeeComplaint(models.Model):
         if not self.env.user.has_group(allowed_groups):
             raise ValidationError(_("You do not have the access rights to perform this action."))
     @api.model
-    def send_notification(self, message, user, title):
-        """
-        Send a notification to a specific user.
-        
-        Args:
-            message (str): The notification message
-            user (res.users): The user to notify
-            title (str): The notification title
-        """
+    def send_notification(self, message, user, title, model,res_id):
         self.env['custom.notification'].create({
             'title': title,
             'message': message,
             'user_id': user.id,
+            'action_model': model,
+            'action_res_id': res_id
         })
+
     def action_submit(self):
         self._check_access('base.group_user')  # Only initiator (regular users)
         if self.state != 'draft':
@@ -108,7 +103,7 @@ class EmployeeComplaint(models.Model):
         if legal_service_group:
             for user in legal_service_group.users:
                 # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
+                self.send_notification(message=message, user=user, title=self._description, model=self._name, res_id=self.id)
                 user.notify_warning(message=message, title=self._description)
         
         return {
@@ -142,7 +137,7 @@ class EmployeeComplaint(models.Model):
         
         # Send notification to the complaint initiator
         if self.employee_id and self.employee_id.user_id:
-            self.send_notification(message=message, user=self.employee_id.user_id, title=self._description)
+            self.send_notification(message=message, user=self.employee_id.user_id, title=self._description, model=self._name, res_id=self.id)
             self.employee_id.user_id.notify_warning(message=message, title=self._description)
             
 
@@ -158,7 +153,7 @@ class EmployeeComplaint(models.Model):
         if legal_service_group:
             for user in legal_service_group.users:
                 # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
+                self.send_notification(message=message, user=user, title=self._description, model=self._name, res_id=self.id)
                 user.notify_warning(message=message, title=self._description)
         
         return {
@@ -194,7 +189,7 @@ class EmployeeComplaint(models.Model):
         if ceo_group:
             for user in ceo_group.users:
                 # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
+                self.send_notification(message=message, user=user, title=self._description, model=self._name, res_id=self.id)
                 user.notify_warning(message=message, title=self._description)
         
         return {
@@ -229,7 +224,7 @@ class EmployeeComplaint(models.Model):
         
         # Send notification to the complaint initiator
         if self.employee_id and self.employee_id.user_id:
-            self.send_notification(message=message, user=self.employee_id.user_id, title=self._description)
+            self.send_notification(message=message, user=self.employee_id.user_id, title=self._description, model=self._name, res_id=self.id)
             self.employee_id.user_id.notify_warning(message=message, title=self._description)
         
 
@@ -245,7 +240,7 @@ class EmployeeComplaint(models.Model):
         if ceo_group:
             for user in ceo_group.users:
                 # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
+                self.send_notification(message=message, user=user, title=self._description, model=self._name, res_id=self.id)
                 user.notify_warning(message=message, title=self._description)
         
         return {
@@ -282,7 +277,7 @@ class EmployeeComplaint(models.Model):
         if ceo_group:
             for user in ceo_group.users:
                 # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description)
+                self.send_notification(message=message, user=user, title=self._description, model=self._name, res_id=self.id)
                 user.notify_warning(message=message, title=self._description)
         
         return {

@@ -3,17 +3,17 @@
 
     <!-- Main Menu -->
     <menuitem
-        id="hr_bonus_managment_menu"
-        name="Bonus Managment"
+        id="hr_bonus_management_menu"
+        name="Bonus management"
         parent="hr.menu_employee_benefits"
         sequence="20" />
 
     <!-- sub menu for bonus Request -->
     <menuitem
-        id="hr_bonus_managment_menu_request"
+        id="hr_bonus_management_menu_request"
         name="Bonus Request"
-        parent="hr_bonus_managment_menu"
-        action="action_bonus_managment"
+        parent="hr_bonus_management_menu"
+        action="action_bonus_management"
         sequence="1" />
 
 </odoo>

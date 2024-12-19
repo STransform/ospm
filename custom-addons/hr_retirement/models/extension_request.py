@@ -48,19 +48,23 @@ class HrRetirementExtensionRequest(models.Model):
 
     
     @api.model
-    def send_notification(self, message, user, title):
+    def send_notification(self, message, user, title,model,res_id):
         """
-            Send a notification to a specific user.
-            
-            Args:
-                message: The notification message
-                user: The user to receive the notification
-                title: The title of the notification
-        """ 
+        Send a notification to a specific user.
+        
+        Args:
+            message (str): The notification message
+            user (res.users): The user to notify
+            title (str): The notification title
+            model (str): The model name
+            res_id (int): The record ID
+        """
         self.env['custom.notification'].create({
             'title': title,
             'message': message,
             'user_id': user.id,
+            'action_model':model,
+            'action_res_id': res_id
         })
 
     @api.depends('employee_id')
@@ -136,7 +140,7 @@ class HrRetirementExtensionRequest(models.Model):
 
         ## send notification to the employee
         message = f"The Hr Office has requested you for Extending your retirment period for {self.extension_period_months} months"
-        self.send_notification(message=message, user=self.employee_id.user_id, title=self._description)
+        self.send_notification(message=message, user=self.employee_id.user_id, title=self._description, model=self._name, res_id=self.id)
         self.employee_id.user_id.notify_info(message=message, title=self._description)
         self.env.user.notify_success(message="Retirement Extension Request Submitted Successfully.", title=self._description)
 
@@ -161,7 +165,7 @@ class HrRetirementExtensionRequest(models.Model):
 
         ## send notification to the employee
         message = f"{self.employee_id.name} has Accepted the request for extending the Retirment Request"
-        self.send_notification(message=message, user=self.create_uid, title=self._description)
+        self.send_notification(message=message, user=self.create_uid, title=self._description, model=self._name, res_id=self.id)
         self.create_uid.notify_success(message=message, title=self._description)
         self.env.user.notify_success(message="Retirement Extension Request Accepted Successfully.", title=self._description)
 
@@ -177,7 +181,7 @@ class HrRetirementExtensionRequest(models.Model):
 
         ## send notification to the employee
         message = f"{self.employee_id.name} has Rejected the request for extending the Retirment Request"
-        self.send_notification(message=message, user=self.create_uid, title=self._description)
+        self.send_notification(message=message, user=self.create_uid, title=self._description, model=self._name, res_id=self.id)
         self.create_uid.notify_warning(message=message, title=self._description)
         self.env.user.notify_warning(message="Retirement Extension Request Rejected Successfully.", title=self._description)
 

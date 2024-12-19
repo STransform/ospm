@@ -181,7 +181,7 @@
         <field name="name">discipline.case.kanban</field>
         <field name="model">employee.discipline.case</field>
         <field name="arch" type="xml">
-            <kanban string="Discipline Cases">
+            <kanban string="Discipline Cases" group_by="state">
                 <field name="state"/>
                 <field name="name"/>
                 <field name="accused_employee_id"/>
@@ -194,16 +194,9 @@
                             <div class="oe_kanban_details">
                                 <strong><field name="name"/></strong>
                                 <div>Employee: <field name="accused_employee_id"/></div>
-                                <div>Status: <field name="state"/></div>
+                               
                                 <div>Discipline Type: <field name="discipline_type"/></div>
-                                <div>Committee Decision: <field name="committee_decision"/></div> 
-                                <div class="mt-2">
-                                    <button name="action_escalate_to_ceo" 
-                                            type="object" 
-                                            string="Escalate to CEO" 
-                                            class="btn btn-primary btn-sm"
-                                            attrs="{'invisible': [('committee_decision', '!=', 'reviewed')]}"/>
-                                </div>
+                                <div>Status: <field name="state" style="color:green;"/></div>
                             </div>
                         </div>
                     </t>
@@ -220,13 +213,7 @@
                 <field name="accused_employee_id"/>
                 <field name="state"/>
                 <field name="discipline_type"/>
-                <field name="case_description"/>
-                <field name="committee_decision"/>
-                <field name="ceo_decision"/>
-                <button name="action_escalate_to_ceo" 
-                        type="object" 
-                        string="Escalate to CEO" 
-                        attrs="{'invisible': [('committee_decision', '!=', 'reviewed')]}"/>
+              
             </tree>
         </field>
     </record>
@@ -234,7 +221,7 @@
     <record id="action_discipline_case" model="ir.actions.act_window">
         <field name="name">Discipline Cases</field>
         <field name="res_model">employee.discipline.case</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="context">{}</field>
     </record>
 

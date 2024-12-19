@@ -4,7 +4,9 @@
         <menuitem
             id="Transfer_menu"
             name="Transfer"
-            sequence="10"/>
+            parent="hr.menu_hr_services"
+            sequence="10"
+            />
         <menuitem
             id="transfer_request_menu"
             name="Transfer_request"

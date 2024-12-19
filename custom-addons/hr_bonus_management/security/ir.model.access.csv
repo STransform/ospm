@@ -1,0 +1,11 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+access_hr_bonus_management_user,access_hr_bonus_management_user,model_hr_bonus_management,base.group_system,1,1,1,1
+access_hr_bonus_management_hr_officer,access_hr_bonus_management_hr_officer,model_hr_bonus_management,user_group.group_hr_office,1,1,0,0
+access_hr_bonus_management_work_unit_manager,access_hr_bonus_management_work_unit_manager,model_hr_bonus_management,user_group.group_department_manager,1,1,1,0
+
+access_hr_bonus_management_line_user,access_hr_bonus_management_line_user_user,model_hr_bonus_management_line,base.group_user,1,1,1,1
+
+access_hr_bonus_history_user,access_hr_bonus_history_user,model_hr_bonus_history,base.group_user,1,1,1,0
+access_hr_bonus_history_admin,access_hr_bonus_history_admin,model_hr_bonus_history,base.group_system,1,1,1,1
+
+access_hr_bonus_rejection_wizard,access_hr_bonus_rejection_wizard,model_hr_bonus_rejection_wizard,base.group_user,1,1,1,1
