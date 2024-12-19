@@ -945,7 +945,7 @@ class HrApplicant(models.Model):
             if vals['stage_id'] == initial_stage.id:
                 self.filter_applicants()
         return res
-        
+
     @api.model
     def create(self, vals):
         # Ensure 'job_id' and 'partner_mobile' exist in the input data
@@ -965,8 +965,8 @@ class HrApplicant(models.Model):
         # Check if the stage is First or Second Interview and restrict access to Committee group
         if 'stage_id' in vals:
             stage = self.env['hr.recruitment.stage'].browse(vals['stage_id'])
-            if stage.name in ['First Interview', 'Second Interview']:
-                if not self.env.user.has_group('hr_recruitment.group_hr_recruitment_committee'):
+            if stage.name in ['Exam', 'Interview']:
+                if not self.env.user.has_group('user_group.group_recruitment_commitee'):
                     raise ValidationError(_("You do not have permission to access this stage."))
         
         
@@ -992,7 +992,7 @@ class HrApplicant(models.Model):
                 
                 # Restrict modification of First and Second Interview stages to Committee users
                 if new_stage.name in ['Exam', 'Interview']:
-                    if not self.env.user.has_group('hr_recruitment.group_hr_recruitment_committee'):
+                    if not self.env.user.has_group('user_group.group_recruitment_commitee'):
                         raise ValidationError(_("Only Committee member can do that."))
 
         # Proceed with the original write method after the checks
