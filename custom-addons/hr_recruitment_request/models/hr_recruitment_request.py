@@ -126,12 +126,6 @@ class RecruitmentRequest(models.Model):
     def action_reject_hr_director(self):
         for record in self:
             record.state_by_hr_director = 'refused'
-            # To send notification to the one created it
-            title = "Recruitment Refused"
-            message = f"Your Recruitment Request has been rejected."
-            user = self.create_uid
-            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
-            self.env.user.notify_success(title=title, message=message)
 
 
     def action_approve_dceo(self):
@@ -152,12 +146,6 @@ class RecruitmentRequest(models.Model):
     def action_reject_dceo(self):
         for record in self:
             record.state_by_dceo = 'refused'
-            # To send notification to the one created it
-            title = "Recruitment Refused"
-            message = f"Your Recruitment Request has been rejected."
-            user = self.create_uid
-            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
-            self.env.user.notify_success(title=title, message=message)
     
 
     def action_approve_ceo(self):
@@ -172,12 +160,6 @@ class RecruitmentRequest(models.Model):
     def action_reject_ceo(self):
         for record in self:
             record.state_by_ceo = 'refused'
-            # To send notification to the one created it
-            title = "Recruitment Refused"
-            message = f"Your Recruitment Request has been rejected."
-            user = self.create_uid
-            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
-            self.env.user.notify_success(title=title, message=message)
     #for integrating custom recruitment request with job position
     def _create_or_update_job_position(self):
             """Create or update an hr.job record when the recruitment request is approved."""
