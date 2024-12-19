@@ -220,13 +220,7 @@
                 <field name="accused_employee_id"/>
                 <field name="state"/>
                 <field name="discipline_type"/>
-                <field name="case_description"/>
-                <field name="committee_decision"/>
-                <field name="ceo_decision"/>
-                <button name="action_escalate_to_ceo" 
-                        type="object" 
-                        string="Escalate to CEO" 
-                        attrs="{'invisible': [('committee_decision', '!=', 'reviewed')]}"/>
+              
             </tree>
         </field>
     </record>
