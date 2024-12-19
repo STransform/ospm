@@ -5,7 +5,6 @@
     'author': "Yohanes Mesfin",
     'depends' : ['hr', 'base', 'web', 'mail', 'bus', 'web_notify', 'user_group','custom_notification'], 
     'data' : [
-        'security/groups.xml',
         'security/ir.model.access.csv',
         'security/dept_request_rule.xml',
         'views/dept_request.xml',

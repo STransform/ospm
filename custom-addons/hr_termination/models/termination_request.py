@@ -147,6 +147,13 @@ class TerminationRequest(models.Model):
         for record in self:
             record.state_by_service = 'refused'
 
+            title = "Termination Refused"
+            message = f"Your Termination Request has been rejected."
+            user = self.create_uid
+            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+            self.env.user.notify_success(title=title, message=message)
+
+
     def action_by_director_request_approval(self):
         for record in self:
             record.state_by_director = 'approved'
@@ -163,6 +170,13 @@ class TerminationRequest(models.Model):
     def action_by_director_refuse_request(self):
         for record in self:
             record.state_by_director = 'refused'
+
+            
+            title = "Termination Refused"
+            message = f"Your Termination Request has been rejected."
+            user = self.create_uid
+            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+            self.env.user.notify_success(title=title, message=message)
 
     
     def action_by_dceo_request_approval(self):
@@ -181,6 +195,12 @@ class TerminationRequest(models.Model):
     def action_by_dceo_refuse_request(self):
         for record in self:
             record.state_by_dceo = 'refused'
+
+            title = "Termination Refused"
+            message = f"Your Termination Request has been rejected."
+            user = self.create_uid
+            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+            self.env.user.notify_success(title=title, message=message)
     
     def action_by_ceo_request_approval(self):
         for record in self:
@@ -201,6 +221,13 @@ class TerminationRequest(models.Model):
     def action_by_ceo_refuse_request(self):
         for record in self:
             record.state_by_ceo = 'refused'
+
+            
+            title = "Termination Refused"
+            message = f"Your Termination Request has been rejected."
+            user = self.create_uid
+            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+            self.env.user.notify_success(title=title, message=message)
 
 
     def action_request_termination(self):
