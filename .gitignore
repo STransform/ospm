@@ -63,3 +63,9 @@ package.json
 /visualize/
 /custom-addons/izi_data/
 /custom-addons/report_xlsx/
+
+
+/custom-addons/base_account_budget/
+/custom-addons/base_accounting_kit/
+/custom-addons/custom_report_pdf/
+/custom-addons/dynamic_accounts_report/

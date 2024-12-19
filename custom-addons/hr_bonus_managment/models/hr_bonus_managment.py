@@ -2,7 +2,7 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 
-class HrSalaryIncrementBatch(models.Model):
+class HrBonusManagmentBatch(models.Model):
     _name = "hr.bonus.managment"
     _description = "HR Bonus Mnagment"
     _inherit = ["mail.thread", "mail.activity.mixin"]

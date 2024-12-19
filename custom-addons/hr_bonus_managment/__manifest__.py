@@ -15,9 +15,12 @@
         "custom_notification",
         "web_notify",
         "user_group",
+        "web",
     ],
     "data": [
         "security/ir.model.access.csv",
+        "report/report.xml",
+        "report/template.xml",
         "views/hr_bonus_managment_view.xml",
         "views/hr_employee_view.xml",
         "views/menu.xml",
