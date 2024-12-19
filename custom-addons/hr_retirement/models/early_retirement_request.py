@@ -63,7 +63,7 @@ class EarlyRetirementRequest(models.Model):
     
     
     @api.model
-    def send_notification(self, message, user, title):
+    def send_notification(self, message, user, title,model,res_id):
         """
         Send a notification to a specific user.
         
@@ -71,11 +71,15 @@ class EarlyRetirementRequest(models.Model):
             message (str): The notification message
             user (res.users): The user to notify
             title (str): The notification title
+            model (str): The model name
+            res_id (int): The record ID
         """
         self.env['custom.notification'].create({
             'title': title,
             'message': message,
             'user_id': user.id,
+            'action_model':model,
+            'action_res_id': res_id
         })
 
     @api.onchange('proposed_retirement_date')
@@ -109,7 +113,7 @@ class EarlyRetirementRequest(models.Model):
             record.request_date = datetime.today()
             message = f"{record.employee_name} has requested for early retirement on {record._format_date(record.proposed_retirement_date)}."
             for user in ceo_users:
-                self.send_notification(message=message, user=user, title=self._description)
+                self.send_notification(message=message, user=user, title=self._description, model=self._name, res_id=self.id)
                 user.notify_success(message=message,title=self._description)
             self.env.user.notify_success(message="Early Retirement Request Submitted Successfully.", title=self._description)
 
@@ -131,7 +135,7 @@ class EarlyRetirementRequest(models.Model):
         self.employee_id.retirement_extended = True
 
         message = f"Your Early Retirement Request has been approved."
-        self.send_notification(message=message, user=self.employee_id.user_id, title=self._description)
+        self.send_notification(message=message, user=self.employee_id.user_id, title=self._description, model=self._name, res_id=self.id)
         self.employee_id.user_id.notify_success(message=message, title=self._description)
         self.env.user.notify_success(message="Early Retirement Request Approved Successfully.", title=self._description)
 
@@ -151,7 +155,7 @@ class EarlyRetirementRequest(models.Model):
         self.ceo_state = 'approved'
 
         message = f"Your Early Retirement Request has been rejected."
-        self.send_notification(message=message, user=self.employee_id.user_id, title=self._description)
+        self.send_notification(message=message, user=self.employee_id.user_id, title=self._description, model=self._name, res_id=self.id)
         self.employee_id.user_id.notify_warning(message=message, title=self._description)
         self.env.user.notify_warning(message="Early Retirement Request Rejected.", title=self._description)
 
