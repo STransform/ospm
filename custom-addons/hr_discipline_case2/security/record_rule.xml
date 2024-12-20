@@ -38,7 +38,7 @@
             <field name="name">CEO Discipline Cases</field>
             <field name="model_id" ref="model_employee_discipline_case"/>
             <field name="groups" eval="[(4, ref('user_group.group_ceo'))]"/>
-            <field name="domain_force">[('state', 'in', ['escalate_to_ceo', 'rejected', 'approve'])]</field>
+            <field name="domain_force">[('state', 'in', ['escalate_to_ceo', 'reject', 'approve'])]</field>
         </record>
 
     </data>

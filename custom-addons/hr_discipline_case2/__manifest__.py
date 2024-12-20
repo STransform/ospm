@@ -6,7 +6,7 @@
     'website': 'OTech',
     'depends': ['base', 'hr','user_group','custom_notification','web','web_notify'],  # Dependencies on base and hr modules
     'data': [
-        # 'security/record_rule.xml',
+        'security/record_rule.xml',
         'security/ir.model.access.csv',
         'views/discipline_case_views.xml',
         "report/report.xml",  
