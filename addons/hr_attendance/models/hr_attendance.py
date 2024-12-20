@@ -53,12 +53,15 @@ class HrAttendance(models.Model):
 
     @api.depends('check_in', 'check_out')
     def _compute_attendance_status(self):
-        for record in self:
-            # Late In starts after 08:30 AM local time
-            late_in_time = time(8, 30)
-            # Early Out is before 05:00 PM local time
-            early_out_time = time(17, 0)
+        # Fetch configuration values
+        late_in_str = self.env['ir.config_parameter'].sudo().get_param('hr_attendance.late_in_time', default="08:30")
+        early_out_str = self.env['ir.config_parameter'].sudo().get_param('hr_attendance.early_out_time', default="17:00")
 
+        # Convert strings to `time` objects
+        late_in_time = datetime.strptime(late_in_str, "%H:%M").time()
+        early_out_time = datetime.strptime(early_out_str, "%H:%M").time()
+
+        for record in self:
             check_in_time = self.normalize_time_to_local(record.check_in)
             check_out_time = self.normalize_time_to_local(record.check_out)
 
@@ -74,7 +77,6 @@ class HrAttendance(models.Model):
                 record.attendance_status = 'present'
             else:
                 record.attendance_status = 'absent'
-
 
     def name_get(self):
         result = []
