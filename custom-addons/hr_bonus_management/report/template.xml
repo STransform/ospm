@@ -34,7 +34,8 @@
                             <tr>
                                 <td style="padding: 10px; border: 1px solid #ddd;">Fixed Amount</td>
                                 <td style="padding: 10px; border: 1px solid #ddd;">
-                                    <span t-field="o.fixed_amount" />
+                                    <span t-if="o.fixed_amount">Yes</span>
+                                    <span t-if="not o.fixed_amount">No</span>
                                 </td>
                             </tr>
                             <tr>
@@ -80,7 +81,8 @@
                                         <span t-field="line.bonus_amount" />
                                     </td>
                                     <td style="padding: 10px; border: 1px solid #ddd;">
-                                        <span t-field="line.is_eligible" />
+                                        <span t-if="line.is_eligible">Yes</span>
+                                        <span t-if="not line.is_eligible">No</span>
                                     </td>
                                 </tr>
                             </t>

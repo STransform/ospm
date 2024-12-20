@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_hr_overtime_payment">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Report Header -->
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <h2 style="color: #2c3e50;">Overtime Payment Report</h2>
+                            <p style="font-style: italic; color: #7f8c8d;">Generated on: <span
+                                    t-esc="time.strftime('%Y-%m-%d %H:%M:%S')" /></p>
+                        </div>
+
+                       
+
+                        <!-- Overtime Payment Details -->
+                        <h3 style="color: #2c3e50; margin-bottom: 10px;">Employee Information</h3>
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                            <tr style="background-color: #f7f7f7;">
+                                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                    Field</th>
+                                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                    Details</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Employee Name</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="o.employee_id.name" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Department</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="o.department_id.name" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Contract</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="o.contract_id.name" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Wage</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="o.wage" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Status</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="o.state" />
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Overtime Payment Items -->
+                        <h3 style="color: #2c3e50; margin-bottom: 10px;">Overtime Details</h3>
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                            <tr style="background-color: #f7f7f7;">
+                                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Start
+                                    Date</th>
+                                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">End
+                                    Date</th>
+                                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                    Hours</th>
+                                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                    Rate</th>
+                                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                    Amount</th>
+                            </tr>
+                            <tr t-foreach="o.overtime_payment_item_ids" t-as="item">
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="item.start_date" />
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="item.end_date" />
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="item.hours" />
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="item.overtime_rate_id.name" />
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="item.amount" />
+                                </td>
+                            </tr>
+                        </table>
+
+                         <!-- Summary -->
+                        <h3 style="color: #2c3e50; margin-bottom: 10px;">Summary</h3>
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Total Amount</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="o.total_amount" />
+                                </td>
+                            </tr>
+                            <tr t-if="o.state == 'rejected'">
+                                <td style="padding: 10px; border: 1px solid #ddd;">Rejection Reason</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="o.rejection_reason" />
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Footer -->
+                        <div style="margin-top: 30px; text-align: center;">
+                            <p style="font-size: 12px; color: #7f8c8d;">
+                                This report is auto-generated by the Overtime Payment system. For
+                                any discrepancies, please contact HR.
+                            </p>
+                        </div>
+                    </div>
+
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
