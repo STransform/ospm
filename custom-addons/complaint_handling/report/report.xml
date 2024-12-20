@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <record id="action_employee_complaint_case" model="ir.actions.report">
+    <field name="name">Complaint case report</field>
+    <field name="model">employee.complaint</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">complaint_handling.report_complaint</field> <!-- Match template ID -->
+    <field name="report_file">complaint_handling.report_complaint</field> <!-- Match template ID -->
+    <field name="binding_model_id" ref="model_employee_complaint" />
+    <field name="binding_type">report</field>
+</record>
+
+
+</odoo>

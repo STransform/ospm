@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="report_complaint">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="web.external_layout">
+					<div class="page">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h2 style="color: #2c3e50;">Employee Complaint Report</h2>
+        <p style="font-style: italic; color: #7f8c8d;">
+            Generated on: <span t-esc="time.strftime('%Y-%m-%d %H:%M:%S')" />
+        </p>
+    </div>
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <tr style="background-color: #f7f7f7;">
+            <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Field</th>
+            <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Details</th>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Employee</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.employee_id.name" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Complaint Ref</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.name" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Issue Type</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.issue_type" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Description</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.description" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Created On</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.created_on" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Decision by Legal Service</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.decision_by_legalservice" /></td>
+        </tr>
+       
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Decision by CEO</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.decision_by_ceo" /></td>
+        </tr>
+    </table>
+</div>
+				</t>
+			</t>
+		</t>
+	</template>
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_discipline_case" model="ir.actions.report">
+        <field name="name">Discipline case report</field>
+        <field name="model">employee.discipline.case</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_discipline_case2.report_discipline</field> <!-- Must match
+        template -->
+        <field name="report_file">hr_discipline_case2.report_discipline</field> <!-- Must match
+        template -->
+        <field name="binding_model_id" ref="model_employee_discipline_case" />
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

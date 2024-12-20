@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<template id="report_discipline">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="web.external_layout">
+					<div class="page">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h2 style="color: #2c3e50;">Discipline Case Report</h2>
+        <p style="font-style: italic; color: #7f8c8d;">
+            Generated on: <span t-esc="time.strftime('%Y-%m-%d %H:%M:%S')" />
+        </p>
+    </div>
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <tr style="background-color: #f7f7f7;">
+            <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Field</th>
+            <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Details</th>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Accuser</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.accuser_id.name" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Case Reference</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.name" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Case Description</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.case_description" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Accused Employee</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.accused_employee_id.name" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Type of Discipline</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.discipline_type" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Accused Response</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.accused_response" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Attachments</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.documents" widget="many2many_binary" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Witness</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.witness_by_accused" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Penalty Type</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.penalty_type" /></td>
+        </tr>
+
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Reason for Revision</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.reason_for_revision" /></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">Case Revision</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><span t-field="o.case_revision" /></td>
+        </tr>
+       
+    </table>
+  
+</div>
+				</t>
+			</t>
+		</t>
+	</template>
+</odoo>
