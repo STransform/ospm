@@ -29,10 +29,34 @@
             <form string="HR Annual Plan">
                 <sheet>
                     <header>
-                        <button name="submit" type="object" string="Submit" attrs="{'invisible': [('status', '!=', 'draft')]}"/>
-                        <button name="approve" type="object" string="Approve" attrs="{'invisible': ['|',('status', '!=', 'submitted'),('is_approver','=',False)]}"/>
-                        <button name="reject" type="object" string="Reject" attrs="{'invisible': ['|',('status', '!=', 'submitted'),('is_approver','=',False)]}"/>
-                        <button name="submit" type="object" string="ReSubmit" attrs="{'invisible': ['|',('status', '!=', 'rejected'),('is_approver','=',True)]}"/>
+                        <button name="action_submit" 
+                                type="object" 
+                                string="Submit" 
+                                attrs="{'invisible': [('status', '!=', 'draft')]}"
+                                class="btn-success"
+                                confirm="Are You sure you want to Submit the Plan"
+                        />
+                        <button name="action_approve" 
+                                type="object" 
+                                string="Approve" 
+                                attrs="{'invisible': ['|',('status', '!=', 'submitted'),('is_approver','=',False)]}"
+                                class="btn-success"
+                                confirm="Are You sure you want to Approve the Plan"
+                        />
+                        <button name="action_reject" 
+                                type="object" 
+                                string="Reject" 
+                                attrs="{'invisible': ['|',('status', '!=', 'submitted'),('is_approver','=',False)]}"
+                                class="btn-danger"
+                                confirm="Are You sure you want to Reject the Plan"
+                        />
+                        <button name="action_resubmit" 
+                                type="object" 
+                                string="ReSubmit" 
+                                attrs="{'invisible': ['|',('status', '!=', 'rejected'),('is_approver','=',True)]}"
+                                class="btn-success"
+                                confirm="Are You sure you want to Resubmit the Plan"
+                        />
                         <field name="status" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected"/>
                     </header>
                     <div class= "p-2">
@@ -41,11 +65,11 @@
                     <sheet class= "p-2">
                         <group>
                             <field name="is_approver" invisible="1"/>
-                            <field name="department_id" readonly="1" />
-                            <field name="submitted_to" attrs="{'readonly': ['|',('status', '!=', 'draft'),('is_approver', '=', True)]}"/>
+                            <field name="department_id" readonly="1" options="{'no_open':True}"/>
+                            <field name="submitted_to" attrs="{'readonly': ['|',('status', '!=', 'draft'),('is_approver', '=', True)]}" options="{'no_open':True,'no_create':True}"/>
                             <field name="year" attrs="{'readonly': ['|',('status', '!=', 'draft'),('is_approver', '=', True)]}"/>
                             <field name="status" readonly="1"/>
-                            <field name="approved_by" readonly="1"/>
+                            <field name="approved_by" readonly="1" options="{'no_open':True}"/>
                             <field name="comment" attrs="{'readonly': ['|',('is_approver', '=', False),('status', '!=', 'submitted')]}"/>
                         </group>
                     </sheet>
@@ -75,10 +99,9 @@
     <field name="res_model">hr.annual.plan</field>
     <field name="view_mode">tree,form</field>
     <field name="view_id" ref="planning.hr_annual_plan_view_tree"/>
-    <!-- <field name="domain">['|', ('create_uid', '=', uid), ('approved_by', '=', uid)]</field> -->
     <field name="help" type="html">
         <p class="oe_view_nocontent_create">
-            Click New to create a new estate property.
+            Click New to create a new Hr Plan
         </p>
     </field>
 </record>

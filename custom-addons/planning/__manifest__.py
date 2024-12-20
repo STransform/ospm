@@ -5,9 +5,8 @@
     'summary': 'HR Annual Planning module',
     "category": "Human Resources",
     "description": "This module allows you to manage the annual planning of your company.",
-    "depends": ['base','hr'],
+    "depends": ['base','hr','user_group','custom_notification','web_notify'],
     "data": [
-        'security/hr_annual_planning_group.xml',
         'security/ir.model.access.xml',
         'security/ir.model.access.csv',
         'views/hr_annual_plan_view.xml',

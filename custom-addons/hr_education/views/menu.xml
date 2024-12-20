@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <menuitem id="menu_hr_education" name="Education" parent="hr.menu_hr_planning"/>
+        <menuitem id="menu_hr_education" name="Education" parent="hr.menu_hr_planning" sequence="12"/>
         <menuitem id="dept_education_request_menu" name="Education Request" parent="menu_hr_education" action="dept_education_request_action" groups="user_group.group_department_manager,user_group.group_hr_director"/>
         <menuitem id="hr_office_request_menu" name="HR Office Education Plan" parent="menu_hr_education" action="hr_office_request_action" groups="user_group.group_planning_directorate,user_group.group_hr_director,user_group.group_ceo"/>
     </data>
