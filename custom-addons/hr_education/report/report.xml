@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_education_dept" model="ir.actions.report">
+        <field name="name">Education Report</field>
+        <field name="model">education.department.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_education.education_dept_request</field> 
+        <field name="report_file">hr_education.education_dept_request</field> 
+        <field name="binding_model_id" ref="model_education_department_request" />
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <record id="action_report_education_hr" model="ir.actions.report">
+        <field name="name">Annual Education Report</field>
+        <field name="model">hr.education.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_education.education_for_hr</field> 
+        <field name="report_file">hr_education.education_for_hr</field>
+        <field name="binding_model_id" ref="model_hr_education_request" />
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>
+
