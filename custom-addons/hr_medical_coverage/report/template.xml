@@ -8,14 +8,11 @@
                         <!-- Report Header -->
                         <div style="text-align: center; margin-bottom: 20px;">
                             <h2 style="color: #2c3e50;">Medical Coverage Report</h2>
-                            <p style="font-style: italic; color: #7f8c8d;"> Generated on: <script>
-                                const date = new Date();
-                                    const formattedDate = date.toISOString().slice(0,
-                                19).replace('T', ' ');
-                                    document.write(formattedDate); // Output the formatted date
-                                </script>
+                            <p
+                                style="font-style: italic; color: #7f8c8d;"> Generated on: <span
+                                    t-esc="time.strftime('%Y-%m-%d %H:%M:%S')" />
                             </p>
-                        </div>
+                            ` </div>
 
                         <!-- Medical Coverage Details -->
                         <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
@@ -65,7 +62,7 @@
                         </table>
 
                         <!-- Medical Costs Details -->
-                        <h3 style="color: #2c3e50; margin-top: 20px;">Medical Costs</h3>
+                        <h3 style="color: #2c3e50; margin-top: 20px;">Medical Costs Items</h3>
                         <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                             <tr style="background-color: #f7f7f7;">
                                 <th style="padding: 10px; border: 1px solid #ddd;">Provider Type</th>
@@ -98,17 +95,6 @@
                                 </tr>
                             </t>
                         </table>
-
-                        <!-- Attachments -->
-                        <h3 style="color: #2c3e50; margin-top: 20px;">Attachments</h3>
-                        <ul>
-                            <t t-foreach="o.attachment_ids" t-as="attachment">
-                                <li>
-                                    <t t-esc="attachment.name" />
-                                </li>
-                            </t>
-                        </ul>
-
                         <!-- Footer -->
                         <div style="margin-top: 30px; text-align: center;">
                             <p style="font-size: 12px; color: #7f8c8d;">

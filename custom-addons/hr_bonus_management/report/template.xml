@@ -7,14 +7,11 @@
                     <div class="page">
                         <div style="text-align: center; margin-bottom: 20px;">
                             <h2 style="color: #2c3e50;">Bonus Management Report</h2>
-                            <p style="font-style: italic; color: #7f8c8d;"> Generated on: <script>
-                                const date = new Date();
-                                    const formattedDate = date.toISOString().slice(0,
-                                19).replace('T', ' ');
-                                    document.write(formattedDate); // Output the formatted date
-                                </script>
+                           <p
+                                style="font-style: italic; color: #7f8c8d;"> Generated on: <span
+                                    t-esc="time.strftime('%Y-%m-%d %H:%M:%S')" />
                             </p>
-                        </div>
+                            ` </div>
                         <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                             <tr style="background-color: #f7f7f7;">
                                 <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">
