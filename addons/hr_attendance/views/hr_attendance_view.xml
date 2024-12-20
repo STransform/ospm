@@ -11,6 +11,7 @@
                 <field name="employee_id"/>
                 <field name="check_in"/>
                 <field name="check_out"/>
+                <field name="attendance_status" />
                 <field name="worked_hours" string="Work Hours" widget="float_time"/>
             </tree>
         </field>

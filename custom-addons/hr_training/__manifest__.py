@@ -11,6 +11,9 @@
         'views/hr_request.xml',
         'views/menu.xml',
         'data/sequence.xml',
+        'report/report.xml',
+        'report/template.xml',
+        'report/template_for_hr.xml'
     ], 
     'assets': {
         'web.assets_backend': [

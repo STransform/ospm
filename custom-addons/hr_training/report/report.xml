@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_training_dept" model="ir.actions.report">
+        <field name="name">Training Report</field>
+        <field name="model">dept.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_training.dept_request</field> <!-- Must match
+        template -->
+        <field name="report_file">hr_training.dept_request</field> <!-- Must match
+        template -->
+        <field name="binding_model_id" ref="model_dept_request" />
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <record id="action_report_training_hr" model="ir.actions.report">
+        <field name="name">Annual Training Report</field>
+        <field name="model">hrtraining.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_training.training_for_hr</field> <!-- Must match
+        template -->
+        <field name="report_file">hr_training.training_for_hr</field> <!-- Must match
+        template -->
+        <field name="binding_model_id" ref="model_hrtraining_request" />
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

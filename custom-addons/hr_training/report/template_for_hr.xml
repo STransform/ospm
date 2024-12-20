@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="training_for_hr">
+        <t t-call="web.html_container">
+            <t  t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                 <div style="padding: 20px; font-family: Arial, sans-serif; border: 1px solid #ddd;">
+                <!-- Report Header -->
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h2 style="color: #2c3e50;">Training Report</h2>
+                    <p style="font-style: italic; color: #7f8c8d;">
+                        Generated on: <span t-esc="time.strftime('%Y-%m-%d %H:%M:%S')" />
+                    </p>
+                </div>
+                
+                <!-- Request Information -->
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #34495e;">Training Details</h3>
+                    <p><strong>Request Name:</strong> <span t-esc="doc.name" /></p>
+                </div>
+
+                <!-- Description -->
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #34495e;">Description</h3>
+                    <p><span t-esc="doc.description or 'No description provided.'" /></p>
+                </div>
+
+
+
+                <!-- Training Programs -->
+                <div t-if="doc.training_programs">
+                    <h3 style="color: #34495e;">Training Programs</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                        <thead>
+                            <tr style="background-color: #f2f2f2;">
+                                <th style="border: 1px solid #ddd; padding: 8px;">Program Name</th>
+                                <th style="border: 1px solid #ddd; padding: 8px;">Department</th>
+                                <th style="border: 1px solid #ddd; padding: 8px;">Employee Count</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="doc.training_programs" t-as="program">
+                                <tr>
+                                    <td style="border: 1px solid #ddd; padding: 8px;" t-esc="program.program_name" />
+                                    <td style="border: 1px solid #ddd; padding: 8px;" t-esc="program.departement_id.name" />
+                                    <td style="border: 1px solid #ddd; padding: 8px;" t-esc="program.employee_count" />
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

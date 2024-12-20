@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from operator import itemgetter
 
 import pytz
@@ -29,9 +29,45 @@ class HrAttendance(models.Model):
     worked_hours = fields.Float(string='Worked Hours', compute='_compute_worked_hours', store=True, readonly=True)
     # Custom Fields added
     #field to compute of its late in or early out
+    attendance_status = fields.Selection(
+        [
+            ('late_in', 'Late In'),
+            ('early_out', 'Early Out'),
+            ('absent', 'Absent'),
+            ('present', 'Present'),
+        ],
+        string="Attendance Status",
+        compute='_compute_attendance_status',
+        store=True,
+        readonly=True,
+    )
 
+    @staticmethod
+    def normalize_time(dt):
+        """Normalize a datetime to its time part."""
+        if dt:
+            return dt.time()
+        return None
 
-    
+    @api.depends('check_in', 'check_out')
+    def _compute_attendance_status(self):
+        for record in self:
+            late_in_time = time(8, 30)  # 08:30 AM
+            early_out_time = time(17, 0)  # 05:00 PM
+
+            check_in_time = self.normalize_time(record.check_in)
+            check_out_time = self.normalize_time(record.check_out)
+
+            if not record.check_in or not record.check_out:
+                record.attendance_status = 'absent'
+            elif check_in_time and check_in_time > late_in_time:
+                record.attendance_status = 'late_in'
+            elif check_out_time and check_out_time < early_out_time:
+                record.attendance_status = 'early_out'
+            elif check_in_time <= late_in_time and check_out_time >= early_out_time:
+                record.attendance_status = 'present'
+            else:
+                record.attendance_status = 'absent'
 
 
     def name_get(self):
