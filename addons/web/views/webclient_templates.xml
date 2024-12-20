@@ -130,13 +130,6 @@
           style="background-color: #1c2331"
           >
     <!-- Section: Social media -->
-    <section
-             class="d-flex justify-content-between p-4"
-             style="background-color: white;"
-             >
-      
-      <!-- Right -->
-    </section>
     <!-- Section: Social media -->
 
     <!-- Section: Links  -->
@@ -144,15 +137,6 @@
     <!-- Section: Links  -->
 
     <!-- Copyright -->
-    <div
-         class="text-center p-3"
-         style="background-color: rgba(0, 0, 0, 0.2)"
-         >
-      Designed by:
-      <a class="text-white" href="https://otech.com/"
-         >OTech Engineering </a
-        >
-    </div>
     <!-- Copyright -->
   </footer>
         </t>
@@ -171,12 +155,12 @@
                 </div>
 
                 <div class="mb-3 field-login">
-                    <label for="login" class="form-label">User ID</label>
+                    <label for="login" class="form-label">username</label>
                     <input type="text" placeholder="Email or user id..." name="login" t-att-value="login" id="login" t-attf-class="form-control #{'form-control-sm' if form_small else ''}" required="required" autocomplete="username" autofocus="autofocus" autocapitalize="off"/>
                 </div>
 
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
+                    <label for="password" class="form-label">password</label>
                     <input type="password" placeholder="Password" name="password" id="password" t-attf-class="form-control #{'form-control-sm' if form_small else ''}" required="required" autocomplete="current-password" t-att-autofocus="'autofocus' if login else None" maxlength="4096"/>
                 </div>
 
