@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <odoo>
+        <record id="action_report_performance" model="ir.actions.report">
+            <field name="name">Performance Evaulation Report</field>
+            <field name="model">hr.performance.evaluation</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hr_performance.report_performance</field> <!-- Must match template -->
+            <field name="report_file">hr_performance.report_performance</field> <!-- Must match template -->
+            <field name="binding_model_id" ref="model_hr_performance_evaluation" />
+            <field name="binding_type">report</field>
+        </record>
+
+        <!-- for schedule -->
+        <record id="action_report_performance_schedule" model="ir.actions.report">
+            <field name="name">Evaulation Schedule Report</field>
+            <field name="model">hr.evaluation.schedule</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hr_performance.report_performance_schedule</field> <!-- Must match template -->
+            <field name="report_file">hr_performance.report_performance_schedule</field> <!-- Must match template -->
+            <field name="binding_model_id" ref="model_hr_evaluation_schedule" />
+            <field name="binding_type">report</field>
+        </record>
+    </odoo>
