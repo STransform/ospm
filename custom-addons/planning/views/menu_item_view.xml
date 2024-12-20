@@ -3,8 +3,10 @@
 	<data>
 		<menuitem 
         id="menu_planning_root" 
-        name="Planning" 
-        groups="planning.group_ceo,planning.group_dceo,planning.group_director,planning.group_planning_directorate,planning.group_hr_director,planning.group_department_manager"
+        name="HR Planning"
+        parent="hr.menu_hr_planning" 
+        groups="user_group.group_ceo,user_group.group_dceo,user_group.group_director,user_group.group_planning_directorate,user_group.group_hr_director,user_group.group_department_manager"
+        sequence="10"
         />
 
 		<menuitem
@@ -12,7 +14,8 @@
         name="HR Annual Plan"
         action="hr_annual_plan_action"
         parent="menu_planning_root"
-        groups="planning.group_ceo,planning.group_dceo,planning.group_director,planning.group_planning_directorate,planning.group_hr_director,planning.group_department_manager"
+        groups="user_group.group_ceo,user_group.group_dceo,user_group.group_director,user_group.group_planning_directorate,user_group.group_hr_director,user_group.group_department_manager"
+        sequence="11"
         />
 
         <menuitem
@@ -20,7 +23,8 @@
         name="HR Strategic Plan"
         action="hr_strategic_plan_action"
         parent="menu_planning_root"
-        groups="planning.group_ceo,planning.group_dceo,planning.group_director,planning.group_planning_directorate,planning.group_hr_director,planning.group_department_manager"
+        groups="user_group.group_ceo,user_group.group_dceo,user_group.group_director,user_group.group_planning_directorate,user_group.group_hr_director,user_group.group_department_manager"
+        sequence="10"
         />
 	</data>
 </odoo>
