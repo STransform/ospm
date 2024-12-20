@@ -284,15 +284,23 @@ class TransferRequest(models.Model):
         if self.status == 'submitted':
             if self.department_manager.id != self.env.uid:
                 raise ValidationError(_("You are not the Manager of this Department"))
+            if not self.current_dep_comment:
+                raise ValidationError(_("Please provide a comment before rejecting the request."))
         elif self.status == 'approved_by_current':
             if self.new_department_manager.id != self.env.uid:
                 raise ValidationError(_("You are not the Manager of this Department"))
+            if not self.new_dep_comment:
+                raise ValidationError(_("Please provide a comment before rejecting the request."))
         elif self.status == 'approved_by_new':
             if not self.env.user.has_group('user_group.group_admin_dceo'):
                 raise ValidationError(_("You are not the D/CEO, Administration & Marketing Division"))
+            if not self.dceo_comment:
+                raise ValidationError(_("Please provide a comment before rejecting the request."))
         elif self.status == 'approved_by_dceo':
             if not self.env.user.has_group('user_group.group_ceo'):
                 raise ValidationError(_("You are not the CEO"))
+            if not self.ceo_comment:
+                raise ValidationError(_("Please provide a comment before rejecting the request."))
         self.status = 'rejected'
         message = f"Your Requset for Transfer from {self.department_id.name} to {self.new_department_id.name} is Rejected."
         self.send_notification(message=message, user=self.employee_id.user_id, title=self.title, model=self._name, res_id=self.id)
