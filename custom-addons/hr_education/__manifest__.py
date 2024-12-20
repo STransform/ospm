@@ -9,12 +9,15 @@
         'security/dept_request_rule.xml',
         'views/dept_request.xml',
         'views/hr_request.xml',
-        'views/menu.xml', 
+        'views/menu.xml',
+        'report/report.xml',
+        'report/template.xml',
+        'report/template_for_hr.xml',
     ], 
 
     'assets': {
         'web.assets_backend': [
-            'hr_training/static/src/**/*',
+            'hr_education/static/src/**/*',
         ],
     },
     "installable": True,
