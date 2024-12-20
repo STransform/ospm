@@ -139,13 +139,13 @@
                                         />
                                 <button name="action_escalate_to_committee" 
                                         type="object" 
-                                        string="Escalate to Committee" 
+                                        string="Escalate" 
                                         class="btn btn-success mx-2 btn-lg px-5 py-2 shadow-sm rounded-pill"
                                         attrs="{'invisible': [('is_hr', '=', False)]}"
                                         confirm="Are you sure you want to escalate this to Committee?"/>
                                 <button name="action_escalate_to_ceo" 
                                         type="object" 
-                                        string="Escalate to CEO" 
+                                        string="Escalate" 
                                         class="btn btn-success mx-2 btn-lg px-5 py-2 shadow-sm rounded-pill"
                                         attrs="{'invisible': ['|',('state','=','reject'),('is_committee', '=', False)]}"
                                         confirm="Are you sure you want to escalate this to CEO?"/>

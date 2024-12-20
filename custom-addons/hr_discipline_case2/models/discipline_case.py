@@ -92,7 +92,7 @@ class DisciplineCase(models.Model):
     def _compute_is_ceo(self):
         self.is_ceo = self.env.user.has_group("user_group.group_ceo")
     approve_button_visible = fields.Boolean(compute='_compute_approve_button', store=True)
-    # function for notification feature
+    # for notification feature
     @api.model
     def send_notification(self, message, user, title, model,res_id):
         self.env['custom.notification'].create({
