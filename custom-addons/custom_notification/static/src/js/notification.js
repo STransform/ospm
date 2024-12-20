@@ -94,7 +94,7 @@ export class Notification extends Component {
             this.state.unreadCount = all_notifications.length;
 
             // Check if more notifications exist
-            if (notifications.length <= this.state.limit) {
+            if (this.state.offset + this.state.limit >= all_notifications.length) {
                 this.state.hasMore = false;
             }
         } catch (error) {

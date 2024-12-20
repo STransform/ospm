@@ -25,21 +25,21 @@
                     <header class="mb-2">
                         <button string="Submit" 
                                 name="action_submit" 
-                                type="object" class="oe_highlight" 
+                                type="object" class="btn-success" 
                                 attrs="{'invisible':[('state','!=','draft')]}"
                                 confirm="Are you sure you want to submit this request?"
                         />
                         <button string="Accept Offer" 
                                 name="action_approve" 
                                 type="object" 
-                                class="oe_highlight" 
+                                class="btn-success" 
                                 attrs="{'invisible':['|',('state','!=','submitted'),('user_can_comment','=',False)]}"
                                 confirm="Are you sure you want to Accept this Offer?"
                         />
                         <button string="Reject Offer" 
                                 name="action_reject" 
                                 type="object" 
-                                class="oe_highlight" 
+                                class="btn-danger" 
                                 attrs="{'invisible':['|',('state','!=','submitted'),('user_can_comment','=',False)]}"
                                 confirm="Are you sure you want to Reject this Offer?"
                         />
