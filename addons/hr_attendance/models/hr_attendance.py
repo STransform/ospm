@@ -35,6 +35,7 @@ class HrAttendance(models.Model):
             ('early_out', 'Early Out'),
             ('absent', 'Absent'),
             ('present', 'Present'),
+            ('late_in_and_early_out', 'Late In and Early Out'),
         ],
         string="Attendance Status",
         compute='_compute_attendance_status',
@@ -42,24 +43,29 @@ class HrAttendance(models.Model):
         readonly=True,
     )
 
-    @staticmethod
-    def normalize_time(dt):
-        """Normalize a datetime to its time part."""
+    def normalize_time_to_local(self, dt):
+        """Normalize a UTC datetime to the local timezone (UTC+3 in this case) and return the time part."""
         if dt:
-            return dt.time()
+            local_timezone = pytz.timezone("Africa/Addis_Ababa")  # Replace with your local timezone
+            local_dt = pytz.utc.localize(dt).astimezone(local_timezone)
+            return local_dt.time()
         return None
 
     @api.depends('check_in', 'check_out')
     def _compute_attendance_status(self):
         for record in self:
-            late_in_time = time(8, 30)  # 08:30 AM
-            early_out_time = time(17, 0)  # 05:00 PM
+            # Late In starts after 08:30 AM local time
+            late_in_time = time(8, 30)
+            # Early Out is before 05:00 PM local time
+            early_out_time = time(17, 0)
 
-            check_in_time = self.normalize_time(record.check_in)
-            check_out_time = self.normalize_time(record.check_out)
+            check_in_time = self.normalize_time_to_local(record.check_in)
+            check_out_time = self.normalize_time_to_local(record.check_out)
 
             if not record.check_in or not record.check_out:
                 record.attendance_status = 'absent'
+            elif check_in_time and check_in_time > late_in_time and check_out_time and check_out_time < early_out_time:
+                record.attendance_status = 'late_in_and_early_out'
             elif check_in_time and check_in_time > late_in_time:
                 record.attendance_status = 'late_in'
             elif check_out_time and check_out_time < early_out_time:
