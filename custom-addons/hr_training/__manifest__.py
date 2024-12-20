@@ -18,7 +18,6 @@
     'assets': {
         'web.assets_backend': [
             'hr_training/static/src/**/*',
-        ],
+        ]
     },
-    'installable': True, 
 }
