@@ -15,11 +15,6 @@
         'report/template_for_hr.xml',
     ], 
 
-    'assets': {
-        'web.assets_backend': [
-            'hr_education/static/src/**/*',
-        ],
-    },
     "installable": True,
     "auto_install": False,
     "application": True,
