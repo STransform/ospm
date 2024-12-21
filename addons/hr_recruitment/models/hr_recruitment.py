@@ -1004,7 +1004,7 @@ class HrApplicant(models.Model):
         """
         Open the wizard to input the approve reason.
         """
-        ceo_group = self.env.ref('user_group.group_ceo')
+        ceo_group = self.env.ref('hr_recruitment.group_ceo')
         if not ceo_group or self.env.user not in ceo_group.users:
             raise AccessError(_("You do not have the rights to approve this applicant."))
 
@@ -1022,7 +1022,7 @@ class HrApplicant(models.Model):
         """
         Open the wizard to input the refuse reason.
         """
-        ceo_group = self.env.ref('user_group.group_ceo')
+        ceo_group = self.env.ref('hr_recruitment.group_ceo')
         if not ceo_group or self.env.user not in ceo_group.users:
             raise AccessError(_("You do not have the rights to refuse this applicant."))
 

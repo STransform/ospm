@@ -280,6 +280,12 @@ class Clearance(models.Model):
             raise ValidationError(_("Cannot approve HR clearance until finance clearance is approved."))
         self.hr_approval = 'approved'
         self.state = 'hr'
+        # Notification Messages
+        requestor = "Your request has been approved by Hr. Please review it!."
+        # Notify the accuser
+        if self.employee_id:
+            self.send_notification(message=requestor, user=self.employee_id, title=self._description , model=self._name, res_id=self.id)
+            self.employee_id.notify_warning(message=requestor, title=self._description)
         return {
                 'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',
@@ -401,6 +407,7 @@ class Clearance(models.Model):
         """Reject the department stage."""
         self.department_approval = 'rejected'
         self.state = 'rejected'
+        
         return {
                 'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',

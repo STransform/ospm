@@ -99,7 +99,7 @@
                         type="object" 
                         class="btn-success me-2"
                         icon="fa-check"
-                        groups="user_group.group_ceo"
+                        groups="hr_recruitment.group_hr_recruitment_ceo"
                         />
                         
                 <button name="action_ceo_refuse" 
@@ -107,7 +107,7 @@
                         type="object" 
                         class="btn-primary"
                         icon="fa-times"
-                        groups="user_group.group_ceo"/>
+                        groups="hr_recruitment.group_hr_recruitment_ceo"/>
             </div>
             
            
@@ -245,7 +245,7 @@
                     attrs="{'invisible': [('is_second_interview_stage', '=', False), ('is_hired_stage', '=', False)]}" />
             </group>
             <!-- New group for Interview Minutes -->
-            <group string="Minutes" groups="user_group.group_recruitment_commitee,user_group.group_ceo">
+            <group string="Minutes" groups="hr_recruitment.group_hr_recruitment_committee,hr_recruitment.group_hr_recruitment_ceo">
                 <!-- Many2many field for attaching documents (minutes) -->
                 <field name="minutes" widget="many2many_binary"  attrs="{'invisible': [ 
                                              ('is_second_interview_stage', '=', False), 

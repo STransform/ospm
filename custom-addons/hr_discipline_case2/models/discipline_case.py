@@ -143,7 +143,7 @@ class DisciplineCase(models.Model):
             raise ValidationError(_("Only cases in the 'Draft' state can be submitted."))
         self.write({'state': 'submitted'})
          # Prepare the message to notify the department group
-        message = f"Dear Department Team, a new clearance request has been submitted by {self.accuser_id.name}. Please review it."
+        message = f"Dear Department Team, a new discipline case has been submitted by {self.accuser_id.name}. Please review it."
 
         # Get the users in the group "group_department_approval"
         department_group = self.env.ref('user_group.group_hr_director', raise_if_not_found=False)
@@ -185,12 +185,12 @@ class DisciplineCase(models.Model):
         # Notify the accuser
         if self.accuser_id:
             self.send_notification(message=accuser_message, user=self.accuser_id, title=self._description , model=self._name, res_id=self.id)
-            self.accuser_id.notify_warning(message=accuser_message, title=self._description , model=self._name, res_id=self.id)
+            self.accuser_id.notify_warning(message=accuser_message, title=self._description)
 
         # Notify the accused
         if self.accused_employee_id:
             self.send_notification(message=accused_message, user=self.accused_employee_id, title=self._description ,model=self._name, res_id=self.id)
-            self.accused_employee_id.notify_warning(message=accused_message, title=self._description , model=self._name, res_id=self.id)
+            self.accuser_id.notify_warning(message=accuser_message, title=self._description)
         
         return {
                 'type': 'ir.actions.act_window',
@@ -290,15 +290,19 @@ class DisciplineCase(models.Model):
             self.write({'approve_after': True})
         self.write({'state': 'approve'})
 
-         # Prepare the message
-        message = f"This case has been approved!,Pls kindly check it and take your action!"
-        # Get the users in the group "group_department_approval"
-        hr = self.env.ref('user_group.group_hr_director', raise_if_not_found=False)
-        if hr:
-            for user in hr.users:
-                # Send notification to each user in the department approval group
-                self.send_notification(message=message, user=user, title=self._description ,model=self._name, res_id=self.id)
-                user.notify_warning(message=message, title=self._description)
+        # Notification Messages
+        accuser_message = "Your discipline case has been approved by CEO. Please review the outcome."
+        accused_message = "A discipline case involving you has been approved by CEO. Please review the outcome."
+
+        # Notify the accuser
+        if self.accuser_id:
+            self.send_notification(message=accuser_message, user=self.accuser_id, title=self._description , model=self._name, res_id=self.id)
+            self.accuser_id.notify_warning(message=accuser_message, title=self._description)
+
+        # Notify the accused
+        if self.accused_employee_id:
+            self.send_notification(message=accused_message, user=self.accused_employee_id, title=self._description ,model=self._name, res_id=self.id)
+            self.accuser_id.notify_warning(message=accuser_message, title=self._description)
         
         return {
                 'type': 'ir.actions.act_window',
