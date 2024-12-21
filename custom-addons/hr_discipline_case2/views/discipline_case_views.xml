@@ -134,7 +134,7 @@
                                         type="object" 
                                         string="Resolve" 
                                         class="btn btn-success mx-2 btn-lg px-5 py-2 shadow-sm rounded-pill"
-                                        attrs="{'invisible': [('is_hr', '=', False)]}"
+                                        attrs="{'invisible': ['|',('is_hr', '=', False),('state', '=', 'resolve')]}"
                                         confirm="Are you sure you want to resolve this?"
                                         />
                                 <button name="action_escalate_to_committee" 
@@ -222,6 +222,7 @@
         <field name="name">Discipline Cases</field>
         <field name="res_model">employee.discipline.case</field>
         <field name="view_mode">kanban,tree,form</field>
+        
         <field name="context">{}</field>
     </record>
 

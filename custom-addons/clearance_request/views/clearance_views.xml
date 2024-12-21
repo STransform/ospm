@@ -22,14 +22,14 @@
                     </div>
                     <div class="card-body">
                         <!-- Row 1 -->
-                        <div class="row g-3">
+                        <div class="row g-3 mt-4">
                             <div class="col-md-6 col-sm-12">
                                 <label for="employee_id" class="form-label fw-bold">Employee</label>
                                 <field name="employee_id" readonly="1" class="form-control" id="employee_id" attrs="{'readonly': [('state', 'in', ['pending', 'approved', 'rejected'])]}"/>
                             </div>
                             <div class="col-md-6">
                                 <label for="department_id" class="form-label fw-bold">Department</label>
-                                <field name="department_id" readonly="1" class="form-control" id="department_id" attrs="{'readonly': [('state', 'in', ['pending', 'approved', 'rejected'])]}"/>
+                                <field name="department_id" readonly="1" class="form-control" id="department_id" options="{'no_open': True}"  attrs="{'readonly': [('state', 'in', ['pending', 'approved', 'rejected'])]}"/>
                             </div>
                         </div>
                         <!-- Row 2 -->
@@ -39,22 +39,26 @@
                                 <field name="job_id" readonly="1" class="form-control" id="job_id" 
                                 attrs="{'readonly': [('state', 'in', ['pending', 'approved', 'rejected'])]}"/>
                             </div>
-                            <div class="col-md-6">
-                                <label for="documents" class="form-label fw-bold">Attachments</label>
-                                <field name="documents" widget="many2many_binary" class="form-control" id="documents"/>
-                            </div>
-                        </div>
-                        <!-- Row 3 -->
-                        <div class="row g-3">
-                            <div class="col-md-6">
+                             <div class="col-md-6">
                                 <label for="reason" class="form-label fw-bold">Reason</label>
                                 <field name="reason" readonly="0" class="form-control" id="reason" 
                                 attrs="{'readonly':[('state','!=','draft')]}"/>
                             </div>
+                           
+                           
+                        </div>
+                        <!-- Row 3 -->
+                        <div class="row g-3">
+                           
                              <div class="col-md-6">
                                 <label for="clearance_description" class="form-label fw-bold">Description</label>
                                 <field name="clearance_description" class="form-control" id="clearance_description" attrs="{'readonly':[('state','!=','draft')]}"/>
                             </div> 
+                             
+                             <div class="col-md-6">
+                                <label for="documents" class="form-label fw-bold">Attachments</label>
+                                <field name="documents" widget="many2many_binary"  class="form-control" id="documents"/>
+                            </div>
                         </div>
 
                         <div class="row g-3">
@@ -81,31 +85,63 @@
                         </div>
                         
                         <!-- Approval Buttons -->
-                        <div class="row g-3">
-                            <div class="col-md-6 text-center">
-                                <button name="action_department_approve" type="object" string="Approve" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_department_approve','=',False)]}" confirm="Are you sure you want to approve this?"/>
-                                <button name="action_reject_department" type="object" string="Reject" class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_department_approve','=',False)]}" confirm="Are you sure you want to reject this?"/>
-                            </div>
-                            <div class="col-md-6 text-center">
-                                <button name="action_property_approve" type="object" string="Approve" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_property_approve','=',False)]}" confirm="Are you sure you want to approve this?"/>
-                                <button name="action_reject_property" type="object" string="Reject" class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_property_approve','=',False)]}" confirm="Are you sure you want to reject this?"/>
-                            </div>
+                        <div class="row g-3 mt-2 d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                    <button name="action_department_approve" type="object" string="Approve"
+                                        class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill mx-3"
+                                        attrs="{'invisible': [('is_department_approve','=',False)]}"
+                                        confirm="Are you sure you want to approve this?"/>
+                                    <button name="action_reject_department" type="object" string="Reject"
+                                        class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill mx-3"
+                                        attrs="{'invisible': [('is_department_approve','=',False)]}"
+                                        confirm="Are you sure you want to reject this?"/>
+                             </div>
                         </div>
-                        <div class="row g-3">
-                            <div class="col-md-6 text-center">
-                                <button name="action_finance_approve" type="object" string="Approve" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_finance_approve','=',False)]}" confirm="Are you sure you want to approve this?"/>
-                                <button name="action_reject_finance" type="object" string="Reject" class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_finance_approve','=',False)]}" confirm="Are you sure you want to reject this?"/>
-                            </div>
-                            <div class="col-md-6 text-center">
-                                <button name="action_hr_approve" type="object" string="Approve" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_hr_approve','=',False)]}" confirm="Are you sure you want to approve this?"/>
-                                <button name="action_reject_hr" type="object" string="Reject" class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible': [('is_hr_approve','=',False)]}" confirm="Are you sure you want to reject this?"/>
-                            </div>
+                         <div class="row g-3 mt-2 d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                    <button name="action_property_approve" type="object" string="Approve"
+                                        class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill mx-3"
+                                        attrs="{'invisible': [('is_property_approve','=',False)]}"
+                                        confirm="Are you sure you want to approve this?"/>
+                                    <button name="action_reject_property" type="object" string="Reject"
+                                        class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill mx-3"
+                                        attrs="{'invisible': [('is_property_approve','=',False)]}"
+                                        confirm="Are you sure you want to reject this?"/>
+                             </div>
                         </div>
-                        <div class="row g-3 justify-content-center">
-                            <div class="col-md-6 text-center">
-                                <button name="action_save_clearance" type="object" string="Submit" class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill" attrs="{'invisible':[('state','!=','draft')]}" confirm="Are you sure you want to submit this?"/>
-                            </div>
+
+                         <div class="row g-3 mt-2 d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                    <button name="action_finance_approve" type="object" string="Approve"
+                                        class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill mx-3"
+                                        attrs="{'invisible': [('is_finance_approve','=',False)]}"
+                                        confirm="Are you sure you want to approve this?"/>
+                                    <button name="action_reject_finance" type="object" string="Reject"
+                                        class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill mx-3"
+                                        attrs="{'invisible': [('is_finance_approve','=',False)]}" 
+                                        confirm="Are you sure you want to reject this?"/>
+                             </div>
                         </div>
+                         <div class="row g-3 mt-2 d-flex justify-content-center">
+                            <div class="col-12 text-center">
+                                    <button name="action_hr_approve" type="object" string="Approve"
+                                        class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill mx-3"
+                                        attrs="{'invisible': [('is_hr_approve','=',False)]}"
+                                        confirm="Are you sure you want to approve this?"/>
+                                    <button name="action_reject_hr" type="object" string="Reject"
+                                        class="btn btn-danger btn-lg px-5 py-2 shadow-sm rounded-pill mx-3"
+                                        attrs="{'invisible': [('is_hr_approve','=',False)]}" 
+                                        confirm="Are you sure you want to reject this?"/>
+                             </div>
+                        </div>
+                        <div class="row g-3 mt-2 d-flex justify-content-center">
+                                <div class="col-12 text-center">
+                                    <button name="action_save_clearance" type="object" string="Submit"
+                                        class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
+                                        attrs="{'invisible':[('state','!=','draft')]}"
+                                        confirm="Are you sure you want to submit this?"/>
+                                </div>
+                        </div> 
                     </div>
                 </div>
             </div>

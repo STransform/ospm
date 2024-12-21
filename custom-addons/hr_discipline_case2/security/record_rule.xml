@@ -22,7 +22,7 @@
             <field name="name">HR Manager Discipline Cases</field>
             <field name="model_id" ref="model_employee_discipline_case"/>
             <field name="groups" eval="[(4, ref('user_group.group_hr_director'))]"/>
-            <field name="domain_force">[('state', 'in', ['submitted', 'escalate_to_committee', 'escalate_to_ceo'])]</field>
+            <field name="domain_force">[('state', 'in', ['submitted','resolved', 'escalate_to_committee', 'escalate_to_ceo'])]</field>
         </record>
 
         <!-- Record Rule: Discipline Committee can see relevant cases at different stages -->
