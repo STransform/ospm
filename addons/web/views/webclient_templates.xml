@@ -155,12 +155,12 @@
                 </div>
 
                 <div class="mb-3 field-login">
-                    <label for="login" class="form-label">username</label>
+                    <label for="login" class="form-label">Username</label>
                     <input type="text" placeholder="Email or user id..." name="login" t-att-value="login" id="login" t-attf-class="form-control #{'form-control-sm' if form_small else ''}" required="required" autocomplete="username" autofocus="autofocus" autocapitalize="off"/>
                 </div>
 
                 <div class="mb-3">
-                    <label for="password" class="form-label">password</label>
+                    <label for="password" class="form-label">Password</label>
                     <input type="password" placeholder="Password" name="password" id="password" t-attf-class="form-control #{'form-control-sm' if form_small else ''}" required="required" autocomplete="current-password" t-att-autofocus="'autofocus' if login else None" maxlength="4096"/>
                 </div>
 
