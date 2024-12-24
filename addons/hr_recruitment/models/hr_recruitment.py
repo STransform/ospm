@@ -990,16 +990,16 @@ class HrApplicant(models.Model):
                 # Check if the applicant has already been approved by the CEO
                 if applicant.ceo_approval_status == 'approve':
                     # Check if the current user is part of the Committee group
-                    committee_group = self.env.ref('user_group.group_hr_recruitment_committee')
-                    is_committee = self.env.user in committee_group.users
+                    # committee_group = self.env.ref('user_group.group_hr_recruitment_committee')
+                    is_committee = self.env.user.has_group('user_group.group_recruitment_commitee')
                     
                     # Prevent Committee from hiring the applicant
                     if new_stage.name == 'Hired stage' and is_committee:
                         raise ValidationError(_("The committee cannot hire this applicant!"))
 
                     # Check if the current user is part of the CEO group
-                    ceo_group = self.env.ref('user_group.group_ceo')
-                    is_ceo = self.env.user in ceo_group.users
+                    # ceo_group = self.env.ref('user_group.group_ceo')
+                    is_ceo = self.env.user.has_group('user_group.group_ceo')
                     
                     # Prevent CEO from hiring the applicant again
                     if new_stage.name == 'Hired stage' and is_ceo:
