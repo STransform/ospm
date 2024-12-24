@@ -177,13 +177,13 @@ class Clearance(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',
                 'res_model': 'employee.clearance',
-                'view_mode': 'tree,form',  # Include 'form' if you want clickable records.
-                'view_id': False,          # Set to False if using 'xml_id'.
-                'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
+                'view_mode': 'tree,form', 
+                'view_id': False,          
+                'views': [(False, 'tree'), (False, 'form')], 
                 'target': 'current',
-                'context': {},             # Pass any additional context if needed.
-                'domain': [],              # Add domain filters if needed.
-                'res_id': False,           # Use this if redirecting to a specific record.  
+                'context': {},             
+                'domain': [],             
+                'res_id': False,      
             'params': {
                 'title': 'Success',
                 'message': 'Department stage approved successfully!',
@@ -219,13 +219,13 @@ class Clearance(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',
                 'res_model': 'employee.clearance',
-                'view_mode': 'tree,form',  # Include 'form' if you want clickable records.
-                'view_id': False,          # Set to False if using 'xml_id'.
-                'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
+                'view_mode': 'tree,form', 
+                'view_id': False,         
+                'views': [(False, 'tree'), (False, 'form')],  
                 'target': 'current',
-                'context': {},             # Pass any additional context if needed.
-                'domain': [],              # Add domain filters if needed.
-                'res_id': False,           # Use this if redirecting to a specific record.  
+                'context': {},             
+                'domain': [],           
+                'res_id': False,      
                 'params': {
                     'title': 'Success',
                     'message': 'Property stage approved successfully!',
@@ -259,13 +259,13 @@ class Clearance(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',
                 'res_model': 'employee.clearance',
-                'view_mode': 'tree,form',  # Include 'form' if you want clickable records.
-                'view_id': False,          # Set to False if using 'xml_id'.
-                'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
+                'view_mode': 'tree,form',  
+                'view_id': False,       
+                'views': [(False, 'tree'), (False, 'form')], 
                 'target': 'current',
-                'context': {},             # Pass any additional context if needed.
-                'domain': [],              # Add domain filters if needed.
-                'res_id': False,           # Use this if redirecting to a specific record.  
+                'context': {},           
+                'domain': [],            
+                'res_id': False,           
                 'params': {
                     'title': 'Success',
                     'message': 'Finance stage approved successfully!',
@@ -280,23 +280,26 @@ class Clearance(models.Model):
             raise ValidationError(_("Cannot approve HR clearance until finance clearance is approved."))
         self.hr_approval = 'approved'
         self.state = 'hr'
-        # Notification Messages
-        requestor = "Your request has been approved by Hr. Please review it!."
-        # Notify the accuser
-        if self.employee_id:
-            self.send_notification(message=requestor, user=self.employee_id, title=self._description , model=self._name, res_id=self.id)
-            self.employee_id.notify_warning(message=requestor, title=self._description)
+         # Prepare the message
+        message = "Your request have been approved by hr ."
+        
+        # Send notification to the clearance initiator,
+        if self.employee_id and self.employee_id.user_id:
+            self.send_notification(message=message, user=self.employee_id.user_id, title=self._description, model=self._name, res_id=self.id)
+            self.employee_id.user_id.notify_warning(message=message, title=self._description)       
+        
+
         return {
                 'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',
                 'res_model': 'employee.clearance',
-                'view_mode': 'tree,form',  # Include 'form' if you want clickable records.
-                'view_id': False,          # Set to False if using 'xml_id'.
-                'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
+                'view_mode': 'tree,form',  
+                'view_id': False,         
+                'views': [(False, 'tree'), (False, 'form')], 
                 'target': 'current',
-                'context': {},             # Pass any additional context if needed.
-                'domain': [],              # Add domain filters if needed.
-                'res_id': False,           # Use this if redirecting to a specific record.  
+                'context': {},          
+                'domain': [],            
+                'res_id': False,           
                 'params': {
                     'title': 'Success',
                     'message': 'HR stage approved successfully!',
@@ -315,13 +318,13 @@ class Clearance(models.Model):
                'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',
                 'res_model': 'employee.clearance',
-                'view_mode': 'tree,form',  # Include 'form' if you want clickable records.
-                'view_id': False,          # Set to False if using 'xml_id'.
-                'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
+                'view_mode': 'tree,form',  
+                'view_id': False,         
+                'views': [(False, 'tree'), (False, 'form')], 
                 'target': 'current',
-                'context': {},             # Pass any additional context if needed.
-                'domain': [],              # Add domain filters if needed.
-                'res_id': False,           # Use this if redirecting to a specific record.  
+                'context': {},          
+                'domain': [],            
+                'res_id': False,           
                 'params': {
                     'title': 'Success',
                     'message': 'Department stage approved successfully!',
@@ -340,13 +343,13 @@ class Clearance(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',
                 'res_model': 'employee.clearance',
-                'view_mode': 'tree,form',  # Include 'form' if you want clickable records.
-                'view_id': False,          # Set to False if using 'xml_id'.
-                'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
+                'view_mode': 'tree,form',  
+                'view_id': False,         
+                'views': [(False, 'tree'), (False, 'form')], 
                 'target': 'current',
-                'context': {},             # Pass any additional context if needed.
-                'domain': [],              # Add domain filters if needed.
-                'res_id': False,           # Use this if redirecting to a specific record.  
+                'context': {},          
+                'domain': [],            
+                'res_id': False,           
                 'params': {
                     'title': 'Success',
                     'message': 'Property stage approved successfully!',
@@ -365,13 +368,13 @@ class Clearance(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',
                 'res_model': 'employee.clearance',
-                'view_mode': 'tree,form',  # Include 'form' if you want clickable records.
-                'view_id': False,          # Set to False if using 'xml_id'.
-                'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
+                'view_mode': 'tree,form',  
+                'view_id': False,         
+                'views': [(False, 'tree'), (False, 'form')], 
                 'target': 'current',
                 'context': {},           
                 'domain': [],             
-                'res_id': False,           # Use this if redirecting to a specific record.  
+                'res_id': False,           
                 'params': {
                     'title': 'Success',
                     'message': 'Finance stage approved successfully!',
@@ -392,10 +395,10 @@ class Clearance(models.Model):
                 'res_model': 'employee.clearance',
                 'view_mode': 'tree,form',  
                 'view_id': False,         
-                'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
+                'views': [(False, 'tree'), (False, 'form')], 
                 'target': 'current',
                 'domain': [],             
-                'res_id': False,           # Use this if redirecting to a specific record.  
+                'res_id': False,           
                 'params': {
                     'title': 'Success',
                     'message': 'HR stage approved successfully!',
@@ -412,13 +415,13 @@ class Clearance(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',
                 'res_model': 'employee.clearance',
-                'view_mode': 'tree,form',  # Include 'form' if you want clickable records.
-                'view_id': False,          # Set to False if using 'xml_id'.
-                'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
+                'view_mode': 'tree,form',  
+                'view_id': False,         
+                'views': [(False, 'tree'), (False, 'form')], 
                 'target': 'current',
-                'context': {},             # Pass any additional context if needed.
-                'domain': [],              # Add domain filters if needed.
-                'res_id': False,           # Use this if redirecting to a specific record.  
+                'context': {},          
+                'domain': [],            
+                'res_id': False,           
                 'params': {
                     'title': 'Rejected',
                     'message': 'Department stage rejected.',
@@ -435,13 +438,13 @@ class Clearance(models.Model):
                'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',
                 'res_model': 'employee.clearance',
-                'view_mode': 'tree,form',  # Include 'form' if you want clickable records.
-                'view_id': False,          # Set to False if using 'xml_id'.
-                'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
+                'view_mode': 'tree,form',  
+                'view_id': False,         
+                'views': [(False, 'tree'), (False, 'form')], 
                 'target': 'current',
-                'context': {},             # Pass any additional context if needed.
-                'domain': [],              # Add domain filters if needed.
-                'res_id': False,           # Use this if redirecting to a specific record.  
+                'context': {},          
+                'domain': [],            
+                'res_id': False,           
                 'params': {
                     'title': 'Rejected',
                     'message': 'Property stage rejected.',
@@ -458,13 +461,13 @@ class Clearance(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',
                 'res_model': 'employee.clearance',
-                'view_mode': 'tree,form',  # Include 'form' if you want clickable records.
-                'view_id': False,          # Set to False if using 'xml_id'.
-                'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
+                'view_mode': 'tree,form',  
+                'view_id': False,         
+                'views': [(False, 'tree'), (False, 'form')], 
                 'target': 'current',
-                'context': {},             # Pass any additional context if needed.
-                'domain': [],              # Add domain filters if needed.
-                'res_id': False,           # Use this if redirecting to a specific record.  
+                'context': {},          
+                'domain': [],            
+                'res_id': False,           
                 'params': {
                     'title': 'Rejected',
                     'message': 'Finance stage rejected.',
@@ -481,13 +484,13 @@ class Clearance(models.Model):
                 'type': 'ir.actions.act_window',
                 'name': 'Employee Clearance',
                 'res_model': 'employee.clearance',
-                'view_mode': 'tree,form',  # Include 'form' if you want clickable records.
-                'view_id': False,          # Set to False if using 'xml_id'.
-                'views': [(False, 'tree'), (False, 'form')],  # Define views explicitly.
+                'view_mode': 'tree,form',  
+                'view_id': False,         
+                'views': [(False, 'tree'), (False, 'form')], 
                 'target': 'current',
-                'context': {},             # Pass any additional context if needed.
-                'domain': [],              # Add domain filters if needed.
-                'res_id': False,           # Use this if redirecting to a specific record.  
+                'context': {},          
+                'domain': [],            
+                'res_id': False,           
                 'params': {
                     'title': 'Rejected',
                     'message': 'HR stage rejected.',
