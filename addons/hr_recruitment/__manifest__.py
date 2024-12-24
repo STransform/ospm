@@ -14,11 +14,15 @@
         'utm',
         'attachment_indexation',
         'web_tour',
+        'custom_notification',
         'digest',
         'user_group',
+
+        # 'hr_recruitment_request'
+        
     ],
     'data': [
-        'security/group.xml',
+        # 'security/group.xml',
         'security/hr_recruitment_security.xml',
         'security/ir.model.access.csv',
         'data/digest_data.xml',
@@ -39,6 +43,7 @@
         #'views/hr_approval_reason_views.xml',
    
         'wizard/applicant_send_mail_views.xml',
+        
 
     ],
     'demo': [

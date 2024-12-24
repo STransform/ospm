@@ -155,6 +155,7 @@
                                 data-success-mode="redirect" data-success-page="/job-thank-you"
                                 hide-change-model="true">
                                 <div class="s_website_form_rows row s_col_no_bgcolor">
+                                     
                                     <div class="col-12 mb-0 py-2 s_website_form_field s_website_form_required s_website_form_model_required"
                                         data-type="char" data-name="Field">
                                         <div class="row s_col_no_resize s_col_no_bgcolor">
@@ -166,7 +167,7 @@
                                                 <input id="recruitment1" type="text"
                                                     class="form-control s_website_form_input"
                                                     name="partner_name" required=""
-                                                    />
+                                                    data-fill-with="name"/>
                                             </div>
                                         </div>
                                     </div>
@@ -181,7 +182,7 @@
                                                 <input id="recruitment2" type="email"
                                                     class="form-control s_website_form_input"
                                                     name="email_from" required=""
-                                                    />
+                                                    data-fill-with="email"/>
                                             </div>
                                         </div>
                                     </div>
@@ -195,9 +196,8 @@
                                             <div class="col-sm">
                                                 <input id="recruitment3" type="tel"
                                                     class="form-control s_website_form_input"
-                                                    name="partner_mobile" required="" 
-                                                    />
-                                                 
+                                                    name="partner_mobile" required=""
+                                                    data-fill-with="phone"/>
                                             </div>
                                         </div>
                                     </div>
@@ -241,7 +241,7 @@
                                                 <i class="fa fa-linkedin fa-2x m-1 o_linkedin_icon"></i>
                                                 <input id="recruitment4" type="text"
                                                     class="form-control s_website_form_input pl64"
-                                                    placeholder="https://www.linkedin.com/in/"
+                                                    placeholder="e.g. https://www.linkedin.com/in/fpodoo/"
                                                     style="padding-left: 40px"
                                                     name="linkedin_profile"
                                                     data-fill-with="linkedin_profile"/>

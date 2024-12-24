@@ -1,19 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-
-    <record id="category_external_recruitment" model="ir.module.category">
-        <field name="name">External Reruitment</field>
+    <record id="category_recruitment_request" model="ir.module.category">
+        <field name="name">External recruitment</field>
     </record>
-
     <record id="group_hr_recruitment_ceo" model="res.groups">
         <field name="name">CEO</field>
-        <field name="category_id" ref="category_external_recruitment"/>
+        <field name="category_id" ref="category_recruitment_request"/>
     </record>
 
+    <record id="group_hr_recruitment_hr_director" model="res.groups">
+        <field name="name">HR director</field>
+        <field name="category_id" ref="category_recruitment_request"/>
+    </record>
 
     <record id="group_hr_recruitment_committee" model="res.groups">
         <field name="name">Reruitment committee</field>
-        <field name="category_id" ref="category_external_recruitment"/>
+        <field name="category_id" ref="category_recruitment_request"/>
     </record>
 
 </odoo>

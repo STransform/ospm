@@ -45,6 +45,7 @@
         <field name="implied_ids" eval="[(4, ref('hr_recruitment.group_applicant_cv_display'))]"/>
     </record>
 
+
     <!-- Interviewer Access Rules -->
     <record id="hr_applicant_interviewer_rule" model="ir.rule">
         <field name="name">Applicant Interviewer</field>
@@ -74,6 +75,7 @@
         <field name="perm_unlink" eval="False"/>
         <field name="groups" eval="[(4, ref('hr_recruitment.group_hr_recruitment_interviewer'))]"/>
     </record>
+    
      <!-- button visibility for CEO approval -->
    <record id="view_hr_applicant_form_ceo" model="ir.ui.view">
     <field name="name">hr.applicant.form.ceo</field>
@@ -84,7 +86,7 @@
                 <field name="ceo_approved" readonly="1"/>
               
                 <button name="action_ceo_approve" string="Approve by CEO" type="object" 
-                        states="second_interview" class="btn-primary" groups="base.group_user,hr_recruitment.group_hr_recruitment_ceo"/>
+                        states="second_interview" class="btn-primary" groups="base.group_user,user_group.group_ceo"/>
             </group>
         </form>
     </field>
@@ -93,7 +95,7 @@
     <record id="model_applicant_refuse_reason_wizard_access" model="ir.model.access">
         <field name="name">applicant.refuse.reason.wizard access</field>
         <field name="model_id" ref="model_applicant_refuse_reason_wizard"/>
-        <field name="group_id" ref="hr_recruitment.group_hr_recruitment_ceo"/> <!-- You can set this to the group you want -->
+        <field name="group_id" ref="user_group.group_ceo"/> <!-- You can set this to the group you want -->
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
         <field name="perm_create" eval="1"/>
@@ -104,12 +106,12 @@
         <field name="name">Applicant Refuse Reason Wizard Access</field>
         <field name="model_id" ref="model_applicant_refuse_reason_wizard"/>
         <field name="domain_force">[('id', '!=', False)]</field> <!-- This rule allows all records for the model -->
-        <field name="groups" eval="[(4, ref('hr_recruitment.group_hr_recruitment_ceo'))]"/>
+        <field name="groups" eval="[(4, ref('user_group.group_ceo'))]"/>
     </record>
 <record id="access_applicant_get_approve_reason" model="ir.model.access">
     <field name="name">access.applicant.get.approve.reason</field>
     <field name="model_id" ref="model_applicant_get_approve_reason"/>
-    <field name="group_id" ref="hr_recruitment.group_hr_recruitment_ceo"/>
+    <field name="group_id" ref="user_group.group_ceo"/>
     <field name="perm_read" eval="1"/>
     <field name="perm_write" eval="1"/>
     <field name="perm_create" eval="1"/>
