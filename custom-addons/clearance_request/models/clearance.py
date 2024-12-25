@@ -286,7 +286,13 @@ class Clearance(models.Model):
         # Send notification to the clearance initiator,
         if self.employee_id and self.employee_id.user_id:
             self.send_notification(message=message, user=self.employee_id.user_id, title=self._description, model=self._name, res_id=self.id)
-            self.employee_id.user_id.notify_warning(message=message, title=self._description)       
+            self.employee_id.user_id.notify_warning(message=message, title=self._description)      
+
+        if self.employee_id:
+                # Set the employee to archived 
+                if self.employee_id.user_id:
+                    self.employee_id.user_id.sudo().write({'active': False})
+                self.employee_id.sudo().write({'active': False}) 
         
 
         return {
