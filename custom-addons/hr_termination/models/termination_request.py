@@ -212,15 +212,11 @@ class TerminationRequest(models.Model):
             self.send_notification(message, record.employee_id.user_id, title, model = self._name, res_id = self.id)
             self.env.user.notify_success("Request Approved!")
 
-            
             if record.employee_id:
                 # Set the employee to archived (depending on your model's definition for archived state)
                 if record.employee_id.user_id:
                     record.employee_id.user_id.sudo().write({'active': False})
                 record.employee_id.sudo().write({'active': False})
-
-
-                
     
     def action_by_ceo_refuse_request(self):
         for record in self:

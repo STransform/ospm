@@ -25,9 +25,9 @@
                     </div>
 
                     <div class="row">
-                        <Card name="'Accepted'" category="'Approved By CEO'" value="state.approved.value" color="'text-success'"/>
-                        <Card name="'Refused'" category="'Refused By CEO'" value="state.refused.value" />
-                        <Card name="'Processing'" category="'Processing'" value="state.processing.value"/>
+                        <Card name="'Accepted'" onClick.bind="viewTermination" category="'Approved By CEO'" value="state.approved.value" color="'text-success'"/>
+                        <Card name="'Refused'" onClick.bind="viewTermination" category="'Refused By CEO'" value="state.refused.value" />
+                        <Card name="'Processing'" onClick.bind="viewTermination" category="'Processing'" value="state.processing.value"/>
 
                         <div class="row">
                             <div class="col-lg-6 m-0 p-0">

@@ -86,12 +86,12 @@ class TrainingDashboard extends Component {
     }
 
 
-    viewTrainings(){
+    viewTermination(){
         let domain =  [['combined_state', 'in', ['approved']]]
         if(this.state.period > 0){
             domain.push(['create_date', '>', this.state.current_date])
         }
-        this.actionService.doAction("hr_termination.hr_termination_action"), {
+        this.actionService.doAction("hr_termination.employee_termination_action"), {
             additionalContext:{
                 type: "ir.actions.act_window",
                 name: "Accepted",
