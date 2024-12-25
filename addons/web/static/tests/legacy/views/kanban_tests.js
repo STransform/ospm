@@ -1887,7 +1887,7 @@ QUnit.module('LegacyViews', {
                         message: {
                             code: 200,
                             data: {},
-                            message: "Odoo server error",
+                            message: "server error",
                         },
                         event: $.Event()
                     });
@@ -1952,7 +1952,7 @@ QUnit.module('LegacyViews', {
                         message: {
                             code: 200,
                             data: {},
-                            message: "Odoo server error",
+                            message: "server error",
                         },
                         event: $.Event()
                     });
@@ -2002,7 +2002,7 @@ QUnit.module('LegacyViews', {
                         message: {
                             code: 200,
                             data: {},
-                            message: "Odoo server error",
+                            message: "server error",
                         },
                         event: $.Event()
                     });
@@ -2061,7 +2061,7 @@ QUnit.module('LegacyViews', {
                         message: {
                             code: 200,
                             data: {},
-                            message: "Odoo server error",
+                            message: "server error",
                         },
                         event: $.Event()
                     });

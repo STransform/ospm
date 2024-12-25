@@ -251,6 +251,7 @@
                                              ('is_second_interview_stage', '=', False), 
                                              ('is_hired_stage', '=', False)]}" /> 
             </group>
+            
         </xpath>
     </field>
 </record>
@@ -876,7 +877,9 @@
                 <field name="name"/>
                 <field name="fold"/>
                 <field name="hired_stage"/>
+                
             </tree>
+            
         </field>
     </record>
 

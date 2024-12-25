@@ -7,6 +7,7 @@ class AuthorityDeligation(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Authority Delegation"
     _rec_name = "delegator_id"
+    _order = "create_date desc"
 
     delegator_id = fields.Many2one("hr.employee", string="Delegator", required=True, default=lambda self:self.env.user.employee_id)
     delegatee_id = fields.Many2one("hr.employee", string="Delegatee", required=True)

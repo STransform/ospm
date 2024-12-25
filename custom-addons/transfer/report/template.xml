@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="transfer_request">
+        <t t-call="web.html_container">
+            <t  t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div style="padding: 20px; font-family: Arial, sans-serif; border: 1px solid #ddd;">
+                    <!-- Report Header -->
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <h2 style="color: #2c3e50;">Transfer Report</h2>
+                            <p style="font-style: italic; color: #7f8c8d;">
+                                Generated on: <span t-esc="time.strftime('%Y-%m-%d %H:%M:%S')" />
+                            </p>
+                        </div>
+                        
+                        <t t-if="doc.status == 'completed'">
+                            <!-- Request Information -->
+                            <div style="margin-bottom: 20px;">
+                                <h3 style="color: #34495e;">Request Details</h3>
+                                <p><strong>Name:</strong> <span t-esc="doc.employee_id.name or 'N/A'" /></p>
+                                <p><strong>Email:</strong> <span t-esc="doc.email or 'N/A'" /></p>
+                                <p><strong>Phone:</strong> <span t-esc="doc.phone or 'N/A'" /></p>
+
+                                <p><strong>Current Department:</strong> <span t-esc="doc.department_id.name or 'N/A'" /></p>
+                                <p><strong>Requested Department:</strong> <span t-esc="doc.new_department_id.name or 'N/A'" /></p>
+                                <p><strong>Current Job Position:</strong> <span t-esc="doc.current_job_position.name or 'N/A'" /></p>
+                                <p><strong>Requested Job Position:</strong> <span t-esc="doc.requested_position.name or 'N/A'" /></p>
+                            </div>
+
+                            <!-- Description -->
+                            <div style="margin-bottom: 20px;">
+                                <h3 style="color: #34495e;">Reason for Transfer</h3>
+                                <p><span t-esc="doc.reason or 'No description provided.'" /></p>
+                            </div>
+                        </t>
+
+                        <t t-else="">
+                            <div style="margin-bottom: 20px;">
+                                <h3 style="color: #FF0000;">The Transfer Process is not Completed</h3>
+                            </div>
+                        </t>
+                    </div>
+
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
