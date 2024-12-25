@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Action for Attendance Remarks -->
+    <record id="action_hr_attendance_remark" model="ir.actions.act_window">
+        <field name="name">Attendance Remarks</field>
+        <field name="res_model">hr.attendance.remark</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    
+    <!-- Menu for Attendance Remarks -->
+    <menuitem id="menu_hr_attendance_remark_root"
+              name="Attendance Remarks"
+              sequence="20"
+              action="action_hr_attendance_remark" />
+
+    <!-- views -->
+
+    <record id="hr_attendance_remark_view_form" model="ir.ui.view">
+        <field name="name">hr.attendance.remark.form</field>
+        <field name="model">hr.attendance.remark</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Remark">
+             <!-- Add widget for states statusbar -->
+                <header>
+                    <button name="action_submit" string="Submit" type="object"  class="oe_highlight"  attrs="{'invisible': ['|', ('is_creator', '=', False), ('state', 'in', ['approved', 'rejected', 'submitted'])]}" confirm="Are you sure! Do you wish to proceed ?" />
+                    <button name="action_approve" string="Approve" type="object"  class="oe_highlight"  attrs="{'invisible': ['|', ('is_manager', '=', False), ('state', 'in', ['approved', 'rejected'])]}" confirm="Are you sure! Do you wish to proceed ?" />
+                    <button name="action_refuse" string="Refuse" type="object" class="oe_highlight"  attrs="{'invisible': ['|', ('is_manager', '=', False), ('state', 'in', ['approved', 'rejected'])]}" confirm="Are you sure! Do you wish to proceed ?" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,rejected" />
+                </header>
+
+                <sheet>
+                    <group>
+                        <field name="attendance_id" attrs="{'readonly': ['|', ('is_creator', '=', False), ('id', '!=', False), ('state', 'in', ['approved', 'rejected', 'submitted'])]}" />
+                        <field name="attendance_status" />
+                        <field name="manager_id" />
+                        <field name="remark" attrs="{'readonly': ['|', ('is_creator', '=', False), ('id', '!=', False), ('state', 'in', ['approved', 'rejected', 'submitted'])]}" />
+                        <field name="is_manager" invisible="1"/>
+                        <field name="is_creator" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_attendance_remark_tree" model="ir.ui.view">
+        <field name="name">hr.attendance.remark.tree</field>
+        <field name="model">hr.attendance.remark</field>
+        <field name="arch" type="xml">
+            <tree string="Attendance Remarks">
+                <field name="attendance_id"  />
+                <field name="employee_id" />
+                <field name="manager_id" />
+                <field name="attendance_status" />
+                <field name="remark"  />  
+            </tree>
+        </field>
+    </record>
+</odoo>

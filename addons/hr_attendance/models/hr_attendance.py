@@ -42,6 +42,7 @@ class HrAttendance(models.Model):
         store=True,
         readonly=True,
     )
+    remark = fields.Text(string='Approved Remark', required=False,  help='Add remarks for attendance')
 
     def normalize_time_to_local(self, dt):
         """Normalize a UTC datetime to the local timezone (UTC+3 in this case) and return the time part."""
