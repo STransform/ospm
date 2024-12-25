@@ -11437,7 +11437,7 @@ QUnit.module("Views", (hooks) => {
                         assert.step("resequence onChange crash");
                         throw makeErrorFromResponse({
                             code: 200,
-                            message: "Odoo Server Error",
+                            message: "Server Error",
                             data: {
                                 name: `odoo.exceptions.${"UserError"}`,
                                 debug: "traceback",
