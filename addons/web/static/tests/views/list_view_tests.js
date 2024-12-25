@@ -5212,7 +5212,7 @@ QUnit.module("Views", (hooks) => {
                 arch: '<tree><field name="foo"/></tree>',
                 mockRPC(route, args) {
                     if (args.method === "unlink") {
-                        return Promise.reject({ message: "Odoo Server Error" });
+                        return Promise.reject({ message: "Server Error" });
                     }
                 },
             });
@@ -11525,13 +11525,13 @@ QUnit.module("Views", (hooks) => {
             arch: '<tree multi_edit="1"><field name="foo" required="1"/></tree>',
             mockRPC(route, args) {
                 if (args.method === "write") {
-                    return Promise.reject({ message: "Odoo Server Error" });
+                    return Promise.reject({ message: "Server Error" });
                 }
             },
         });
         patchWithCleanup(list.env.services.notification, {
             add: (message) => {
-                assert.equal(message, "Odoo Server Error");
+                assert.equal(message, "Server Error");
                 assert.step("Error");
             },
         });
