@@ -147,7 +147,7 @@ class HrBonusmanagementBatch(models.Model):
             raise ValidationError(("The batch must contain at least one employee."))
         self.state = "submitted"
         ## search users with specific group
-        hr_office = self.env.ref("user_group.group_hr_office").users
+        hr_office = self.env.ref("user_group.group_ceo").users
         title = "Bonus Batch Submitted"
         message = f"submitted."
         for user in hr_office:
@@ -181,7 +181,7 @@ class HrBonusmanagementBatch(models.Model):
 
         self.state = "approved"
         ## search users with specific group
-        department_manager = self.env.ref("user_group.group_department_manager").users
+        department_manager = self.env.ref("user_group.group_hr_office").users
         title = "Bonus Approved"
         message = f"approved."
         for user in department_manager:
