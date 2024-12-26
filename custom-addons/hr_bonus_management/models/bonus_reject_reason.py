@@ -36,7 +36,7 @@ class HrBonusRejectionWizard(models.TransientModel):
             'rejection_reason': self.rejection_reason,
         })
         ## search users with specific group
-        department_manager = self.env.ref("user_group.group_department_manager").users
+        department_manager = self.env.ref("user_group.group_hr_office").users
         title = "Bonus Rejected"
         message = f"rejected."
         for user in department_manager:
