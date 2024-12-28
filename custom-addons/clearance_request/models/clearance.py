@@ -77,7 +77,7 @@ class Clearance(models.Model):
     def _compute_is_creator(self):
         if self.employee_id:
             self.is_creator = self.employee_id.user_id.id == self.env.user.id
-     # to make save button only visible at creation step,other that its invisible
+     # to make save button only visible at creation step,othern that its invisible
     user_id = fields.Many2one('res.users', string='User')
     user_in_group = fields.Boolean(compute='_compute_user_in_group', store=False)
     @api.depends('user_id')
@@ -287,7 +287,7 @@ class Clearance(models.Model):
         if self.employee_id and self.employee_id.user_id:
             self.send_notification(message=message, user=self.employee_id.user_id, title=self._description, model=self._name, res_id=self.id)
             self.employee_id.user_id.notify_warning(message=message, title=self._description)      
-
+        # to archive employee after hr approve 
         if self.employee_id:
                 # Set the employee to archived 
                 if self.employee_id.user_id:
