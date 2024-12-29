@@ -6,7 +6,7 @@ class AuthorityDeligation(models.Model):
     _name = 'authority.delegation'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Authority Delegation"
-    
+    _rec_name = "delegator_id"
 
     delegator_id = fields.Many2one("hr.employee", string="Delegator", required=True, default=lambda self:self.env.user.employee_id)
     delegatee_id = fields.Many2one("hr.employee", string="Delegatee", required=True)
@@ -25,10 +25,10 @@ class AuthorityDeligation(models.Model):
         ],
         string="Status",
         default="draft",
-        tracking=True,
+        track_visibility="onchange",
     )
-    delegatee_response = fields.Text(string="Delegatee Response")
-    Hr_response = fields.Text(string="HR Response")
+    delegatee_response = fields.Text(string="Delegatee Reason")
+    hr_response = fields.Text(string="HR Reason")
     reason = fields.Text(string="Reason for Delegation", required=True)
     attachment_ids = fields.Many2many(
         'ir.attachment', string='Attachments',
@@ -94,92 +94,140 @@ class AuthorityDeligation(models.Model):
     
     # add notification function 
     @api.model
-    def send_notification(self, message, user, title):
+    def send_notification(self, message, user, title, model,res_id):
         self.env['custom.notification'].create({
             'title': title,
             'message': message,
             'user_id': user.id,
+            'action_model': model,
+            'action_res_id': res_id
         })
 
     ### submit action for Authority Delegation
     def action_submit(self):
         if not self.is_delegator:
             raise ValidationError(_("You are not allowed to submit this request."))
-        if self.status == "draft":
-            ## notify the delegatee
-            self.status = "submitted"
-            hr_director = self.env.ref("user_group.group_hr_director").users
-                
-            title = "Request for Authority delegation"
-            message = f"{self.delegator_id.name} has requested you to accept  delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
-            hr_message = f"{self.delegator_id.name} has requested for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
-            self.send_notification(message, self.delegatee_user, title)
-            for user in hr_director:
-                self.send_notification(hr_message, user, title)
-                user.notify_success(title=title, message=hr_message)
-            self.delegatee_user.notify_success(title=title,message=message)
-            self.env.user.notify_success("Request Submitted")
+        if self.status != "draft":
+            raise ValidationError(_("You are not allowed to submit this request."))
+    
+        ## notify the delegatee
+        self.status = "submitted"
+        hr_director = self.env.ref("user_group.group_hr_director").users
+        
+        title = "Request for Authority delegation"
+        message = f"{self.delegator_id.name} has requested you to accept  delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
+        hr_message = f"{self.delegator_id.name} has requested for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
+        self.send_notification(message=message, user=self.delegatee_user, title=title, model=self._name, res_id=self.id)
+        for user in hr_director:
+            self.send_notification(message=hr_message, user=user, title=title, model=self._name, res_id=self.id)
+            user.notify_success(title=title, message=hr_message)
+        self.delegatee_user.notify_success(title=title,message=message)
+        self.env.user.notify_success("Request Submitted")
+        return {  
+            'type': 'ir.actions.act_window',
+            'name': 'Request Delegation',
+            'res_model': self._name,
+            'view_mode': 'tree,form',
+            'target': 'current',
+        }
+        
     
     ### accept deligation action for Authority Delegation
     def action_accept_delegation(self):
         if not self.is_delegatee:
             raise ValidationError(_("You are not allowed to accept this request."))
-        if self.status == "submitted":
-            self.status = "accepted_by_delegatee"
-            hr_director = self.env.ref("user_group.group_hr_director").users
+        if self.status != "submitted":
+            raise ValidationError(_("You are not allowed to accept this request."))
+        self.status = "accepted_by_delegatee"
+        hr_director = self.env.ref("user_group.group_hr_director").users
 
-            title = "Authority delegation Acceptance"
-            message = f"{self.delegatee_id.name} has accepted your request for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
-            hr_message = f"{self.delegatee_id.name} has accepted the request for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
-            self.send_notification(message, self.delegator_user, title)
-            for user in hr_director:
-                self.send_notification(hr_message, user, title)
-                user.notify_success(title=title, message=hr_message)
-            self.delegator_user.notify_success(title=title,message=message)
-            self.env.user.notify_success("Request Accepted")
+        title = "Authority delegation Acceptance"
+        message = f"{self.delegatee_id.name} has accepted your request for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
+        hr_message = f"{self.delegatee_id.name} has accepted the request for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
+        self.send_notification(message=message, user=self.delegator_user, title=title, model=self._name, res_id=self.id)
+        for user in hr_director:
+            self.send_notification(message=hr_message, user=user, title=title, model=self._name, res_id=self.id)
+            user.notify_success(title=title, message=hr_message)
+        self.delegator_user.notify_success(title=title,message=message)
+        self.env.user.notify_success("Request Accepted")
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Request Delegation',
+            'res_model': self._name,
+            'view_mode': 'tree,form',
+            'target': 'current',
+        }
 
     ### Reject deligation action for Authority Delegation
-    def action_reject_delegation(self):
+    def action_refuse_delegation(self):
         if not self.is_delegatee:
             raise ValidationError(_("You are not allowed to reject this request."))
-        if self.status == "submitted":
-            self.status = "rejected_by_delegatee"
-            hr_director = self.env.ref("user_group.group_hr_director").users
+        if self.status != "submitted":
+            raise ValidationError(_("You are not allowed to reject this request."))
+        if not self.delegatee_response:
+            raise ValidationError(_("Please provide a reason for rejecting the request to the delegator."))
+        self.status = "rejected_by_delegatee"
+        hr_director = self.env.ref("user_group.group_hr_director").users
 
-            title = "Authority delegation Rejection"
-            message = f"{self.delegatee_id.name} has rejected your request for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
-            hr_message = f"{self.delegatee_id.name} has rejected the request for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
-            self.send_notification(message, self.delegator_user, title)
-            for user in hr_director:
-                self.send_notification(hr_message, user, title)
-                user.notify_warning(title=title, message=hr_message)
-            self.delegator_user.notify_warning(title=title,message=message)
-            self.env.user.notify_warning("Request Rejected")
+        title = "Authority delegation Rejection"
+        message = f"{self.delegatee_id.name} has rejected your request for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
+        hr_message = f"{self.delegatee_id.name} has rejected the request for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
+        self.send_notification(message=message, user=self.delegator_user, title=title, model=self._name, res_id=self.id)
+        for user in hr_director:
+            self.send_notification(message=hr_message, user=user, title=title, model=self._name, res_id=self.id)
+            user.notify_warning(title=title, message=hr_message)
+        self.delegator_user.notify_warning(title=title,message=message)
+        self.env.user.notify_warning("Request Rejected")
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Request Delegation',
+            'res_model': self._name,
+            'view_mode': 'tree,form',
+            'target': 'current',
+        }
 
     ## hr_director Approve the Authority Delegation request
     def action_approve_delegation(self):
         if not self.is_hr_director:
             raise ValidationError(_("You are not allowed to approve this request."))
-        if self.status == "accepted_by_delegatee":
-            title = "Authority delegation Approval"
-            message = f"Hr Director {self.env.user.employee_id.name} has approved the request for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
-            self.send_notification(message, self.delegator_user, title)
-            self.send_notification(message, self.delegatee_user, title)
-            self.status = "approved"
-            self.delegatee_user.notify_success(title=title,message=message)
-            self.delegator_user.notify_success(title=title,message=message)
-            self.env.user.notify_success("Request Approved succesfuly")
+        if self.status != "accepted_by_delegatee":
+            raise ValidationError(_("You are not allowed to approve this request."))
+        title = "Authority delegation Approval"
+        message = f"Hr Director {self.env.user.employee_id.name} has approved the request for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
+        self.send_notification(message=message, user=self.delegator_user, title=title, model=self._name, res_id=self.id)
+        self.send_notification(message=message, user=self.delegatee_user, title=title, model=self._name, res_id=self.id)
+        self.status = "approved"
+        self.delegatee_user.notify_success(title=title,message=message)
+        self.delegator_user.notify_success(title=title,message=message)
+        self.env.user.notify_success("Request Approved succesfuly")
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Request Delegation',
+            'res_model': self._name,
+            'view_mode': 'tree,form',
+            'target': 'current',
+        }
 
-    ## hr_director Approve the Authority Delegation request
+    ## hr_director reject the Authority Delegation request
     def action_reject_delegation(self):
         if not self.is_hr_director:
             raise ValidationError(_("You are not allowed to reject this request."))
-        if self.status == "accepted_by_delegatee":
-            title = "Authority delegation Rejection"
-            message = f"Hr Director {self.env.user.employee_id.name} has rejected the request for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
-            self.send_notification(message, self.delegator_user, title)
-            self.send_notification(message, self.delegatee_user, title)
-            self.status = "rejected"
-            self.delegatee_user.notify_warning(title=title,message=message)
-            self.delegator_user.notify_warning(title=title,message=message)
-            self.env.user.notify_warning("Request Rejected.")
+        if self.status != 'accepted_by_delegatee':
+            raise ValidationError(_("You are not allowed to reject this request."))
+        if not self.hr_response:
+            raise ValidationError(_("Please provide a reason for rejecting the request to the delegator."))
+        title = "Authority delegation Rejection"
+        message = f"Hr Director {self.env.user.employee_id.name} has rejected the request for delegation for the position of {self.delegation_position} from {self._format_date(self.delegation_start_date)} to {self._format_date(self.delegation_end_date)}."
+        self.send_notification(message=message, user=self.delegator_user, title=title, model=self._name, res_id=self.id)
+        self.send_notification(message=message, user=self.delegatee_user, title=title, model=self._name, res_id=self.id)
+        self.status = "rejected"
+        self.delegatee_user.notify_warning(title=title,message=message)
+        self.delegator_user.notify_warning(title=title,message=message)
+        self.env.user.notify_warning("Request Rejected.")
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Request Delegation',
+            'res_model': self._name,
+            'view_mode': 'tree,form',
+            'target': 'current',
+        }

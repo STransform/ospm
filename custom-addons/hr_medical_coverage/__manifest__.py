@@ -3,7 +3,7 @@
     'version':'16.0.0', 
     'category': 'Generic Modules/Human Resources', 
     'author': "Kuma Telila",
-    'depends' : ['hr', 'base', 'mail'], 
+    'depends' : ['hr', 'base', 'mail','user_group', 'custom_notification','web_notify'], 
     'data' : [
         'security/hr_medical_coverage_group.xml',
         'security/ir.model.access.csv', 

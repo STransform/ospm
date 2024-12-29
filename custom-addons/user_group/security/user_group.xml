@@ -2,56 +2,91 @@
     <record id="hr_user_group" model="ir.module.category">
         <field name="name">HR Users</field>
     </record>
-    
+
     <record id="user_group.group_department_manager" model="res.groups">
         <field name="name">Department Manager</field>
-        <field name="category_id" ref="hr_user_group"/>
+        <field name="category_id" ref="hr_user_group" />
     </record>
 
     <record id="user_group.group_director" model="res.groups">
         <field name="name">Director</field>
-        <field name="category_id" ref="hr_user_group"/>
+        <field name="category_id" ref="hr_user_group" />
     </record>
 
     <record id="user_group.group_dceo" model="res.groups">
         <field name="name">Deputy CEO</field>
-        <field name="category_id" ref="hr_user_group"/>
+        <field name="category_id" ref="hr_user_group" />
     </record>
 
     <record id="user_group.group_admin_dceo" model="res.groups">
         <field name="name">D/CEO, Administration and Marketing Division</field>
-        <field name="category_id" ref="hr_user_group"/>
+        <field name="category_id" ref="hr_user_group" />
     </record>
 
     <record id="user_group.group_technical_dceo" model="res.groups">
         <field name="name">D/CEO, Technical Division </field>
-        <field name="category_id" ref="hr_user_group"/>
+        <field name="category_id" ref="hr_user_group" />
     </record>
 
     <record id="user_group.group_planning_directorate" model="res.groups">
         <field name="name">Planning Director</field>
-        <field name="category_id" ref="hr_user_group"/>
+        <field name="category_id" ref="hr_user_group" />
     </record>
 
     <record id="user_group.group_ceo" model="res.groups">
         <field name="name">CEO</field>
-        <field name="category_id" ref="hr_user_group"/>
+        <field name="category_id" ref="hr_user_group" />
     </record>
 
     <record id="user_group.group_hr_director" model="res.groups">
         <field name="name">HR Director</field>
-        <field name="category_id" ref="hr_user_group"/>
+        <field name="category_id" ref="hr_user_group" />
     </record>
 
     <record id="user_group.group_hr_office" model="res.groups">
         <field name="name">HR Office</field>
-        <field name="category_id" ref="hr_user_group"/>
+        <field name="category_id" ref="hr_user_group" />
     </record>
 
     <record id="user_group.group_employee" model="res.groups">
         <field name="name">Employee</field>
+        <field name="category_id" ref="hr_user_group" />
+    </record> 
+     <record id="user_group.group_legal_servicedepartment" model="res.groups">
+        <field name="name">Legal Service Department</field>
         <field name="category_id" ref="hr_user_group"/>
     </record>
 
+    <record id="user_group.group_property_approval" model="res.groups">
+        <field name="name">Property Director</field>
+        <field name="category_id" ref="hr_user_group"/>
+    </record>
+    <record id="user_group.group_finance_approval" model="res.groups">
+        <field name="name">Finance Director</field>
+        <field name="category_id" ref="hr_user_group"/>
+    </record>
+
+    <record id="user_group.promotion_committee" model="res.groups">
+        <field name="name">Promotion Committee</field>
+        <field name="category_id" ref="hr_user_group"/>
+    </record>
+     <record id="user_group.group_discipline_committee" model="res.groups">
+        <field name="name">Discipline committee</field>
+        <field name="category_id" ref="hr_user_group"/>
+    </record>
+
+    <record id="user_group.group_recruitment_commitee" model="res.groups">
+        <field name="name">Recruitment committee</field>
+        <field name="category_id" ref="hr_user_group"/>
+    </record>
+       
+
+  
+
+
+    <record id="user_group.group_finance_office" model="res.groups">
+        <field name="name">Finance Office</field>
+        <field name="category_id" ref="hr_user_group" />
+    </record>
 
 </odoo>

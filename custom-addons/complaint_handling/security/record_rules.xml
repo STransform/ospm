@@ -1,18 +1,37 @@
 <odoo>
-
-    <!-- Rule for Legal Service Department: Allow access to all complaints, no matter the state -->
-     <record id="rule_employee_complaint_legal" model="ir.rule">
-        <field name="name">Complaint Access for Legal Service</field>
+    <!-- Record rule to allow users to only see their own complaints -->
+    <record id="employee_complaint_rule_user" model="ir.rule">
+        <field name="name">Employee can only see their own complaints</field>
         <field name="model_id" ref="model_employee_complaint"/>
-        <field name="domain_force">[]</field> 
-        <field name="groups" eval="[(4, ref('complaint_handling.group_legal_servicedepartment'))]"/>
-    </record> 
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/> <!-- Regular employee group -->
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
 
-   <!-- Rule for CEO: Allow access only to complaints in 'ceo_review', 'resolved', or 'court' states -->
-    <record id="rule_employee_complaint_ceo" model="ir.rule">
-        <field name="name">Complaint Access for CEO</field>
+    <!-- Record rule for legal service to access all complaints -->
+    <record id="employee_complaint_rule_legal_service" model="ir.rule">
+        <field name="name">Legal Service can access all complaints</field>
         <field name="model_id" ref="model_employee_complaint"/>
-        <field name="domain_force">[('state', 'in', ['reject_legal_review', 'accept_ceo_review', 'reject_ceo_review','ceo_reviewed'])]</field> 
-        <field name="groups" eval="[(4, ref('complaint_handling.group_ceo'))]"/>
-    </record> 
+        <field name="domain_force">[]</field> <!-- No filter, can access all complaints -->
+        <field name="groups" eval="[(4, ref('user_group.group_legal_servicedepartment'))]"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <!-- Record rule for CEO to access all complaints -->
+    <record id="employee_complaint_rule_ceo" model="ir.rule">
+        <field name="name">CEO can access all complaints</field>
+        <field name="model_id" ref="model_employee_complaint"/>
+        <field name="domain_force">[]</field> <!-- No filter, can access all complaints -->
+        <field name="groups" eval="[(4, ref('user_group.group_ceo'))]"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
 </odoo>

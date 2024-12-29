@@ -47,5 +47,5 @@
         </field>
     </record>
     <!--Menu view in employee form-->
-    <menuitem id="ceo_approved_sub_menu" name="CEO Approved" parent="employee_promotion_menu" action="ceo_approved_action"  groups="employee_promotion.group_hr_recruitment_hr_director"/>
+    <menuitem id="ceo_approved_sub_menu" name="CEO Approved" parent="employee_promotion_menu" action="ceo_approved_action"  groups="user_group.group_hr_director"/>
 </odoo>

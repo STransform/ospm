@@ -17,8 +17,8 @@
             <form string="Internal Appilications">
              <header>
                     <button name="action_shortlist" type="object" string="Add to Short List" attrs="{'invisible': [('shortListed', '=', True)]}"  />
-                    <button name="action_approve" type="object" string="Approve" groups="employee_promotion.group_hr_recruitment_ceo"  attrs="{'invisible': [('state', 'in', ['approved', 'refused'])]}"/>
-                    <button name="action_refuse" type="object" string="Refuse" groups="employee_promotion.group_hr_recruitment_ceo" attrs="{'invisible': [('state', 'in', ['approved', 'refused'])]}"/>
+                    <button name="action_approve" type="object" string="Approve" groups="user_group.group_ceo"  attrs="{'invisible': [('state', 'in', ['approved', 'refused'])]}"/>
+                    <button name="action_refuse" type="object" string="Refuse" groups="user_group.group_ceo" attrs="{'invisible': [('state', 'in', ['approved', 'refused'])]}"/>
                 </header>
                 <sheet>
              
@@ -38,7 +38,7 @@
                         </group>
                     </group>
                 </sheet>
-                <sheet groups="employee_promotion.group_hr_recruitment_promotion_committe">
+                <sheet groups="user_group.promotion_committee">
                     <div class="oe_title">
                         <h1>
                            Assesments of the employee
@@ -74,5 +74,5 @@
     
 
     <!--Menu view in employee form-->
-    <menuitem id="internal_appiliactions_sub_menu" name="Appilications" parent="employee_promotion_menu" action="internal_appilications_action"  groups="employee_promotion.group_hr_recruitment_hr_director,employee_promotion.group_hr_recruitment_promotion_committe"/>
+    <menuitem id="internal_appiliactions_sub_menu" name="Appilications" parent="employee_promotion_menu" action="internal_appilications_action"  groups="user_group.group_hr_director,user_group.promotion_committee"/>
 </odoo>

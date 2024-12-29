@@ -24,6 +24,16 @@ class Appilications(models.Model):
     vacancy_id = fields.Char(string="Vacancy ID", required=True, readonly=True)
 
 
+    # add notification function 
+    @api.model
+    def send_notification(self, message, user, title, model,res_id):
+        self.env['custom.notification'].create({
+            'title': title,
+            'message': message,
+            'user_id': user.id,
+            'action_model': model,
+            'action_res_id': res_id
+        })
 
 
     state = fields.Selection(
@@ -57,6 +67,14 @@ class Appilications(models.Model):
     def action_approve(self):
         for record in self:
             record.state = 'approved'
+        # send notification to the employee
+        self.send_notification(
+            message=f"Your application for {record.position} has been approved!",
+            user=record.name_of_employees.user_id,
+            title="Application Approved",
+            model="internal.vacancy",
+            res_id=record.id
+        )
         
         self.env['ceo.approved'].create({
             'position': self.position,

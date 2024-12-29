@@ -20,5 +20,5 @@ access_applicant_get_refuse_reason_interviewer,access.applicant.get.refuse.reaso
 access_applicant_send_mail,access.applicant.send.mail,model_applicant_send_mail,hr_recruitment.group_hr_recruitment_user,1,1,1,0
 access_applicant_send_mail_interviewer,access.applicant.send.mail.interviewer,model_applicant_send_mail,hr_recruitment.group_hr_recruitment_interviewer,1,1,1,0
 
-hr_applicant_ceo_access,hr_applicant.ceo.access,hr_recruitment.model_hr_applicant,hr_recruitment.group_hr_recruitment_ceo,1,1,0,0
-access_hr_applicant_committee,hr.applicant.committee,model_hr_applicant,hr_recruitment.group_hr_recruitment_committee,1,1,1,1
+hr_applicant_ceo_access,hr_applicant.ceo.access,hr_recruitment.model_hr_applicant,user_group.group_ceo,1,1,0,0
+access_hr_applicant_committee,hr.applicant.committee,model_hr_applicant,user_group.group_recruitment_commitee,1,1,1,1

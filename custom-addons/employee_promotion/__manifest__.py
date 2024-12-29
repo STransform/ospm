@@ -5,7 +5,7 @@
     'author' : 'Yohanes Mesfin',
     'description': "You may set an employee's promotion using this module. "
                    "Also, the promotion is visible on each employee form .",
-    'depends': ['base', 'hr', 'mail', 'hr_contract'],
+    'depends': ['base', 'hr', 'mail', 'hr_contract', 'user_group', "custom_notification"],
     'data': [
         'security/groups.xml',
         'security/ir.model.access.csv',

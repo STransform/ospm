@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from random import randint
+import re
 
 from odoo import api, fields, models, tools, SUPERUSER_ID
 from odoo.exceptions import AccessError, ValidationError
@@ -269,6 +270,20 @@ class Applicant(models.Model):
         for applicant in applicants:
             applicant.application_count = application_data_mapped.get(applicant.id, 1) - 1
         (self - applicants).application_count = False
+   
+    # for email validation in the job application form
+    @api.constrains('email_from')
+    def _check_email_from(self):
+        for record in self:
+            if record.email_from:
+                # To Check if the email contains the '@' symbol
+                if '@' not in record.email_from:
+                    raise ValidationError(_("The email address must contain the '@' symbol."))
+                # Optionally, check the general format of the email
+                elif not re.match(r"[^@]+@[^@]+\.[^@]+", record.email_from):
+                    raise ValidationError(_("Please enter a valid email address."))
+                
+    
 
     @api.depends_context('lang')
     @api.depends('meeting_ids', 'meeting_ids.start')
@@ -668,7 +683,7 @@ class Applicant(models.Model):
                     ('partner_id', '=', False), email_domain, ('stage_id.fold', '=', False)
                 ]).write({'partner_id': new_partner[0].id})
         return super(Applicant, self)._message_post_after_hook(message, msg_vals)
-
+    
     def create_employee_from_applicant(self):
         """ Create an employee from applicant """
         self.ensure_one()
@@ -691,6 +706,7 @@ class Applicant(models.Model):
             })
             self.partner_id = new_partner_id
             address_id = new_partner_id.address_get(['contact'])['contact']
+        
         employee_data = {
             'default_name': self.partner_name or contact_name,
             'default_job_id': self.job_id.id,
@@ -705,7 +721,54 @@ class Applicant(models.Model):
         }
         dict_act_window = self.env['ir.actions.act_window']._for_xml_id('hr.open_view_employee_list')
         dict_act_window['context'] = employee_data
+        # Create the employee record
+        employee = self.env['hr.employee'].create({
+            'name': self.partner_name,
+            'job_id': self.job_id.id,
+            'department_id': self.department_id.id,
+            'company_id': self.company_id.id,
+            'address_home_id': self.partner_id.id,  # address_home_id 
+        })
+
+        # Link the newly created employee back to the applicant
+        self.emp_id = employee.id
+
+        # Check if the employee is linked to the applicant (emp_id)
+        if self.emp_id:  # Check emp_id in hr.applicant
+            self.write({'emp_id': employee.id})
+
+        # Now that one applicant is converted, check if all hired applicants are converted
+        self._check_and_deactivate_job_position()
         return dict_act_window
+    # to deactivate the job position when all the applicants in the Hired stage is created to employee
+    def _check_and_deactivate_job_position(self):
+        """Check if all applicants in the 'Hired stage' have been converted to employees and deactivate the job position."""
+        # Get all applicants in the 'Hired stage'
+        hired_applicants = self.env['hr.applicant'].search([
+            ('stage_id.name', '=', 'Hired stage'),  # Ensure this matches exactly with your stage name
+        ])
+
+        # logging to debug
+        print("Hired applicants found: ", len(hired_applicants))
+
+        # Check if all applicants in the 'Hired stage' have an emp_id (i.e., have been converted to employees)
+        all_hired_applicants_converted = True
+        for applicant in hired_applicants:
+            if not applicant.emp_id:
+                all_hired_applicants_converted = False
+                break
+
+        # logging for checking the condition
+        if all_hired_applicants_converted:
+            print("All hired applicants have been converted to employees.")
+            # If all hired applicants are converted to employees, deactivate the job position
+            if self.job_id:
+                print("Deactivating job position: ", self.job_id.name)
+                self.job_id.active = False  # Deactivate the job position
+        else:
+            print("Not all hired applicants have been converted to employees.")
+
+
 
     def _update_employee_from_applicant(self):
         # This method is to be overriden
@@ -764,10 +827,11 @@ class HrRecruitmentStage(models.Model):
 
     minimum_cgpa = fields.Float(string="Minimum CGPA", help="Minimum CGPA required")
     minimum_experience = fields.Float(string="Minimum Experience", help="Minimum years of experience ")
-
+   
 #this class is added for external recruitment 
 class HrApplicant(models.Model):
     _inherit = 'hr.applicant'
+    
 
     approve_reason = fields.Text(string="Approve Reason", readonly=True)
     refuse_reason = fields.Text(string="Refuse Reason", readonly=True)
@@ -792,11 +856,13 @@ class HrApplicant(models.Model):
     second_interview_result = fields.Float(
         string="Interview Result",
         help="Score or rating from the second interview."
+        
     )
     is_first_interview_stage = fields.Boolean(
         string="Is Exam Stage",
         compute="_compute_stage_flags",
         store=True
+        
     )
     is_second_interview_stage = fields.Boolean(
         string="Is Interview Stage",
@@ -836,7 +902,7 @@ class HrApplicant(models.Model):
     @api.model
     def _compute_is_committee_user(self):
         """Check if the current user belongs to the Committee group."""
-        committee_group = self.env.ref('hr_recruitment.group_hr_recruitment_committee')
+        committee_group = self.env.ref('user_group.group_recruitment_commitee')
         for applicant in self:
             applicant.is_committee_user = self.env.user in committee_group.users
     
@@ -852,6 +918,12 @@ class HrApplicant(models.Model):
             applicant.is_hired_stage = stage_name == 'Hired stage'
     cgpa = fields.Float(string="CGPA" , store=True)
     experience = fields.Float(string="Experience" , store=True)
+    # for cgpa validation
+    @api.constrains('cgpa')
+    def _check_cgpa_range(self):
+        for record in self:
+            if record.cgpa < 2 or record.cgpa > 4:
+                raise ValidationError(_("CGPA must be between 2 and 4."))
     def get_cgpa_filter_domain(self, min_cgpa):
         return [('cgpa', '>=', min_cgpa)]
     
@@ -887,13 +959,7 @@ class HrApplicant(models.Model):
                 rejected_stage = self.env['hr.recruitment.stage'].search([('name', '=', 'Rejected')], limit=1)
                 if rejected_stage:
                     applicant.stage_id = rejected_stage.id
-    def write(self, vals):
-        res = super(HrApplicant, self).write(vals)
-        if 'stage_id' in vals:
-            initial_stage = self.env['hr.recruitment.stage'].search([('name', '=', 'Initial Qualification')], limit=1)
-            if vals['stage_id'] == initial_stage.id:
-                self.filter_applicants()
-        return res
+   
     @api.model
     def create(self, vals):
         # Ensure the applicant is created with ceo_approval_status set to 'pending'
@@ -904,7 +970,7 @@ class HrApplicant(models.Model):
         if 'stage_id' in vals:
             stage = self.env['hr.recruitment.stage'].browse(vals['stage_id'])
             if stage.name in ['First Interview', 'Second Interview']:
-                if not self.env.user.has_group('hr_recruitment.group_hr_recruitment_committee'):
+                if not self.env.user.has_group('user_group.group_recruitment_commitee'):
                     raise ValidationError(_("You do not have permission to access this stage."))
         
         return super(HrApplicant, self).create(vals)
@@ -921,6 +987,30 @@ class HrApplicant(models.Model):
             new_stage = self.env['hr.recruitment.stage'].browse(vals['stage_id'])
             
             for applicant in self:
+                # Check if the applicant has already been approved by the CEO
+                if applicant.ceo_approval_status == 'approve':
+                    # Check if the current user is part of the Committee group
+                    # committee_group = self.env.ref('user_group.group_hr_recruitment_committee')
+                    is_committee = self.env.user.has_group('user_group.group_recruitment_commitee')
+                    
+                    # Prevent Committee from hiring the applicant
+                    if new_stage.name == 'Hired stage' and is_committee:
+                        raise ValidationError(_("The committee cannot hire this applicant!"))
+
+                    # Check if the current user is part of the CEO group
+                    # ceo_group = self.env.ref('user_group.group_ceo')
+                    is_ceo = self.env.user.has_group('user_group.group_ceo')
+                    
+                    # Prevent CEO from hiring the applicant again
+                    if new_stage.name == 'Hired stage' and is_ceo:
+                        raise ValidationError(_("The CEO cannot hire this applicant!"))
+
+                # Check if the current stage is 'Exam' and the new stage is 'Interview'
+                if applicant.stage_id.name == 'Exam' and new_stage.name == 'Interview':
+                    # Ensure the 'first_interview_result' is filled
+                    if not applicant.first_interview_result:
+                        raise ValidationError(_("You must fill the Exam Result before moving to the Interview stage."))
+
                 # Check if the current stage is 'Interview' and new stage is 'Hired stage'
                 if (applicant.stage_id.name == 'Interview' and 
                     new_stage.name == 'Hired stage' and 
@@ -929,21 +1019,37 @@ class HrApplicant(models.Model):
                 
                 # Restrict modification of First and Second Interview stages to Committee users
                 if new_stage.name in ['Exam', 'Interview']:
-                    if not self.env.user.has_group('hr_recruitment.group_hr_recruitment_committee'):
-                        raise ValidationError(_("Only Committee member can do that."))
+                    if not self.env.user.has_group('user_group.group_recruitment_commitee'):
+                        raise ValidationError(_("Only Committee members can modify the Exam and Interview stages."))
 
-        # Proceed with the original write method after the checks
+        # Proceed with write method after the checks
         return super(HrApplicant, self).write(vals)
 
-
+    @api.model
+    def send_notification(self, message, user, title):
+        self.env['custom.notification'].create({
+            'title': title,
+            'message': message,
+            'user_id': user.id,
+        })
 
     def action_ceo_approve(self):
         """
         Open the wizard to input the approve reason.
         """
-        ceo_group = self.env.ref('hr_recruitment.group_ceo')
+        ceo_group = self.env.ref('user_group.group_ceo')
         if not ceo_group or self.env.user not in ceo_group.users:
             raise AccessError(_("You do not have the rights to approve this applicant."))
+         # Prepare the message
+        message = f"CEO has approved this applicant"
+        
+        # Get the users in the group "group_department_approval"
+        department_group = self.env.ref('user_group.group_hr_director', raise_if_not_found=False)
+        if department_group:
+            for user in department_group.users:
+                # Send notification to each user in the department approval group
+                self.send_notification(message=message, user=user, title=self._description)
+                user.notify_warning(message=message, title=self._description)
 
         return {
             'name': _('Approve Reason'),
@@ -959,9 +1065,20 @@ class HrApplicant(models.Model):
         """
         Open the wizard to input the refuse reason.
         """
-        ceo_group = self.env.ref('hr_recruitment.group_ceo')
+        ceo_group = self.env.ref('user_group.group_ceo')
         if not ceo_group or self.env.user not in ceo_group.users:
             raise AccessError(_("You do not have the rights to refuse this applicant."))
+        
+         # Prepare the message
+        message = f"CEO has rejected this applicant"
+        
+        # Get the users in the group "group_department_approval"
+        department_group = self.env.ref('user_group.group_hr_director', raise_if_not_found=False)
+        if department_group:
+            for user in department_group.users:
+                # Send notification to each user in the department approval group
+                self.send_notification(message=message, user=user, title=self._description)
+                user.notify_warning(message=message, title=self._description)
 
         return {
             'name': _('Refuse Reason'),

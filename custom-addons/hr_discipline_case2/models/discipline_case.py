@@ -19,7 +19,7 @@ class DisciplineCase(models.Model):
         ('warning', 'Warning'),
         ('dismiss', 'Dismissal'),
         ('demotion', 'Demotion'),
-    ], string='Penalty Type', required=True, default='salary')
+    ], string='Penalty Type',default='salary')
 
     hr_decision = fields.Selection([('resolve', 'Resolved by HR'), 
                                     ('escalate_to_committee', 'Escalate to Committee')],
@@ -34,7 +34,7 @@ class DisciplineCase(models.Model):
     
     assigned_to_committee = fields.Many2one('res.users', string='Assigned Committee Member', readonly=True)
     assigned_to_ceo = fields.Many2one('res.users', string='Assigned CEO', readonly=True)
-    documents = fields.Many2many('ir.attachment', string='Attachments', help="Attach documents related to discipline case")
+    documents = fields.Many2many('ir.attachment', relation='employee_discipline_case_documents_rel', string='Attachments', help="Attach documents related to discipline case")
     accused_response = fields.Text('Accused Response', help="Response from the accused (only for HR to fill)")
     witness_by_accused = fields.Many2many('res.users', string='Witnesses by Accused', help="Witnesses selected by the committee for the case")
     reason_for_revision = fields.Text('Reason for Revision', help="Reason revision (only for CEO to fill)")
@@ -51,12 +51,31 @@ class DisciplineCase(models.Model):
             ('reject', 'Returned')
         ], default='draft', string='Status', tracking=True)
 
+    approve_after = fields.Boolean(string="Approved After", default=False )
+    rejected_more = fields.Boolean(string="Rejected more", default=False)
     is_creator = fields.Boolean(string="Is Creator", compute="_compute_is_creator", store=False)
     is_hr = fields.Boolean(string="Is Hr", compute="_compute_is_hr", store=False)
     is_committee = fields.Boolean(string="Is Committee", compute="_compute_is_committee", store=False)
     is_ceo = fields.Boolean(string="Is CEO", compute="_compute_is_ceo", store=False)
+    reason_for_revision_is_visible = fields.Boolean(string="Reason Visibility", compute="_compute_reason_for_revision_is_visible", store=False)
+    case_revision_is_visible = fields.Boolean(string="Reason Visibility", compute="_compute_case_revision_is_visible", store=False)
+    documents_for_committee = fields.Many2many('ir.attachment',relation='employee_discipline_case_documents_for_committee_rel', string='Documents by committee', help="Attach documents by committee decision")
 
-  
+
+    @api.model
+    def _compute_reason_for_revision_is_visible(self):
+        if self.env.user.has_group("user_group.group_ceo"):
+            self.reason_for_revision_is_visible = self.state in ['escalate_to_ceo','reject','reviewed'] or self.approve_after
+        else:
+            self.reason_for_revision_is_visible = self.state in ['reject','reviewed'] or self.approve_after
+
+    @api.model
+    def _compute_case_revision_is_visible(self):
+        if self.env.user.has_group('user_group.group_discipline_committee'):
+            self.case_revision_is_visible = self.state in ['reject','reviewed'] or self.approve_after
+        else:
+            self.case_revision_is_visible = self.state == 'reviewed' or self.approve_after or self.rejected_more
+
     @api.model
     def _compute_is_creator(self):
         if self.accuser_id:
@@ -64,16 +83,25 @@ class DisciplineCase(models.Model):
     
     @api.model
     def _compute_is_hr(self):
-        self.is_hr = self.env.user.has_group("hr_discipline_case2.group_hr_manager")
+        self.is_hr = self.env.user.has_group("user_group.group_hr_director")
 
     @api.model
     def _compute_is_committee(self):
-        self.is_committee = self.env.user.has_group("hr_discipline_case2.group_discipline_committee")
+        self.is_committee = self.env.user.has_group("user_group.group_discipline_committee")
     @api.model
     def _compute_is_ceo(self):
-        self.is_ceo = self.env.user.has_group("hr_discipline_case2.group_ceo")
+        self.is_ceo = self.env.user.has_group("user_group.group_ceo")
     approve_button_visible = fields.Boolean(compute='_compute_approve_button', store=True)
-
+    # for notification feature
+    @api.model
+    def send_notification(self, message, user, title, model,res_id):
+        self.env['custom.notification'].create({
+            'title': title,
+            'message': message,
+            'user_id': user.id,
+            'action_model': model,
+            'action_res_id': res_id
+        })
     
     def write(self, values):
         if 'state' in values:
@@ -84,24 +112,25 @@ class DisciplineCase(models.Model):
             # State transition rules
             if current_state == 'draft' and new_state == 'submitted' and user.has_group('base.group_user'):
                 pass
-            elif current_state == 'submitted' and new_state == 'resolved' and user.has_group('hr_discipline_case2.group_hr_manager'):
+            elif current_state == 'submitted' and new_state == 'resolved' and user.has_group('user_group.group_hr_director'):
                 pass
-            elif current_state == 'submitted' and new_state == 'escalate_to_committee' and user.has_group('hr_discipline_case2.group_hr_manager'):
+            elif current_state == 'submitted' and new_state == 'escalate_to_committee' and user.has_group('user_group.group_hr_director'):
                 pass
-            elif current_state == 'escalate_to_committee' and new_state == 'escalate_to_ceo' and user.has_group('hr_discipline_case2.group_discipline_committee'):
+            elif current_state == 'escalate_to_committee' and new_state == 'escalate_to_ceo' and user.has_group('user_group.group_discipline_committee'):
                 pass
-            elif current_state == 'escalate_to_ceo' and new_state == 'approve' and user.has_group('hr_discipline_case2.group_ceo'):
+            elif current_state == 'escalate_to_ceo' and new_state == 'approve' and user.has_group('user_group.group_ceo'):
                 pass
-            elif current_state == 'escalate_to_ceo' and new_state == 'reject' and user.has_group('hr_discipline_case2.group_ceo'):
+            elif current_state == 'escalate_to_ceo' and new_state == 'reject' and user.has_group('user_group.group_ceo'):
                 pass
-            elif current_state == 'reject' and new_state == 'reviewed' and user.has_group('hr_discipline_case2.group_discipline_committee'):
+            elif current_state == 'reject' and new_state == 'reviewed' and user.has_group('user_group.group_discipline_committee'):
                 pass
-            elif current_state == 'reviewed' and new_state == 'approve' and user.has_group('hr_discipline_case2.group_ceo'):
+            elif current_state == 'reviewed' and (new_state == 'approve' or new_state == 'reject') and user.has_group('user_group.group_ceo'):
                 pass
             else:
                 raise ValidationError(_("You do not have the rights to perform this state transition or the transition is invalid."))
 
         return super(DisciplineCase, self).write(values)
+    
     # Action Buttons
     def _check_access(self, allowed_groups):
         """Check if the current user belongs to one of the allowed groups."""
@@ -113,42 +142,263 @@ class DisciplineCase(models.Model):
         if self.state != 'draft':
             raise ValidationError(_("Only cases in the 'Draft' state can be submitted."))
         self.write({'state': 'submitted'})
+         # Prepare the message to notify the department group
+        message = f"Dear Department Team, a new discipline case has been submitted by {self.accuser_id.name}. Please review it."
+
+        # Get the users in the group "group_department_approval"
+        department_group = self.env.ref('user_group.group_hr_director', raise_if_not_found=False)
+        if department_group:
+            for user in department_group.users:
+                # Send notification to each user in the department approval group
+                self.send_notification(message=message, user=user, title=self._description, model=self._name, res_id=self.id)
+                user.notify_warning(message=message, title=self._description)
+        
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Discipline case',
+                'res_model': 'employee.discipline.case',
+                'view_mode': 'tree,form', 
+                'view_id': False,     
+                'views': [(False, 'tree'), (False, 'form')],  
+                'target': 'current',
+                'context': {},      
+                'domain': [],            
+                'res_id': False,   
+                'params': {
+                    'title': 'Success',
+                    'message': ' I have successfully submitted the case!',
+                    'type': 'success',
+                    'sticky': False,  # It will disappear after a few seconds
+                }
+            }
+        
 
     def action_resolve(self):
-        self._check_access('hr_discipline_case2.group_hr_manager')  # Only HR can resolve
+        self._check_access('user_group.group_hr_director')  # Only HR can resolve
         if self.state != 'submitted':
             raise ValidationError(_("Only cases in the 'Submitted' state can be resolved."))
         self.write({'state': 'resolved'})
+        # Notification Messages
+        accuser_message = "Your discipline case has been resolved by HR. Please review the outcome."
+        accused_message = "A discipline case involving you has been resolved by HR. Please review the outcome."
+
+        # Notify the accuser
+        if self.accuser_id:
+            self.send_notification(message=accuser_message, user=self.accuser_id, title=self._description , model=self._name, res_id=self.id)
+            self.accuser_id.notify_warning(message=accuser_message, title=self._description)
+
+        # Notify the accused
+        if self.accused_employee_id:
+            self.send_notification(message=accused_message, user=self.accused_employee_id, title=self._description ,model=self._name, res_id=self.id)
+            self.accuser_id.notify_warning(message=accuser_message, title=self._description)
+        
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Discipline case',
+                'res_model': 'employee.discipline.case',
+                'view_mode': 'tree,form', 
+                'view_id': False,     
+                'views': [(False, 'tree'), (False, 'form')],  
+                'target': 'current',
+                'context': {},      
+                'domain': [],            
+                'res_id': False,   
+                'params': {
+                    'title': 'Success',
+                    'message': ' I have successfully resolved the case!',
+                    'type': 'success',
+                    'sticky': False,  # It will disappear after a few seconds
+                }
+            }
 
     def action_escalate_to_committee(self):
-        self._check_access('hr_discipline_case2.group_hr_manager')  # Only HR can escalate to committee
+        self._check_access('user_group.group_hr_director')  # Only HR can escalate to committee
         if self.state != 'submitted':
             raise ValidationError(_("Only cases in the 'Submitted' state can be escalated to the committee."))
         self.write({'state': 'escalate_to_committee'})
+         # Prepare the message
+        message = f"This case has been scalated to you!,Pls kindly resolve it ASAP!"
+        # Get the users in the group "group_department_approval"
+        committee_group = self.env.ref('user_group.group_discipline_committee', raise_if_not_found=False)
+        if committee_group:
+            for user in committee_group.users:
+                # Send notification to each user in the department approval group
+                self.send_notification(message=message, user=user, title=self._description , model=self._name, res_id=self.id)
+                user.notify_warning(message=message, title=self._description)
+        
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Discipline case',
+                'res_model': 'employee.discipline.case',
+                'view_mode': 'tree,form', 
+                'view_id': False,     
+                'views': [(False, 'tree'), (False, 'form')],  
+                'target': 'current',
+                'context': {},      
+                'domain': [],            
+                'res_id': False,   
+                'params': {
+                    'title': 'Success',
+                    'message': ' I have successfully escalated the case to committee!',
+                    'type': 'success',
+                    'sticky': False,  # It will disappear after a few seconds
+                }
+            }
+        
 
     def action_escalate_to_ceo(self):
-        self._check_access('hr_discipline_case2.group_discipline_committee')  # Only committee can escalate to CEO
+        self._check_access('user_group.group_discipline_committee')  # Only committee can escalate to CEO
         if self.state != 'escalate_to_committee':
             raise ValidationError(_("Only cases in the 'Escalate to Committee' state can be escalated to the CEO."))
         self.write({'state': 'escalate_to_ceo'})
+         # Prepare the message
+        message = f"This case has been scalated to you!,Pls kindly resolve it ASAP!"
+        # Get the users in the group "group_department_approval"
+        ceo = self.env.ref('user_group.group_ceo', raise_if_not_found=False)
+        if ceo:
+            for user in ceo.users:
+                # Send notification to each user in the department approval group
+                self.send_notification(message=message, user=user, title=self._description , model=self._name, res_id=self.id)
+                user.notify_warning(message=message, title=self._description)
+
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Discipline case',
+                'res_model': 'employee.discipline.case',
+                'view_mode': 'tree,form', 
+                'view_id': False,     
+                'views': [(False, 'tree'), (False, 'form')],  
+                'target': 'current',
+                'context': {},      
+                'domain': [],            
+                'res_id': False,   
+                'params': {
+                    'title': 'Success',
+                    'message': ' I have successfully escalated the case to ceo',
+                    'type': 'success',
+                    'sticky': False,  # It will disappear after a few seconds
+                }
+            }
+        
+        
 
     def action_approve(self):
-        self._check_access('hr_discipline_case2.group_ceo')  # Only CEO can approve
-        if self.state != 'reviewed':
-            raise ValidationError(_("Only cases in the 'Escalate to CEO' state can be approved."))
+        self._check_access('user_group.group_ceo')  # Only CEO can approve
+        if self.state not in ['escalate_to_ceo','reviewed']:
+            raise ValidationError(_("Only cases in the 'Escalate to CEO' or 'Reviewed' state can be approved."))
+        if self.state == 'reviewed':
+            self.write({'approve_after': True})
         self.write({'state': 'approve'})
 
+        # Notification Messages
+        accuser_message = "Your discipline case has been approved by CEO. Please review the outcome."
+        accused_message = "A discipline case involving you has been approved by CEO. Please review the outcome."
+
+        # Notify the accuser
+        if self.accuser_id:
+            self.send_notification(message=accuser_message, user=self.accuser_id, title=self._description , model=self._name, res_id=self.id)
+            self.accuser_id.notify_warning(message=accuser_message, title=self._description)
+
+        # Notify the accused
+        if self.accused_employee_id:
+            self.send_notification(message=accused_message, user=self.accused_employee_id, title=self._description ,model=self._name, res_id=self.id)
+            self.accuser_id.notify_warning(message=accuser_message, title=self._description)
+        
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Discipline case',
+                'res_model': 'employee.discipline.case',
+                'view_mode': 'tree,form', 
+                'view_id': False,     
+                'views': [(False, 'tree'), (False, 'form')],  
+                'target': 'current',
+                'context': {},      
+                'domain': [],            
+                'res_id': False,   
+                'params': {
+                    'title': 'Success',
+                    'message': ' I have successfully approved!',
+                    'type': 'success',
+                    'sticky': False,  # It will disappear after a few seconds
+                }
+            }
+        
+        
+        
+
+
     def action_reject(self):
-        self._check_access('hr_discipline_case2.group_ceo')  # Only CEO can reject
-        if self.state != 'escalate_to_ceo':
+        self._check_access('user_group.group_ceo')  # Only CEO can reject
+        if self.state not in ["escalate_to_ceo","reviewed"]:
             raise ValidationError(_("Only cases in the 'Escalate to CEO' state can be rejected."))
+        if not self.reason_for_revision:
+            raise ValidationError("You need Reason to reject the Request")
+        if self.state == 'reviewed':
+            self.write({'rejected_more':True})
         self.write({'state': 'reject'})
+          # Prepare the message
+        message = f"This case has been returned to you!,Pls kindly review it and send it back to me ASAP!"
+        # Get the users in the group "group_department_approval"
+        returned_to_committee = self.env.ref('user_group.group_discipline_committee', raise_if_not_found=False)
+        if returned_to_committee:
+            for user in returned_to_committee.users:
+                # Send notification to each user in the department approval group
+                self.send_notification(message=message, user=user, title=self._description,model=self._name, res_id=self.id)
+                user.notify_warning(message=message, title=self._description)
+        
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Discipline case',
+                'res_model': 'employee.discipline.case',
+                'view_mode': 'tree,form', 
+                'view_id': False,     
+                'views': [(False, 'tree'), (False, 'form')],  
+                'target': 'current',
+                'context': {},      
+                'domain': [],            
+                'res_id': False,   
+                'params': {
+                    'title': 'Success',
+                    'message': ' I have successfully returned the case!',
+                    'type': 'success',
+                    'sticky': False,  # It will disappear after a few seconds
+                }
+            }
 
     def action_review(self):
-        self._check_access('hr_discipline_case2.group_discipline_committee')  # Only committee can review
+        self._check_access('user_group.group_discipline_committee')  # Only committee can review
         if self.state != 'reject':
             raise ValidationError(_("Only cases in the 'Rejected' state can be reviewed."))
         self.write({'state': 'reviewed'})
+         # Prepare the message
+        message = f"I reviewed the case and sent it back to you,Pls kindly review it and approve it!"
+        # Get the users in the group "group_department_approval"
+        to_ceo = self.env.ref('user_group.group_ceo', raise_if_not_found=False)
+        if to_ceo:
+            for user in to_ceo.users:
+                # Send notification to each user in the department approval group
+                self.send_notification(message=message, user=user, title=self._description , model=self._name, res_id=self.id)
+                user.notify_warning(message=message, title=self._description )
+        
+        return {
+                'type': 'ir.actions.act_window',
+                'name': 'Discipline case',
+                'res_model': 'employee.discipline.case',
+                'view_mode': 'tree,form', 
+                'view_id': False,     
+                'views': [(False, 'tree'), (False, 'form')],  
+                'target': 'current',
+                'context': {},      
+                'domain': [],            
+                'res_id': False,   
+                'params': {
+                    'title': 'Success',
+                    'message': ' I have successfully reviewed!',
+                    'type': 'success',
+                    'sticky': False,  # It will disappear after a few seconds
+                }
+            }
+        
 
     
 # Add SQL constraint for unique name
@@ -177,8 +427,16 @@ class DisciplineCase(models.Model):
                 })
             
             return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
+                'type': 'ir.actions.act_window',
+                'name': 'Discipline case',
+                'res_model': 'employee.discipline.case',
+                'view_mode': 'tree,form', 
+                'view_id': False,     
+                'views': [(False, 'tree'), (False, 'form')],  
+                'target': 'current',
+                'context': {},      
+                'domain': [],            
+                'res_id': False,   
                 'params': {
                     'title': 'Success',
                     'message': 'You have successfully saved the case!',

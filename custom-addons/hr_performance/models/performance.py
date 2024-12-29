@@ -60,6 +60,30 @@ class HrPerformanceEvaluation(models.Model):
     is_manager_to_employee = fields.Boolean(compute="_compute_is_manager_to_employee")
     is_manager_start = fields.Boolean(compute="_compute_is_manager_start")
 
+    score_category = fields.Selection(
+        [
+            ("below_75", "Below 75"),
+            ("75_to_84", "75 - 84"),
+            ("85_to_94", "85 - 94"),
+            ("95_above", "95 and Above"),
+        ],
+        string="Score Category",
+        compute="_compute_score_category",
+        store=True,
+    )
+
+    @api.depends("total_score")
+    def _compute_score_category(self):
+        for record in self:
+            if record.total_score >= 95:
+                record.score_category = "95_above"
+            elif record.total_score >= 85:
+                record.score_category = "85_to_94"
+            elif record.total_score >= 75:
+                record.score_category = "75_to_84"
+            else:
+                record.score_category = "below_75"
+
     @api.depends("employee_id", "employee_id.user_id")
     def _compute_is_employee(self):
         for record in self:
@@ -93,6 +117,19 @@ class HrPerformanceEvaluation(models.Model):
             record.manager_id = (
                 record.employee_id.parent_id if record.employee_id else None
             )
+            
+    # notification function
+    @api.model
+    def send_notification(self, message, user, title, model, res_id):
+        self.env["custom.notification"].create(
+            {
+                "title": title,
+                "message": message,
+                "user_id": user.id,
+                "action_model": model,
+                "action_res_id": res_id,
+            }
+        )
 
     def action_start_evaluation(self):
         """Start the survey for the manager using the survey URL in a new tab."""
@@ -203,12 +240,20 @@ class HrPerformanceEvaluation(models.Model):
             # Store the total score in the evaluation record
             curr = 0
             if length > 0:
-                curr = length*5
-                total_score = total_score*100/curr
-                
+                curr = length * 5
+                total_score = total_score * 100 / curr
+
             record.total_score = total_score
 
             record.evaluation_status = "employee_review"
+            # send notification to employee
+            self.send_notification(
+                message="Your evaluation is completed Please Accept it!",
+                user=record.employee_id.user_id,
+                title="Evaluation Completed",
+                model=self._name,
+                res_id=self.id,
+            )
 
     def action_employee_reject(self):
         # emplooyee reject
@@ -216,6 +261,7 @@ class HrPerformanceEvaluation(models.Model):
             if record.evaluation_status != "employee_review":
                 raise ValidationError(_("You can only reject after review"))
             record.evaluation_status = "employee_rejected"
+           
 
     def action_employee_accept(self):
         # emplooyee reject
@@ -233,6 +279,16 @@ class HrPerformanceEvaluation(models.Model):
                 )
 
             record.evaluation_status = "submitted_to_hr"
+            # send notification to hr 
+            hr_group = self.env.ref("user_group.group_hr_office")
+            for user in hr_group.users:
+                self.send_notification(
+                    message="Evaluation Accepted by Employee Submitted ",
+                    user=user,
+                    title="Evaluation Submitted",
+                    model=self._name,
+                    res_id=self.id,
+                )
 
     def action_mark_completed(self):
         """Mark the evaluation as completed, store questions and answers, and calculate the total score."""

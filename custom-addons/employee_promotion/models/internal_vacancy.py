@@ -20,6 +20,18 @@ class InternalVacancy(models.Model):
     vacancy_id = fields.Char(string="Vacancy ID", required=True, readonly=True, default=lambda self: uuid.uuid4().hex)
 
 
+    # add notification function 
+    @api.model
+    def send_notification(self, message, user, title, model,res_id):
+        self.env['custom.notification'].create({
+            'title': title,
+            'message': message,
+            'user_id': user.id,
+            'action_model': model,
+            'action_res_id': res_id
+        })
+
+
     def write(self, vals):
          # Ensure end_date is not modified after creation
         if 'end_date' in vals and any(record.id for record in self):
@@ -30,6 +42,18 @@ class InternalVacancy(models.Model):
     def create(self, vals):
         # Initialize readonly behavior or additional logic here if needed
         record = super(InternalVacancy, self).create(vals)
+        #all_employees = self.env.ref('user_group.group_employee').users
+        # filter only users with employee records
+        all_employees = self.env['hr.employee'].search([('user_id', '!=', False)])
+
+        for employee in all_employees:
+            self.send_notification(
+                message=f"New vacancy posted for {record.job_position_id.name}",
+                user=employee.user_id,
+                title="New Vacancy Posted",
+                model="internal.vacancy",
+                res_id=record.id
+            )
         return record
 
     @api.depends('start_date', 'end_date')

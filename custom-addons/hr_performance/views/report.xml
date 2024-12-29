@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action: Opens Graph, Pivot, and Tree Views for hr.performance.evaluation -->
+    <record id="action_hr_performance_evaluation_report" model="ir.actions.act_window">
+        <field name="name">Performance Evaluation Report</field>
+        <field name="res_model">hr.performance.evaluation</field>
+        <field name="view_mode">graph,pivot,tree</field>
+        <!-- Removed search_view_id to avoid referencing a non-existent search view -->
+        <field name="context">{'group_by': ['score_category']}</field>
+        <field name="domain">[('evaluation_status', '=', 'completed')]</field>
+        <field name="help">
+            Use this report to analyze completed performance evaluations by score category.
+        </field>
+    </record>
+  <!-- Graph View: Performance Evaluations by Score Category -->
+    <record id="hr_performance_evaluation_view_graph" model="ir.ui.view">
+        <field name="name">hr.performance.evaluation.view.graph</field>
+        <field name="model">hr.performance.evaluation</field>
+        <field name="arch" type="xml">
+            <graph string="Performance Evaluations by Score Category" type="bar">
+                <!-- Group evaluations by score category -->
+                <field name="score_category" type="row"/>
+                <!-- Count evaluations in each category -->
+                <field name="id" type="count"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot View: Performance Evaluations for Analytical Export -->
+    <record id="hr_performance_evaluation_view_pivot" model="ir.ui.view">
+        <field name="name">hr.performance.evaluation.view.pivot</field>
+        <field name="model">hr.performance.evaluation</field>
+        <field name="arch" type="xml">
+            <pivot string="Performance Evaluations Pivot">
+                <field name="score_category" type="row"/>
+                <field name="employee_id" type="col"/>
+                <field name="total_score" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Tree View: List of Performance Evaluations -->
+    <record id="hr_performance_evaluation_view_tree" model="ir.ui.view">
+        <field name="name">hr.performance.evaluation.view.tree</field>
+        <field name="model">hr.performance.evaluation</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="employee_id"/>
+                <field name="manager_id"/>
+                <field name="evaluation_status"/>
+                <field name="total_score"/>
+                <field name="score_category" string="Score Category"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>

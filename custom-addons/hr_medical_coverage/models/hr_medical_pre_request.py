@@ -43,18 +43,74 @@ class HrMedicalPreRequest(models.Model):
                 and record.status == "draft"
             )
 
-
+# notification function
+    @api.model
+    def send_notification(self, message, user, title, model, res_id):
+        self.env["custom.notification"].create(
+            {
+                "title": title,
+                "message": message,
+                "user_id": user.id,
+                "action_model": model,
+                "action_res_id": res_id,
+            }
+        )
     def actionSubmit(self):
         self.status = "submitted"
+        # send notification to hr
+        hr_group = self.env.ref("user_group.group_hr_office")
+        message = "New Medical Coverage Request"
+        title = "New Medical Coverage Request"
+        for user in hr_group.users:
+            self.send_notification(
+                message=message,
+                user=user,
+                title=title,
+                model=self._name,
+                res_id=self.id,
+            )
+            # web notify
+            user.notify_success(title=title, message=message)
+        self.env.user.notify_success("Request Submitted")
 
     def actionHrApprove(self):
         self.status = "hr_approved"
+        # send notification to employee
+        employee = self.create_uid
+        message = "Medical Coverage Request Approved By HR"
+        title = "Medical Coverage Request Approved By HR"
+        self.send_notification(
+            message=message,
+            user=employee,
+            title=title,
+            model=self._name,
+            res_id=self.id,
+        )
+        # web notify
+        employee.notify_success(title=title, message=message)
+        self.env.user.notify_success("Request Approved")
+        
+        
 
     def actionHrReject(self):
         self.status = "hr_rejected"
+        # send notification to employee
+        employee = self.create_uid
+        message = "Medical Coverage Request Rejected By HR"
+        title = "Medical Coverage Request Rejected By HR"
+        self.send_notification(
+            message=message,
+            user=employee,
+            title=title,
+            model=self._name,
+            res_id=self.id,
+        )
+        # web notify
+        employee.notify_danger(title=title, message=message)
+        self.env.user.notify_danger("Request Rejected")
 
     def write(self, vals):
         if "hr_comment" in vals:
-            if not self.env.user.has_group("hr_medical_coverage.group_hr_director"):
+            if not self.env.user.has_group("user_group.group_hr_office"):
                 raise AccessError("You are not allowed to edit this field")
         return super(HrMedicalPreRequest, self).write(vals)

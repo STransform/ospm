@@ -1,2 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_employee_clearance,access_employee_clearance,model_employee_clearance,base.group_user,1,1,1,1
+access_employee_clearance_manager,employee.clearance.manager,model_employee_clearance,user_group.group_department_manager,1,1,0,0
+access_employee_clearance_property,employee.clearance.property,model_employee_clearance,user_group.group_property_approval,1,1,0,0
+access_employee_clearance_finance,employee.clearance.finance,model_employee_clearance,user_group.group_finance_approval,1,1,0,0
+access_employee_clearance_hr,employee.clearance.hr,model_employee_clearance,user_group.group_hr_director,1,1,0,0

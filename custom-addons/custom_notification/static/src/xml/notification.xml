@@ -14,22 +14,39 @@
                 
                 <t t-if="state.showDropdown">
                     <div class="o_MessagingMenu_dropdownMenu o-dropdown-menu dropdown-menu-end d-flex flex-column mt-0 py-0 bg-view overflow-auto pt-4"  role="menu">
-                        <t t-if="state.notifications.length">
+                        <t t-if="state.unreadCount">
                             <t t-foreach="state.notifications" t-as="notification" t-key="notification.id">
-                                <div class="dropdown-item d-flex align-items-start p-3 border-bottom" t-on-click="() => onClickNotification(notification)">
-                                    <div class="me-3">
+                                <div class="dropdown-item d-flex align-items-start p-3 border-bottom " t-on-click="() => onClickNotification(notification)">
+                                    <div class="me-3 w-10">
                                         <i class="fa fa-bell text-primary" role="img" aria-label="Notification Icon"></i>
                                     </div>
-                                    <div class="flex-grow-1">
-                                        <strong class="d-block text-truncate mb-1" t-esc="notification.title" />
-                                        <p class="text-muted small mb-0" t-esc="notification.message" />
+                                    <div class="w-100 overflow-hidden">
+                                        <!-- Main container takes 100% width -->
+                                        <div class="w-90 overflow-hidden">
+                                            <!-- Title and Relative Time -->
+                                            <div class="d-flex justify-content-between align-items-start w-100">
+                                                <strong class="d-block text-truncate mb-1" t-esc="notification.title" />
+                                                <div class="text-muted small ms-2 flex-shrink-0">
+                                                    <t t-esc="notification.relativeTime" />
+                                                </div>
+                                            </div>
+                                            <!-- Message -->
+                                            <div class="w-100">
+                                                <p class="text-muted small mb-0 text-truncate" style="width: 100%;" t-esc="notification.message" />
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="text-muted small ms-2">
-                                        <t t-esc="notification.relativeTime" />
-                                    </div>
+
+
+                                </div>
+                            </t>
+                            <t t-if="state.hasMore">
+                                <div class="dropdown-item text-center">
+                                    <button class="btn btn-link" t-on-click="onClickSeeMore">See More</button>
                                 </div>
                             </t>
                         </t>
+                        
                         <t t-else="">
                             <div class="dropdown-item">
                                 <p>No new notifications</p>

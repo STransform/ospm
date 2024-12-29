@@ -1,8 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-   
+    <data>
+        <!-- Category for clearance request -->
         <record id="category_clearance_request" model="ir.module.category">
             <field name="name">Clearance request</field>
         </record>
+
         <!-- Property Approval Group -->
         <record id="group_property_approval" model="res.groups">
             <field name="name">Property Approval</field>
@@ -20,9 +23,11 @@
             <field name="name">HR Approval</field>
             <field name="category_id" ref="category_clearance_request"/>
         </record>
-         <!-- Department Approval Group -->
+
+        <!-- Department Approval Group -->
         <record id="group_department_approval" model="res.groups">
             <field name="name">Department Approval</field>
             <field name="category_id" ref="category_clearance_request"/>
         </record>
+    </data>
 </odoo>

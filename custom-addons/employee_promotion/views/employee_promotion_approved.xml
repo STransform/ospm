@@ -98,5 +98,5 @@
 </record>
 
     <!--Menu view in employee form-->
-    <menuitem id="promotion_approved_sub_menu" name="Approved Promotion" parent="employee_promotion_menu" action="promotion_approved_action" groups="employee_promotion.group_hr_recruitment_hr_director"/>
+    <menuitem id="promotion_approved_sub_menu" name="Approved Promotion" parent="employee_promotion_menu" action="promotion_approved_action" groups="user_group.group_hr_director"/>
 </odoo>
