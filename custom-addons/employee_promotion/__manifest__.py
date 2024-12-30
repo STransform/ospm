@@ -7,7 +7,6 @@
                    "Also, the promotion is visible on each employee form .",
     'depends': ['base', 'hr', 'mail', 'hr_contract', 'user_group', "custom_notification"],
     'data': [
-        'security/groups.xml',
         'security/ir.model.access.csv',
         'views/employee_promotion_views.xml',
         'views/promotion_type_views.xml',

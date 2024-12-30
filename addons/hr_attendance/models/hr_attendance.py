@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from operator import itemgetter
 
 import pytz
@@ -28,8 +28,56 @@ class HrAttendance(models.Model):
     check_out = fields.Datetime(string="Check Out")
     worked_hours = fields.Float(string='Worked Hours', compute='_compute_worked_hours', store=True, readonly=True)
     # Custom Fields added
-    
+    #field to compute of its late in or early out
+    attendance_status = fields.Selection(
+        [
+            ('late_in', 'Late In'),
+            ('early_out', 'Early Out'),
+            ('absent', 'Absent'),
+            ('present', 'Present'),
+            ('late_in_and_early_out', 'Late In and Early Out'),
+        ],
+        string="Attendance Status",
+        compute='_compute_attendance_status',
+        store=True,
+        readonly=True,
+    )
+    remark = fields.Text(string='Approved Remark', required=False,  help='Add remarks for attendance')
 
+    def normalize_time_to_local(self, dt):
+        """Normalize a UTC datetime to the local timezone (UTC+3 in this case) and return the time part."""
+        if dt:
+            local_timezone = pytz.timezone("Africa/Addis_Ababa")  # Replace with your local timezone
+            local_dt = pytz.utc.localize(dt).astimezone(local_timezone)
+            return local_dt.time()
+        return None
+
+    @api.depends('check_in', 'check_out')
+    def _compute_attendance_status(self):
+        # Fetch configuration values
+        late_in_str = self.env['ir.config_parameter'].sudo().get_param('hr_attendance.late_in_time', default="08:30")
+        early_out_str = self.env['ir.config_parameter'].sudo().get_param('hr_attendance.early_out_time', default="17:00")
+
+        # Convert strings to `time` objects
+        late_in_time = datetime.strptime(late_in_str, "%H:%M").time()
+        early_out_time = datetime.strptime(early_out_str, "%H:%M").time()
+
+        for record in self:
+            check_in_time = self.normalize_time_to_local(record.check_in)
+            check_out_time = self.normalize_time_to_local(record.check_out)
+
+            if not record.check_in or not record.check_out:
+                record.attendance_status = 'absent'
+            elif check_in_time and check_in_time > late_in_time and check_out_time and check_out_time < early_out_time:
+                record.attendance_status = 'late_in_and_early_out'
+            elif check_in_time and check_in_time > late_in_time:
+                record.attendance_status = 'late_in'
+            elif check_out_time and check_out_time < early_out_time:
+                record.attendance_status = 'early_out'
+            elif check_in_time <= late_in_time and check_out_time >= early_out_time:
+                record.attendance_status = 'present'
+            else:
+                record.attendance_status = 'absent'
 
     def name_get(self):
         result = []

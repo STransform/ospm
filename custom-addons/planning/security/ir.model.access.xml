@@ -3,12 +3,12 @@
     <record id="rule_hr_annual_plan_creator" model="ir.rule">
         <field name="name">HR Annual Plan - Creator Access</field>
         <field name="model_id" ref="model_hr_annual_plan"/>
-        <field name="groups" eval="[(4, ref('planning.group_department_manager')),
-                                     (4, ref('planning.group_director')),
-                                     (4, ref('planning.group_dceo')),
-                                     (4, ref('planning.group_planning_directorate')),
-                                     (4, ref('planning.group_ceo')),
-                                     (4, ref('planning.group_hr_director'))]"/>
+        <field name="groups" eval="[(4, ref('user_group.group_department_manager')),
+                                     (4, ref('user_group.group_director')),
+                                     (4, ref('user_group.group_dceo')),
+                                     (4, ref('user_group.group_planning_directorate')),
+                                     (4, ref('user_group.group_ceo')),
+                                     (4, ref('user_group.group_hr_director'))]"/>
         <field name="domain_force">[('create_uid', '=', user.id)]</field>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
@@ -20,29 +20,29 @@
     <record id="rule_hr_annual_plan_approver" model="ir.rule">
         <field name="name">HR Annual Plan - Approver Access</field>
         <field name="model_id" ref="model_hr_annual_plan"/>
-        <field name="groups" eval="[(4, ref('planning.group_department_manager')),
-                                     (4, ref('planning.group_director')),
-                                     (4, ref('planning.group_dceo')),
-                                     (4, ref('planning.group_planning_directorate')),
-                                     (4, ref('planning.group_ceo')),
-                                     (4, ref('planning.group_hr_director'))]"/>
+        <field name="groups" eval="[(4, ref('user_group.group_department_manager')),
+                                     (4, ref('user_group.group_director')),
+                                     (4, ref('user_group.group_dceo')),
+                                     (4, ref('user_group.group_planning_directorate')),
+                                     (4, ref('user_group.group_ceo')),
+                                     (4, ref('user_group.group_hr_director'))]"/>
         <field name="domain_force">[('approved_by', '=', user.id), ('status', '!=', 'draft')]</field>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
-        <field name="perm_create" eval="1"/>
-        <field name="perm_unlink" eval="1"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
     </record>
 
     <!-- Record Rule for HR Strategic Plan: Allow access only to the creator -->
     <record id="rule_hr_strategic_plan_creator" model="ir.rule">
         <field name="name">HR Strategic Plan - Creator Access</field>
         <field name="model_id" ref="model_hr_strategic_plan"/>
-        <field name="groups" eval="[(4, ref('planning.group_department_manager')),
-                                     (4, ref('planning.group_director')),
-                                     (4, ref('planning.group_dceo')),
-                                     (4, ref('planning.group_planning_directorate')),
-                                     (4, ref('planning.group_ceo')),
-                                     (4, ref('planning.group_hr_director'))]"/>
+        <field name="groups" eval="[(4, ref('user_group.group_department_manager')),
+                                     (4, ref('user_group.group_director')),
+                                     (4, ref('user_group.group_dceo')),
+                                     (4, ref('user_group.group_planning_directorate')),
+                                     (4, ref('user_group.group_ceo')),
+                                     (4, ref('user_group.group_hr_director'))]"/>
         <field name="domain_force">[('create_uid', '=', user.id)]</field>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>
@@ -54,12 +54,12 @@
     <record id="rule_hr_strategic_plan_approver" model="ir.rule">
         <field name="name">HR Strategic Plan - Approver Access</field>
         <field name="model_id" ref="model_hr_strategic_plan"/>
-        <field name="groups" eval="[(4, ref('planning.group_department_manager')),
-                                     (4, ref('planning.group_director')),
-                                     (4, ref('planning.group_dceo')),
-                                     (4, ref('planning.group_planning_directorate')),
-                                     (4, ref('planning.group_ceo')),
-                                     (4, ref('planning.group_hr_director'))]"/>
+        <field name="groups" eval="[(4, ref('user_group.group_department_manager')),
+                                     (4, ref('user_group.group_director')),
+                                     (4, ref('user_group.group_dceo')),
+                                     (4, ref('user_group.group_planning_directorate')),
+                                     (4, ref('user_group.group_ceo')),
+                                     (4, ref('user_group.group_hr_director'))]"/>
         <field name="domain_force">[('approved_by', '=', user.id),('status','!=','draft')]</field>
         <field name="perm_read" eval="1"/>
         <field name="perm_write" eval="1"/>

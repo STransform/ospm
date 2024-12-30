@@ -87,10 +87,10 @@
                 <xpath expr="//div[@name='dates']" position="after">
                     <field name="allocated_hours" widget="timesheet_uom_no_toggle" attrs="{'invisible': [('allow_timesheets', '=', False)]}"/>
                 </xpath>
-                <xpath expr="//group[@name='group_time_managment']" position="attributes">
+                <xpath expr="//group[@name='group_time_management']" position="attributes">
                     <attribute name="invisible">0</attribute>
                 </xpath>
-                <xpath expr="//group[@name='group_time_managment']" position="inside">
+                <xpath expr="//group[@name='group_time_management']" position="inside">
                     <div class="o_setting_box" id="timesheet_settings" colspan="2">
                         <div class="o_setting_left_pane">
                             <field name="allow_timesheets"/>

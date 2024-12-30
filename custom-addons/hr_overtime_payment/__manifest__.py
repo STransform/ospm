@@ -23,6 +23,7 @@
         "user_group",
         "custom_notification",
         "web_notify",
+        "web",
     ],
     # always loaded
     "data": [
@@ -34,6 +35,8 @@
         "views/menu.xml",
         "views/views.xml",
         "views/templates.xml",
+        "report/report.xml",
+        "report/template.xml",
     ],
     # only loaded in demonstration mode
     "demo": [

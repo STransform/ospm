@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_bonus">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <h2 style="color: #2c3e50;">Bonus Management Report</h2>
+                           <p
+                                style="font-style: italic; color: #7f8c8d;"> Generated on: <span
+                                    t-esc="time.strftime('%Y-%m-%d %H:%M:%S')" />
+                            </p>
+                            ` </div>
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                            <tr style="background-color: #f7f7f7;">
+                                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                    Field</th>
+                                <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">
+                                    Details</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Batch Name</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="o.name" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Bonus Months</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="o.months" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Fixed Amount</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-if="o.fixed_amount">Yes</span>
+                                    <span t-if="not o.fixed_amount">No</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Performance</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="o.performance" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #ddd;">Status</td>
+                                <td style="padding: 10px; border: 1px solid #ddd;">
+                                    <span t-field="o.state" />
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Bonus Management Line Details -->
+                        <h3 style="color: #2c3e50; margin-top: 20px;">Bonus Management Line</h3>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                            <tr style="background-color: #f7f7f7;">
+                                <th style="padding: 10px; border: 1px solid #ddd;">Employee</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;">Department</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;">Current Wage</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;">Performance</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;">Bonus Amount</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;">Eligible</th>
+                            </tr>
+                            <t t-foreach="o.bonus_management_line" t-as="line">
+                                <tr>
+                                    <td style="padding: 10px; border: 1px solid #ddd;">
+                                        <span t-field="line.employee_id.name" />
+                                    </td>
+                                    <td style="padding: 10px; border: 1px solid #ddd;">
+                                        <span t-field="line.employee_department" />
+                                    </td>
+                                    <td style="padding: 10px; border: 1px solid #ddd;">
+                                        <span t-field="line.current_wage" />
+                                    </td>
+                                    <td style="padding: 10px; border: 1px solid #ddd;">
+                                        <span t-field="line.performance" />
+                                    </td>
+                                    <td style="padding: 10px; border: 1px solid #ddd;">
+                                        <span t-field="line.bonus_amount" />
+                                    </td>
+                                    <td style="padding: 10px; border: 1px solid #ddd;">
+                                        <span t-if="line.is_eligible">Yes</span>
+                                        <span t-if="not line.is_eligible">No</span>
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+
+                        <!-- Footer -->
+                        <div style="margin-top: 30px; text-align: center;">
+                            <p style="font-size: 12px; color: #7f8c8d;">
+                                This report is auto-generated by the Bonus Management system. For
+                                any discrepancies, please contact HR.
+                            </p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

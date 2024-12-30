@@ -51,6 +51,12 @@ class RecruitmentRequest(models.Model):
     ], string="Combined State", compute='_compute_combined_state')
 
     promotion_created = fields.Boolean(default=False, readonly=True)
+    is_creator = fields.Boolean(compute='_check_is_creator', default=True)
+
+    # check if it is creator
+    def _check_is_creator(self):
+        for record in self:
+            record.is_creator = record.created_by.id == self.env.user.id
 
     # add notification function 
     @api.model
