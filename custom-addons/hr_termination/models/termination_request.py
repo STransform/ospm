@@ -211,12 +211,18 @@ class TerminationRequest(models.Model):
             record.employee_id.user_id.notify_success(title=title, message=message)
             self.send_notification(message, record.employee_id.user_id, title, model = self._name, res_id = self.id)
             self.env.user.notify_success("Request Approved!")
+            record._create_clearance()
 
-            if record.employee_id:
-                # Set the employee to archived (depending on your model's definition for archived state)
-                if record.employee_id.user_id:
-                    record.employee_id.user_id.sudo().write({'active': False})
-                record.employee_id.sudo().write({'active': False})
+
+            
+            # if record.employee_id:
+            #     # Set the employee to archived (depending on your model's definition for archived state)
+            #     if record.employee_id.user_id:
+            #         record.employee_id.user_id.sudo().write({'active': False})
+            #     record.employee_id.sudo().write({'active': False})
+
+
+                
     
     def action_by_ceo_refuse_request(self):
         for record in self:
@@ -243,4 +249,15 @@ class TerminationRequest(models.Model):
             title = "Termination Request"
             message = f"{record.employee_id.name} Requested Termination"
             self.send_notification(message, service_manager, title, model = self._name, res_id = self.id)
+
+
+    def _create_clearance(self):
+            """Automatically create a promotion in the promotion.approved model."""
+            self.env['employee.clearance'].sudo().create({
+                'name': self.name,  # Customize this as needed
+                'employee_id': self.employee_id.id,  # Optional: Add a link to the recruitment request
+                'department_id': self.department_id.id,
+                'employee_reason': self.reason,
+                'date_requested': self.create_date,
+            })
 

@@ -15,7 +15,7 @@ class HRStrategicPlan(models.Model):
 
     department_id = fields.Many2one('hr.department', string="Department", required=True, readonly=True, default=lambda self: self._default_department_id())
     submitted_to = fields.Many2one("hr.department", string="Submitted to", required=True)
-    approved_by = fields.Many2one("res.users", string="Approved by", compute='_compute_submitted_to', store=False)
+    approved_by = fields.Many2one("res.users", string="Approved by", compute='_compute_submitted_to',search="_search_approved_by",  store=False)
     start_year = fields.Selection(year_selection, string="Start Year", required=True)
     end_year = fields.Char(string="End Year", compute='_compute_end_year', store=True)
     strategic_external_recruitment = fields.Integer(string="Total External Recruitment", required=True, default=0)
@@ -34,6 +34,34 @@ class HRStrategicPlan(models.Model):
 
     is_approver = fields.Boolean(string="Is Approver", compute="_compute_is_approver", store=False )
 
+
+
+    def _search_approved_by(self, operator, value):
+        """
+        Custom search function for is_department_manager field.
+        
+        Args:
+            operator (str): Search operator ('=' or '!=')
+            value (bool): Search value
+            
+        Returns:
+            list: Domain for search
+            
+        Raises:
+            ValueError: If operator not supported
+        """
+        if operator not in ['=', '!=']:
+            raise ValueError("Operator not supported for this field.")
+        
+        user_id = self.env.uid
+        # Query departments where the logged-in user is the manager
+        department_ids = self.env['hr.department'].search([('manager_id.user_id', '=', user_id)]).ids
+
+        # Match records with the queried departments
+        if (operator == '=' and value) or (operator == '!=' and not value):
+            return [('department_id', 'in', department_ids)]
+        else:
+            return [('department_id', 'not in', department_ids)]
 
 
     @api.model

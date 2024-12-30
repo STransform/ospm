@@ -41,7 +41,7 @@
                             </div>
                              <div class="col-md-6">
                                 <label for="reason" class="form-label fw-bold">Reason</label>
-                                <field name="reason" readonly="0" class="form-control" id="reason" 
+                                <field name="employee_reason" readonly="0" class="form-control" id="reason" 
                                 attrs="{'readonly':[('state','!=','draft')]}"/>
                             </div>
                            
@@ -163,7 +163,7 @@
                             <strong><field name="employee_id"/></strong>
                             <div>Department: <field name="department_id"/></div>
                             <div>Position: <field name="job_id"/></div>
-                            <div>Reason: <field name="reason"/></div>
+                            <div>Reason: <field name="employee_reason"/></div>
                             <div >Reason: <field name="state" style="color:green;"/></div>
                         </div>
                     </div>
@@ -181,7 +181,7 @@
         <field name="employee_id"/>
         <field name="department_id"/>
         <field name="job_id"/>
-        <field name="reason"/>
+        <field name="employee_reason"/>
         <field name="state"/>
         
       </tree>
@@ -203,5 +203,5 @@
 
   <!-- Menu Item for Clearance -->
   <menuitem id="menu_clearance_root" name="Clearance"
-            parent="hr.menu_hr_root" action="action_clearance_request"/>
+            parent="hr.menu_hr_services" action="action_clearance_request"/>
 </odoo>

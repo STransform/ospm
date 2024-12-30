@@ -13,12 +13,7 @@ class Clearance(models.Model):
     job_id = fields.Many2one('hr.job', string="Position",  store=True)
     clearance_description = fields.Text(string="Description",  store=True)
     documents = fields.Many2many('ir.attachment', string='Attachments', help="Attach documents related to clearance request")
-    reason = fields.Selection(
-        [('resignation', 'Resignation'), ('retirement', 'Retirement'), ('termination', 'Termination'),('contract', 'End of Contract'),('transfer', 'Transfer')],
-        string="Reason for Clearance",
-        required=True,
-        tracking=True
-    )
+    employee_reason = fields.Text(string="Reason")
     date_requested = fields.Date(string="Requested Date", default=fields.Date.today, tracking=True)
     
     
@@ -77,7 +72,7 @@ class Clearance(models.Model):
     def _compute_is_creator(self):
         if self.employee_id:
             self.is_creator = self.employee_id.user_id.id == self.env.user.id
-     # to make save button only visible at creation step,other that its invisible
+     # to make save button only visible at creation step,othern that its invisible
     user_id = fields.Many2one('res.users', string='User')
     user_in_group = fields.Boolean(compute='_compute_user_in_group', store=False)
     @api.depends('user_id')
@@ -287,7 +282,7 @@ class Clearance(models.Model):
         if self.employee_id and self.employee_id.user_id:
             self.send_notification(message=message, user=self.employee_id.user_id, title=self._description, model=self._name, res_id=self.id)
             self.employee_id.user_id.notify_warning(message=message, title=self._description)      
-
+        # to archive employee after hr approve 
         if self.employee_id:
                 # Set the employee to archived 
                 if self.employee_id.user_id:
