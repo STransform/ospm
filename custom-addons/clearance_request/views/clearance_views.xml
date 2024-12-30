@@ -203,5 +203,5 @@
 
   <!-- Menu Item for Clearance -->
   <menuitem id="menu_clearance_root" name="Clearance"
-            parent="hr.menu_hr_root" action="action_clearance_request"/>
+            parent="hr.menu_hr_services" action="action_clearance_request"/>
 </odoo>
