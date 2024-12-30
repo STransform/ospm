@@ -2,7 +2,7 @@
 <odoo>
 
     <menuitem
-        name="Time Off"
+        name="Leave"
         id="menu_hr_holidays_root"
         sequence="225"
         web_icon="hr_holidays,static/description/icon.svg"
