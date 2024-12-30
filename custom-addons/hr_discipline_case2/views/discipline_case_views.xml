@@ -228,5 +228,5 @@
 
     <!-- Menu Item for Discipline Cases -->
     <menuitem id="menu_employee_discipline_case" name="Discipline Cases"
-              parent="hr.menu_hr_root" action="action_discipline_case"/>
+              parent="hr.menu_hr_services" action="action_discipline_case"/>
 </odoo>
