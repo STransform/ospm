@@ -214,5 +214,5 @@
     </record>
 
     <menuitem id="menu_complaint_root" name="Employee's complaint" parent="hr.menu_hr_root" sequence="10"/>
-    <menuitem id="menu_complaint_management" name="Complaints" parent="menu_complaint_root" action="action_employee_complaint" sequence="20"/>
+    <menuitem id="menu_complaint_management" name="Complaints" parent="hr.menu_hr_services" action="action_employee_complaint" sequence="20"/>
 </odoo>
