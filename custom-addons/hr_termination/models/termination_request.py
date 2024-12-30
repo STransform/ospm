@@ -212,6 +212,7 @@ class TerminationRequest(models.Model):
             self.send_notification(message, record.employee_id.user_id, title, model = self._name, res_id = self.id)
             self.env.user.notify_success("Request Approved!")
             record._create_clearance()
+           
 
 
             
@@ -253,11 +254,28 @@ class TerminationRequest(models.Model):
 
     def _create_clearance(self):
             """Automatically create a promotion in the promotion.approved model."""
-            self.env['employee.clearance'].sudo().create({
+            clerance_id = self.env['employee.clearance'].sudo().create({
                 'name': self.name,  # Customize this as needed
                 'employee_id': self.employee_id.id,  # Optional: Add a link to the recruitment request
                 'department_id': self.department_id.id,
                 'employee_reason': self.reason,
                 'date_requested': self.create_date,
-            })
+            }).id
+              # Prepare the message
+            message = f"The CEO has approved this employee's termination request. Please review and approve the clearance process."
+            
+            # Get the users in the group "group_department_approval"
+            department_group = self.env.ref('user_group.group_department_manager').users
+            if department_group:
+                for user in department_group:
+                    # Send notification to each user in the department approval group
+                    self.send_notification(message=message, user=user, title=self._description, model='employee.clearance', res_id=clerance_id)
+                    
+                    user.notify_warning(message=message, title=self._description)
+            
+            # Notify the employee (optional, if you still want to notify the employee as well)
+            self.employee_id.user_id.notify_warning(message=message, title=self._description)
+
+
+
 
