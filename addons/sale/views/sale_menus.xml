@@ -70,6 +70,19 @@
 
         </menuitem>
 
+        <menuitem
+            id="menu_dept_request"
+            name="Department"
+            sequence="10">
+
+            <menuitem
+                id="menu_dept_request_product"
+                action="dept_sales_product_request"
+                name="Requests"
+                sequence="10"/>
+        </menuitem>
+
+
         <menuitem id="menu_sale_report"
             name="Reporting"
             action="action_order_report_all"

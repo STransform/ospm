@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<record id="department_request_rule_creator" model="ir.rule">
+    <field name="name">sales Department: Created by User</field>
+    <field name="model_id" ref="model_dept_product_request"/>
+    <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    <field name="groups" eval="[(4, ref('sales_team.group_department_requestor'))]"/>
+</record>
+
+<record id="sales_team_dept_request" model="ir.rule">
+    <field name="name">sales Department: sales team can see this</field>
+    <field name="model_id" ref="model_dept_product_request"/>
+    <field name="domain_force">[]</field>
+    <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+    
+</record>
+
+
+
+
+
+</odoo>

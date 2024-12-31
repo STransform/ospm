@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--Action of employee.promotion model-->
+    <record id="dept_sales_product_request" model="ir.actions.act_window">
+        <field name="name">Department product request</field>
+        <field name="res_model">dept.product.request</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+    <!--Form view employee.promotion model-->
+<record id='sales_product_request_view_form' model='ir.ui.view'>
+    <field name="name">sales.product.request.view.form</field>
+    <field name="model">dept.product.request</field>
+    <field name="arch" type="xml">
+        <form string="Sales Product Request">
+            <sheet>
+                <div class="oe_title">
+                    <h1>
+                        <field class="text-break" name="name" />
+                    </h1>
+                </div>
+                <group>
+                    <group>
+                        <field name="sales_price"/>
+                        <field name="cost"/>
+                        <field name="description"/>
+                    </group>
+                </group>
+            </sheet>
+            <div class="oe_chatter">
+                <field name="message_follower_ids" widget="many2many_tags"/>
+                <field name="activity_ids"/>
+                <field name="message_ids"/>
+            </div>
+        </form>
+    </field>
+</record>
+
+
+    <!-- <record id="view_department_sales_request_kanban" model="ir.ui.view">
+        <field name="name">sales.department.request.kanban</field>
+        <field name="model">dept.product.request</field>
+        <field name="arch" type="xml">
+            <kanban quick_create="false" class="o_kanban_view" default_order="create_date desc">
+                <field name="name" />
+                <field name="sales_price" />
+                <field name="cost" />
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card shadow-lg rounded p-3 bg-light text-dark" t-attf-class="oe_kanban_global_click">
+                            <div class="card-header bg-warning text-white text-center rounded-top" >
+                                <strong>
+                                    <field name="name" />
+                                </strong>
+                            </div>
+
+                            <div class="card-header bg-success text-white text-center rounded-top" >
+                                <strong>
+                                    <field name="sales_price" />
+                                </strong>
+                            </div>
+
+                            <div class="card-header bg-danger text-white text-center rounded-top">
+                                <strong>
+                                    <field name="cost" />
+                                </strong>
+                            </div>
+
+
+                            <div class="card-body">
+                                <div class="mb-2">
+                                    <span class="font-weight-bold">Name: </span>
+                                    <span class="text-info">
+                                        <field name="name" />
+                                    </span>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="font-weight-bold">cost: </span>
+                                    <span class="text-success">
+                                        <field name="cost" />
+                                    </span>
+                                </div>
+
+                                <div class="mb-2">
+                                    <span class="font-weight-bold">price: </span>
+                                    <span class="text-success">
+                                        <field name="sales_price" widget="date" />
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record> -->
+
+    <!--Tree view employee.promotion model-->
+    <record id="dept_request_sales_view_tree" model="ir.ui.view">
+        <field name="name">dept.request.sales.view.tree</field>
+        <field name="model">dept.product.request</field>
+        <field name="arch" type="xml">
+            <tree string="dept_fields">
+                <field name="name"/>
+                <field name="sales_price"/>
+                <field name="cost"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>
