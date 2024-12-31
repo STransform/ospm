@@ -1,104 +1,150 @@
-# OSPM
+# OSPM(Oromia Steel Pipe )
 
-#hello
-
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin http://172.10.10.73/johnnas12/ospm.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](http://172.10.10.73/johnnas12/ospm/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
+This system consists of multiple modules. Initially, it is launched with the HRMS module, which includes user management. Additional modules, such as CRM,Payroll, will be integrated at a later stage.
+  
+## Technology stack
+- Python: Programming language
+- JS: Client-side interactions and dynamic functionalities
+- owl: Odoo Web library (framework)
+- Werkzeug: Web Server
+- QWeb: templating engine(generating HTML and XML views)
+- Bootstrap: CSS framework
+- XML-RPC: API and Integration
+   
+## Introduction
+```bash
+The OTES project consists of multiple modules, including HRMS, CRM, Project Management, and Inventory.
+ ```
+## Features
+```bash
+- List of key features or functionalities of each modules
+- Highlight any unique aspects of OTES project
+ ```
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+### Prerequisites
+ ```bash
+- Prerequisites or dependencies (Python, PostgreSQL ,XML,JS,OWL,OS)
+ ```
+### Installation Steps
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
-
-
+1. **Update The System:**  
+```bash
+sudo apt update
 ```
-Push changes to GitLab using origin:
-git push origin sbranch
-
-Push changes to GitHub using github:
-git push github sbranch:githubmain
-
-This will ensure you're using the correct remotes for each platform.
+2. **Add System User:**
+```bash
+sudo useradd -m -d /opt/odoo16 -U -r -s /bin/bash odoo16
 ```
+2. **Install Dependencies:**
+```bash
+   sudo apt install build-essential wget git python3-pip python3-dev python3-venv python3-wheel libfreetype6-dev libxml2-dev libzip-dev libsasl2-dev python3-setuptools libjpeg-dev zlib1g-dev libpq-dev libxslt1-dev libldap2-dev libtiff5-dev libopenjp2-7-dev
+```
+3. **Install dependencies:**
+```bash
+sudo apt install postgresql
+```
+4. **add a new postgresql use:**
+```bash
+sudo su - postgres -c "createuser -s odoo16"
+```
+3. **Install dependencies:**
+ ```bash
+ sudo apt install postgresql
+```
+4. **add a new postgresql use:**
+```bash
+sudo su - postgres -c "createuser -s odoo16"
+```
+5. **Install Wkhtmltopdf:**
+```bash
+sudo apt install wkhtmltopdf
+```
+6. **wkhtmltopdf --version:**
+```bash
+ pip install -r requirements.txt
+```
+7. **install Odoo under that username:**
+ ```bash
+ sudo su - odoo16
+```
+8. **clone the repository:**
+```bash
+ pgit clone https://github.com/STransform/otes.git
+```
+9. **clone the repository:**
+```bash
+pgit clone https://github.com/STransform/otes.git
+```
+10. **create a new python virtual environment:**
+```bash
+    python3 -m venv odoo16-venv
+```
+11. **activate:**
+    ```bash
+    source odoo16-venv/bin/activate
+    ```
+12. **install Odoo:**
+```bash
+    pip3 install wheel
+    pip3 install -r odoo16/requirements.txt
+    deactivate
+    mkdir /opt/odoo16/odoo16/custom-addons
+    exit
+```
+13. **Create database systemd unit file**
+```bash 
+sudo nano /etc/odoo16.conf
+```
+14. **Copy and save :**
+```bash 
+   [options]
+admin_passwd = .....
+db_host = False
+db_port = False
+db_user = odoo16
+db_password = False
+addons_path = /opt/odoo16/odoo16/addons,/opt/odoo16/odoo16/custom-addons
+xmlrpc_port = 8069
+```
+15. **Create Odoo Systemd Unit file:**
+```bash
+sudo nano /etc/systemd/system/odoo16.service
+```
+16. **Copy and save :**
+```bash
+ [Unit]
+Description=Odoo16
+Requires=postgresql.service
+After=network.target postgresql.service
+[Service]
+Type=simple
+SyslogIdentifier=odoo16
+PermissionsStartOnly=true
+User=odoo16
+Group=odoo16
+ExecStart=/opt/odoo16/odoo16-venv/bin/python3 /opt/odoo16/odoo16/odoo-bin -c /etc/odoo16.conf
+StandardOutput=journal+console
+[Install]
+WantedBy=multi-user.target
+```
+17. **Reload:**
+```bash
+sudo systemctl daemon-reload
+```
+18. **Start service:**
+```bash
+sudo systemctl start odoo16
+```
+    
+10. **Check status:**
+```bash
+sudo systemctl status odoo16
+```
+
+
+10. **Author:**
+```bash
+S Transform
+```
+
+
