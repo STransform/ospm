@@ -40,8 +40,8 @@
                                 attrs="{'readonly': [('state', 'in', ['pending', 'approved', 'rejected'])]}"/>
                             </div>
                              <div class="col-md-6">
-                                <label for="reason" class="form-label fw-bold">Reason</label>
-                                <field name="employee_reason" readonly="0" class="form-control" id="reason" 
+                                <label for="employee_reason" class="form-label fw-bold">Reason</label>
+                                <field name="employee_reason" readonly="0" class="form-control" id="employee_reason" 
                                 attrs="{'readonly':[('state','!=','draft')]}"/>
                             </div>
                            
