@@ -82,7 +82,7 @@
             <field name="refuse_reason_id" invisible="1"/>
             <header>
                 <button string="Create Employee" name="create_employee_from_applicant" type="object" data-hotkey="v" groups="hr_recruitment.group_hr_recruitment_user"
-                        class="o_create_employee" attrs="{'invisible': ['|', '|', ('emp_id', '!=', False), ('active', '=', False), ('date_closed', '=', False)]}"/>
+                        class="o_create_employee" attrs="{'invisible': ['|', ('is_hired_stage', '=', False), ('active', '=', False)]}"/>
                 <button string="Refuse" invisible ="1" name="archive_applicant" type="object" attrs="{'invisible': [('active', '=', False)]}" data-hotkey="x"/>
                
 

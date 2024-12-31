@@ -84,13 +84,13 @@
             <a target="_blank"
                 t-attf-href="http://www.odoo.com?utm_source=db&amp;utm_medium=#{_utm_medium}"
                 class="badge text-bg-light">
-                <img alt="Odoo"
-                    src="/web/static/img/odoo_logo_tiny.png"
+                <!-- <img alt="Odoo"
+                    src=""
                     width="62" height="20"
-                    style="width: auto; height: 1em; vertical-align: baseline;"/>
+                    style="width: auto; height: 1em; vertical-align: baseline;"/> -->
             </a>
         </t>
-        <t t-set="final_message">Powered by %s%s</t>
+        <t t-set="final_message">Powered by OTech %s%s</t>
         <t t-out="final_message % (odoo_logo, _message and ('- ' + _message) or '')"/>
     </template>
     <template id="brand_promotion" name="Brand Promotion">
@@ -130,13 +130,6 @@
           style="background-color: #1c2331"
           >
     <!-- Section: Social media -->
-    <section
-             class="d-flex justify-content-between p-4"
-             style="background-color: white;"
-             >
-      
-      <!-- Right -->
-    </section>
     <!-- Section: Social media -->
 
     <!-- Section: Links  -->
@@ -144,15 +137,6 @@
     <!-- Section: Links  -->
 
     <!-- Copyright -->
-    <div
-         class="text-center p-3"
-         style="background-color: rgba(0, 0, 0, 0.2)"
-         >
-      Designed by:
-      <a class="text-white" href="https://otech.com/"
-         >OTech Engineering </a
-        >
-    </div>
     <!-- Copyright -->
   </footer>
         </t>
@@ -171,7 +155,7 @@
                 </div>
 
                 <div class="mb-3 field-login">
-                    <label for="login" class="form-label">User ID</label>
+                    <label for="login" class="form-label">Username</label>
                     <input type="text" placeholder="Email or user id..." name="login" t-att-value="login" id="login" t-attf-class="form-control #{'form-control-sm' if form_small else ''}" required="required" autocomplete="username" autofocus="autofocus" autocapitalize="off"/>
                 </div>
 

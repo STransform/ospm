@@ -745,7 +745,7 @@ class Applicant(models.Model):
         """Check if all applicants in the 'Hired stage' have been converted to employees and deactivate the job position."""
         # Get all applicants in the 'Hired stage'
         hired_applicants = self.env['hr.applicant'].search([
-            ('stage_id.name', '=', 'Hired stage'),  # Ensure this matches exactly with your stage name
+            ('stage_id.name', '=', 'Hired stage'),  # Ensure this matches exactly with  stage name
         ])
 
         # logging to debug
@@ -883,8 +883,13 @@ class HrApplicant(models.Model):
     def action_download_minutes(self):
         # temporary used,will be removed later...
         pass
-    is_hired_stage = fields.Boolean(string="Is Hired Stage", default=False )# this field is temporary
     
+    is_hired_stage = fields.Boolean(string="Is Hired Stage", default=False ,compute="_compute_is_hired_stage",)
+    @api.depends('stage_id')
+    def _compute_is_hired_stage(self):
+        for applicant in self:
+            applicant.is_hired_stage = applicant.stage_id.name == 'Hired stage'
+
     # Boolean field to check if the user is part of the Committee group
     is_committee_user = fields.Boolean(
         string="Is Committee User",

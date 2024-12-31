@@ -16,7 +16,6 @@
                     <!-- Approval by Department service director -->
                     <button name="action_request_termination" string="Request Termination" type="object" class="btn-primary" attrs="{'invisible': ['|',  ('is_creator', '=', False), ('combined_state', 'in', ['processing', 'approved'])]}" confirm="Are you sure! Do you wish to proceed?" />
 
-
                     <button name="action_by_service_request_approval" type="object" string="Approve" attrs="{'invisible': ['|', ('is_manager', '=', False), ('state_by_service', 'in', ['approved', 'refused'])]}" confirm="Are you sure! Do you wish to proceed ?"/>
                     <button name="action_by_service_refuse_request" type="object" string="Refuse" attrs="{'invisible': ['|', ('is_manager', '=', False), ('state_by_service', 'in', ['approved', 'refused'])]}" confirm="Are you sure! Do you wish to proceed ?"/>
 
@@ -128,8 +127,6 @@
                                 </div>
 
                             </div>
-
-
                         </div>
                     </t>
                 </templates>

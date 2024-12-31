@@ -1,0 +1,42 @@
+<odoo>
+    <record id="sms_user" model="ir.module.category">
+        <field name="name">SMS Users</field>
+    </record>
+
+    <record id="sms_user.sales_manager" model="res.groups">
+        <field name="name">Sales Manager</field>
+        <field name="category_id" ref="sms_user" />
+    </record>
+    <record id="sms_user.sales_person" model="res.groups">
+        <field name="name">Sales Person</field>
+        <field name="category_id" ref="sms_user" />
+    </record>
+    <record id="sms_user.finance_director" model="res.groups">
+        <field name="name">Finance Director</field>
+        <field name="category_id" ref="sms_user" />
+    </record>
+
+    <record id="sms_user.dceo" model="res.groups">
+        <field name="name">DCEO</field>
+        <field name="category_id" ref="sms_user" />
+    </record>
+
+    <record id="sms_user.ceo" model="res.groups">
+        <field name="name">CEO</field>
+        <field name="category_id" ref="sms_user" />
+    </record>
+    <record id="sms_user.marketing_department" model="res.groups">
+        <field name="name">Marketing Department </field>
+        <field name="category_id" ref="sms_user" />
+    </record>
+
+    <record id="sms_user.customer" model="res.groups">
+        <field name="name">Customer</field>
+        <field name="category_id" ref="sms_user" />
+    </record>
+
+    <record id="sms_user.tax_center" model="res.groups">
+        <field name="name">Tax Center</field>
+        <field name="category_id" ref="sms_user" />
+    </record>
+</odoo>

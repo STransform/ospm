@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <odoo>
+    <!-- for refund -->
+        <record id="action_report_medical_coverage" model="ir.actions.report">
+            <field name="name">Medical Coverage Report</field>
+            <field name="model">hr.medical.coverage</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hr_medical_coverage.report_medical_coverage</field> <!-- Must match template -->
+            <field name="report_file">hr_medical_coverage.report_medical_coverage</field> <!-- Must match template -->
+            <field name="binding_model_id" ref="model_hr_medical_coverage" />
+            <field name="binding_type">report</field>
+        </record>
+<!-- for credit -->
+        <record id="action_report_medical_coverage_credit" model="ir.actions.report">
+            <field name="name">Medical Coverage Report</field>
+            <field name="model">hr.medical.pre.request</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hr_medical_coverage.report_medical_coverage_credit</field> <!-- Must match template -->
+            <field name="report_file">hr_medical_coverage.report_medical_coverage_credit</field> <!-- Must match template -->
+            <field name="binding_model_id" ref="model_hr_medical_pre_request" />
+            <field name="binding_type">report</field>
+        </record>
+    </odoo>

@@ -13,12 +13,7 @@ class Clearance(models.Model):
     job_id = fields.Many2one('hr.job', string="Position",  store=True)
     clearance_description = fields.Text(string="Description",  store=True)
     documents = fields.Many2many('ir.attachment', string='Attachments', help="Attach documents related to clearance request")
-    reason = fields.Selection(
-        [('resignation', 'Resignation'), ('retirement', 'Retirement'), ('termination', 'Termination'),('contract', 'End of Contract'),('transfer', 'Transfer')],
-        string="Reason for Clearance",
-        required=True,
-        tracking=True
-    )
+    employee_reason = fields.Text(string="Reason")
     date_requested = fields.Date(string="Requested Date", default=fields.Date.today, tracking=True)
     
     

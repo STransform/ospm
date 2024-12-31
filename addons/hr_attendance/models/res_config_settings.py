@@ -20,6 +20,30 @@ class ResConfigSettings(models.TransientModel):
     attendance_kiosk_mode = fields.Selection(related='company_id.attendance_kiosk_mode', readonly=False)
     attendance_barcode_source = fields.Selection(related='company_id.attendance_barcode_source', readonly=False)
     attendance_kiosk_delay = fields.Integer(related='company_id.attendance_kiosk_delay', readonly=False)
+    late_in_time = fields.Char(
+        string="Late In Time Limit",
+        default="08:30",
+        help="Late In starts after this time (e.g., '08:30' for 8:30 AM)"
+    )
+    early_out_time = fields.Char(
+        string="Early Out Time Limit",
+        default="17:00",
+        help="Early Out is before this time (e.g., '17:00' for 5:00 PM)"
+    )
+
+    # @api.model
+    # def get_values(self):
+    #     res = super(ResConfigSettings, self).get_values()
+    #     res.update({
+    #         'late_in_time': self.env['ir.config_parameter'].sudo().get_param('hr_attendance.late_in_time', default="08:30"),
+    #         'early_out_time': self.env['ir.config_parameter'].sudo().get_param('hr_attendance.early_out_time', default="17:00"),
+    #     })
+    #     return res
+
+    # def set_values(self):
+    #     super(ResConfigSettings, self).set_values()
+    #     self.env['ir.config_parameter'].sudo().set_param('hr_attendance.late_in_time', self.late_in_time or "08:30")
+    #     self.env['ir.config_parameter'].sudo().set_param('hr_attendance.early_out_time', self.early_out_time or "17:00")
 
     @api.model
     def get_values(self):
@@ -30,6 +54,9 @@ class ResConfigSettings(models.TransientModel):
             'overtime_start_date': company.overtime_start_date,
             'overtime_company_threshold': company.overtime_company_threshold,
             'overtime_employee_threshold': company.overtime_employee_threshold,
+             # Add Late In and Early Out times
+            'late_in_time': self.env['ir.config_parameter'].sudo().get_param('hr_attendance.late_in_time', default="08:30"),
+            'early_out_time': self.env['ir.config_parameter'].sudo().get_param('hr_attendance.early_out_time', default="17:00"),
         })
         return res
 
@@ -47,3 +74,7 @@ class ResConfigSettings(models.TransientModel):
         ]
         if any(self[field] != company[field] for field in fields_to_check):
             company.write({field: self[field] for field in fields_to_check})
+
+         # Write Late In and Early Out times to ir.config_parameter
+        self.env['ir.config_parameter'].sudo().set_param('hr_attendance.late_in_time', self.late_in_time or "08:30")
+        self.env['ir.config_parameter'].sudo().set_param('hr_attendance.early_out_time', self.early_out_time or "17:00")

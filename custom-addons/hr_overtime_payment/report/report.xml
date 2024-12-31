@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_hr_overtime_payment" model="ir.actions.report">
+        <field name="name">Overtime Report</field>
+        <field name="model">hr.overtime.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_overtime_payment.report_hr_overtime_payment</field> <!-- Must match
+        template -->
+        <field name="report_file">hr_overtime_payment.report_hr_overtime_payment</field> <!-- Must match
+        template -->
+        <field name="binding_model_id" ref="model_hr_overtime_payment" />
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

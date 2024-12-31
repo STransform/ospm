@@ -25,35 +25,35 @@
                     <header class="mb-2">
                         <button string="Submit" 
                                 name="action_submit" 
-                                type="object" class="oe_highlight" 
+                                type="object" class="btn-success" 
                                 attrs="{'invisible':[('status','!=','draft')]}"
                                 confirm="Are you sure you want to submit this request?"
                         />
 
                         <button string="Accept Delegation" 
                                 name="action_accept_delegation" 
-                                type="object" class="oe_highlight" 
+                                type="object" class="btn-success" 
                                 attrs="{'invisible':['|',('is_delegatee','=',False),('status','!=','submitted')]}"
                                 confirm="Are you sure you want to Accept this request?"
                         />
 
                         <button string="Reject Delegation" 
                                 name="action_refuse_delegation" 
-                                type="object" class="oe_highlight" 
+                                type="object" class="btn-danger" 
                                 attrs="{'invisible':['|',('is_delegatee','=',False),('status','!=','submitted')]}"
                                 confirm="Are you sure you want to Reject this request?"
                         />
 
                         <button string="Approve" 
                                 name="action_approve_delegation" 
-                                type="object" class="oe_highlight" 
+                                type="object" class="btn-success" 
                                 attrs="{'invisible':['|',('is_hr_director','=',False),('status','!=','accepted_by_delegatee')]}"
                                 confirm="Are you sure you want to Approve this request?"
                         />
 
                         <button string="Reject" 
                                 name="action_reject_delegation" 
-                                type="object" class="oe_highlight" 
+                                type="object" class="btn-danger" 
                                 attrs="{'invisible':['|',('is_hr_director','=',False),('status','!=','accepted_by_delegatee')]}"
                                 confirm="Are you sure you want to Reject this request?"
                         />

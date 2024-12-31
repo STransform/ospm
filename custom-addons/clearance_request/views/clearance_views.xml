@@ -40,8 +40,8 @@
                                 attrs="{'readonly': [('state', 'in', ['pending', 'approved', 'rejected'])]}"/>
                             </div>
                              <div class="col-md-6">
-                                <label for="reason" class="form-label fw-bold">Reason</label>
-                                <field name="reason" readonly="0" class="form-control" id="reason" 
+                                <label for="employee_reason" class="form-label fw-bold">Reason</label>
+                                <field name="employee_reason" readonly="0" class="form-control" id="employee_reason" 
                                 attrs="{'readonly':[('state','!=','draft')]}"/>
                             </div>
                            
@@ -134,14 +134,14 @@
                                         confirm="Are you sure you want to reject this?"/>
                              </div>
                         </div>
-                        <div class="row g-3 mt-2 d-flex justify-content-center">
+                        <!-- <div class="row g-3 mt-2 d-flex justify-content-center">
                                 <div class="col-12 text-center">
                                     <button name="action_save_clearance" type="object" string="Submit"
                                         class="btn btn-success btn-lg px-5 py-2 shadow-sm rounded-pill"
                                         attrs="{'invisible':[('state','!=','draft')]}"
                                         confirm="Are you sure you want to submit this?"/>
                                 </div>
-                        </div> 
+                        </div>  -->
                     </div>
                 </div>
             </div>
@@ -163,7 +163,7 @@
                             <strong><field name="employee_id"/></strong>
                             <div>Department: <field name="department_id"/></div>
                             <div>Position: <field name="job_id"/></div>
-                            <div>Reason: <field name="reason"/></div>
+                            <div>Reason: <field name="employee_reason"/></div>
                             <div >Reason: <field name="state" style="color:green;"/></div>
                         </div>
                     </div>
@@ -181,7 +181,7 @@
         <field name="employee_id"/>
         <field name="department_id"/>
         <field name="job_id"/>
-        <field name="reason"/>
+        <field name="employee_reason"/>
         <field name="state"/>
         
       </tree>

@@ -147,6 +147,13 @@ class TerminationRequest(models.Model):
         for record in self:
             record.state_by_service = 'refused'
 
+            title = "Termination Refused"
+            message = f"Your Termination Request has been rejected."
+            user = self.create_uid
+            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+            self.env.user.notify_success(title=title, message=message)
+
+
     def action_by_director_request_approval(self):
         for record in self:
             record.state_by_director = 'approved'
@@ -163,6 +170,13 @@ class TerminationRequest(models.Model):
     def action_by_director_refuse_request(self):
         for record in self:
             record.state_by_director = 'refused'
+
+            
+            title = "Termination Refused"
+            message = f"Your Termination Request has been rejected."
+            user = self.create_uid
+            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+            self.env.user.notify_success(title=title, message=message)
 
     
     def action_by_dceo_request_approval(self):
@@ -181,6 +195,12 @@ class TerminationRequest(models.Model):
     def action_by_dceo_refuse_request(self):
         for record in self:
             record.state_by_dceo = 'refused'
+
+            title = "Termination Refused"
+            message = f"Your Termination Request has been rejected."
+            user = self.create_uid
+            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+            self.env.user.notify_success(title=title, message=message)
     
     def action_by_ceo_request_approval(self):
         for record in self:
@@ -191,13 +211,16 @@ class TerminationRequest(models.Model):
             record.employee_id.user_id.notify_success(title=title, message=message)
             self.send_notification(message, record.employee_id.user_id, title, model = self._name, res_id = self.id)
             self.env.user.notify_success("Request Approved!")
+            record._create_clearance()
+           
+
 
             
-            if record.employee_id:
-                # Set the employee to archived (depending on your model's definition for archived state)
-                if record.employee_id.user_id:
-                    record.employee_id.user_id.sudo().write({'active': False})
-                record.employee_id.sudo().write({'active': False})
+            # if record.employee_id:
+            #     # Set the employee to archived (depending on your model's definition for archived state)
+            #     if record.employee_id.user_id:
+            #         record.employee_id.user_id.sudo().write({'active': False})
+            #     record.employee_id.sudo().write({'active': False})
 
 
                 
@@ -205,6 +228,13 @@ class TerminationRequest(models.Model):
     def action_by_ceo_refuse_request(self):
         for record in self:
             record.state_by_ceo = 'refused'
+
+            
+            title = "Termination Refused"
+            message = f"Your Termination Request has been rejected."
+            user = self.create_uid
+            self.send_notification(message=message, user=user, title=title, model=self._name, res_id=self.id)
+            self.env.user.notify_success(title=title, message=message)
 
 
     def action_request_termination(self):
@@ -220,4 +250,32 @@ class TerminationRequest(models.Model):
             title = "Termination Request"
             message = f"{record.employee_id.name} Requested Termination"
             self.send_notification(message, service_manager, title, model = self._name, res_id = self.id)
+
+
+    def _create_clearance(self):
+            """Automatically create a promotion in the promotion.approved model."""
+            clerance_id = self.env['employee.clearance'].sudo().create({
+                'name': self.name,  # Customize this as needed
+                'employee_id': self.employee_id.id,  # Optional: Add a link to the recruitment request
+                'department_id': self.department_id.id,
+                'employee_reason': self.reason,
+                'date_requested': self.create_date,
+            }).id
+              # Prepare the message
+            message = f"The CEO has approved this employee's termination request. Please review and approve the clearance process."
+            
+            # Get the users in the group "group_department_approval"
+            department_group = self.env.ref('user_group.group_department_manager').users
+            if department_group:
+                for user in department_group:
+                    # Send notification to each user in the department approval group
+                    self.send_notification(message=message, user=user, title=self._description, model='employee.clearance', res_id=clerance_id)
+                    
+                    user.notify_warning(message=message, title=self._description)
+            
+            # Notify the employee (optional, if you still want to notify the employee as well)
+            self.employee_id.user_id.notify_warning(message=message, title=self._description)
+
+
+
 

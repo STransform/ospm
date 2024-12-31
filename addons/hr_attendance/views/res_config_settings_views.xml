@@ -37,7 +37,8 @@
                                 </div>
                                 <div class="content-group">
                                     <div class="mt16">
-                                        <field name="attendance_kiosk_delay" required="1" class="text-center" style="width: 10%; min-width: 4rem;"/> seconds
+                                        <field name="attendance_kiosk_delay" required="1" class="text-center" style="width: 10%; min-width: 4rem;"/>
+ seconds
                                     </div>
                                 </div>
                             </div>
@@ -97,8 +98,9 @@
                                     <div class="text-muted">
                                         Allow a period of time (around working hours) where extra time will not be counted, in benefit of the company
                                     </div>
-                                    <span>Time Period </span><field name="overtime_company_threshold" class="text-center"
-                                        attrs="{'required': [('hr_attendance_overtime', '=', True)]}" style="width: 10%; min-width: 4rem;"/><span> Minutes</span>
+                                    <span>Time Period </span>
+                                    <field name="overtime_company_threshold" class="text-center" attrs="{'required': [('hr_attendance_overtime', '=', True)]}" style="width: 10%; min-width: 4rem;"/>
+                                    <span> Minutes</span>
                                     <br/>
                                     <br/>
                                     <label for="overtime_employee_threshold" class="o_form_label">
@@ -107,11 +109,33 @@
                                     <div class="text-muted">
                                         Allow a period of time (around working hours) where extra time will not be deducted, in benefit of the employee
                                     </div>
-                                    <span>Time Period </span><field name="overtime_employee_threshold" class="text-center"
-                                        attrs="{'required': [('hr_attendance_overtime', '=', True)]}" style="width: 10%; min-width: 4rem;"/><span> Minutes</span>
+                                    <span>Time Period </span>
+                                    <field name="overtime_employee_threshold" class="text-center" attrs="{'required': [('hr_attendance_overtime', '=', True)]}" style="width: 10%; min-width: 4rem;"/>
+                                    <span> Minutes</span>
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+
+                    <h2>Attendance Configuration</h2>
+                    <div class="row mt16 o_settings_container">
+                        <label for="late_in_time" class="o_form_label">
+                                        Check In Time
+                        </label>
+                        <div class="text-muted">
+                        Check in time should be set in order to evaluate late time in attendance.
+                        </div>
+                        <field name="late_in_time" class="text-center" style="width: 10%; min-width: 4rem;"/>
+                        <br/>
+                        <br/>
+                        <label for="early_out_time" class="o_form_label">
+                                        Check Out Time
+                        </label>
+                        <div class="text-muted">
+                        Check out time should be set in order to evaluate early time in attendance.
+                        </div>
+                        <field name="early_out_time" class="text-center" style="width: 10%; min-width: 4rem;"/>
                     </div>
                 </div>
             </xpath>
@@ -127,6 +151,5 @@
         <field name="context">{'module' : 'hr_attendance', 'bin_size': False}</field>
     </record>
 
-    <menuitem id="hr_attendance.menu_hr_attendance_settings" name="Configuration" parent="menu_hr_attendance_root"
-        sequence="99" action="action_hr_attendance_settings" groups="hr_attendance.group_hr_attendance_manager"/>
+    <menuitem id="hr_attendance.menu_hr_attendance_settings" name="Configuration" parent="menu_hr_attendance_root" sequence="99" action="action_hr_attendance_settings" groups="hr_attendance.group_hr_attendance_manager"/>
 </odoo>

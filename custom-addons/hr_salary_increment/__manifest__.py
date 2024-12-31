@@ -16,6 +16,7 @@
         "user_group",
         "custom_notification",
         "web_notify",
+        "web",
     ],
     "data": [
         "security/ir.model.access.xml",
@@ -26,6 +27,8 @@
         "views/reprot.xml",
         "views/menu.xml",
         "views/hr_salary_increment_batch_line_views.xml",
+        "report/report.xml",
+        "report/template.xml",
     ],
     "application": True,
     "installable": True,
